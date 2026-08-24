@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+<div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0b1437] text-white">
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#0075ff] rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-[#01b574] rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
+
+    <div class="w-full max-w-md p-8 relative z-10 text-center" style="background: #111c44; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 1.25rem; box-shadow: 0 4px 24px rgba(0,0,0,0.2);">
+        <div class="flex justify-center mb-6">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0075ff] to-[#01b574] flex items-center justify-center shadow-[0_0_30px_rgba(0,117,255,0.4)]">
+                <span class="text-3xl font-black tracking-tight text-white">EUC</span>
+            </div>
+        </div>
+        
+        <h2 class="text-2xl font-bold mb-2">Welcome Back</h2>
+        <p class="text-gray-400 text-sm mb-8">Sign in to the Leader Dashboard</p>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="bg-red-500/10 border border-red-500/50 text-red-400 rounded-xl p-3 text-sm mb-6">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <form method="POST" action="/login" class="space-y-4 text-left">
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1">Email Address</label>
+                <input type="email" name="email" autocapitalize="none" autocorrect="off" autocomplete="email" placeholder="leader@euc.org" class="w-full bg-slate-800/60 border border-white/10 text-white rounded-xl p-4 outline-none focus:border-[#0075ff] transition-all">
+            </div>
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="block text-xs font-semibold text-gray-400">Password</label>
+                    <a href="/forgot-password" class="text-xs text-[#0075ff] hover:text-white transition-colors">Forgot password?</a>
+                </div>
+                <input type="password" name="password" autocomplete="current-password" placeholder="••••••••" required class="w-full bg-slate-800/60 border border-white/10 text-white rounded-xl p-4 outline-none focus:border-[#0075ff] transition-all">
+            </div>
+            
+            <button type="submit" class="w-full bg-white text-gray-900 font-bold rounded-xl p-4 mt-4 transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                Sign In
+            </button>
+        </form>
+        
+        <div class="mt-6 text-sm text-gray-400">
+            Have a signup code? <a href="/claim-account" class="text-[#0075ff] hover:text-white transition-colors font-semibold">Claim your account</a>
+        </div>
+        
+        <div class="mt-8">
+            <a href="/" class="text-xs text-gray-500 hover:text-white transition-colors">← Back to Public Site</a>
+        </div>
+    </div>
+</div>
+<%- include('partials/footer') %>

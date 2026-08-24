@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="Emmanuel United Church of Maryland Young Adults community. Growing together in faith, leadership, and discipleship.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EUCMD Young Adults</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="/static/js/vendor/tailwindcss.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Plus Jakarta Sans"', 'sans-serif']
+                    },
+                    colors: {
+                        brandDark: '#FAFAFA',
+                        cardDark: '#FFFFFF',
+                        accent: '#111111',
+                        accent2: '#666666',
+                        success: '#000000'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .macos-glass {
+            background-color: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .macos-nav {
+            
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            
+        }
+        
+        .macos-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+            border-radius: 1.5rem;
+        }
+    
+        html.dark body {
+            background-color: #0b1437;
+            color: #ffffff;
+        }
+        
+        html.dark .macos-glass {
+            background-color: #111c44;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        html.dark .macos-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+        }
+
+        /* Reading Progress Bar */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, #0075ff, #10b981);
+            width: 0%;
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Dropcap for articles */
+        .prose > div:first-child > p:first-of-type::first-letter {
+            font-size: 3.5rem;
+            font-weight: 900;
+            float: left;
+            margin-right: 0.5rem;
+            margin-top: -0.5rem;
+            line-height: 1;
+            color: #111111;
+        }
+        html.dark .prose > div:first-child > p:first-of-type::first-letter {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#0b1437] text-gray-900 dark:text-white overflow-x-hidden">
+    <div id="progress-bar"></div>
+
+    <!-- Navigation -->
+    
+    <!-- Unified Navigation -->
+    <nav class="fixed top-0 w-full z-[100] transition-all duration-300 macos-nav bg-white/80 dark:bg-[#0b1437]/90 border-b border-gray-200 dark:border-white/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="/" class="flex items-center text-lg font-bold tracking-tight text-gray-900 dark:text-white whitespace-nowrap mr-8">
+                EUC<span class="text-gray-500 font-light ml-1">Young Adults</span>
+            </a>
+            
+            <div class="hidden lg:flex items-center space-x-8">
+                <!-- 1. Foundation Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
+                        Foundation
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-20 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
+                        <a href="/salvation" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Salvation</a>
+                        <a href="/water-baptism" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Water Baptism</a>
+                        <a href="/kingdom" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Kingdom</a>
+                    </div>
+                </div>
+
+                <!-- 2. Belong Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
+                        Belong
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-20 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
+                        <a href="/membership" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Membership</a>
+                        <a href="/community" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Community</a>
+                        <a href="/mentorship" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Mentorship</a>
+                    </div>
+                </div>
+
+                <!-- 3. Formation Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
+                        Formation
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-20 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
+                        <a href="/scripture-memory" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Scripture Memory</a>
+                        <a href="/growth" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Growth</a>
+                        <a href="/maturity" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Maturity</a>
+                        <a href="/availability" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Availability</a>
+                    </div>
+                </div>
+
+                <!-- 4. Mission Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
+                        Mission
+                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-20 right-0 mt-0 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
+                        <a href="/serving" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Serving</a>
+                        <a href="/generosity" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Giving / Generosity</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center ml-auto">
+                <!-- Dark Mode Toggle -->
+                <button id="theme-toggle" class="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none rounded-lg text-sm transition-colors mr-2 lg:mr-4">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 2.32a1 1 0 011.415 0l.708.708a1 1 0 01-1.414 1.414l-.708-.708a1 1 0 010-1.414zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-4.22 4.22a1 1 0 010 1.414l-.708.708a1 1 0 01-1.414-1.414l.708-.708a1 1 0 011.414 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-2.32a1 1 0 01-1.415 0l-.708-.708a1 1 0 011.414-1.414l.708.708a1 1 0 010 1.414zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zm2.32-4.22a1 1 0 010-1.414l-.708-.708a1 1 0 01-1.414 1.414l.708.708a1 1 0 011.414 0zM10 5a5 5 0 100 10 5 5 0 000-10z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                
+                <a href="/dashboard" class="block px-3 md:px-5 py-2 md:py-2.5 rounded-full bg-accent text-white border border-transparent shadow-[0_0_10px_rgba(0,117,255,0.3)] hover:bg-blue-600 transition-colors text-xs md:text-sm font-bold whitespace-nowrap mr-2 lg:mr-0">
+                    Dashboard
+                </a>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2.5 text-gray-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+
+    </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 top-20 bg-white/95 dark:bg-[#0b1437]/95 z-50 lg:hidden overflow-y-auto border-t border-gray-200 dark:border-white/10 transition-opacity duration-300" style="display: none; opacity: 0; pointer-events: none;">
+            <div class="px-6 pt-8 space-y-6" style="padding-bottom: calc(6rem + env(safe-area-inset-bottom));">
+                <div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Foundation</h3>
+                    <div class="flex flex-col space-y-2">
+                        <a href="/salvation" class="text-gray-900 dark:text-white font-medium py-2">Salvation</a>
+                        <a href="/water-baptism" class="text-gray-900 dark:text-white font-medium py-2">Water Baptism</a>
+                        <a href="/kingdom" class="text-gray-900 dark:text-white font-medium py-2">Kingdom</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Belong</h3>
+                    <div class="flex flex-col space-y-2">
+                        <a href="/membership" class="text-gray-900 dark:text-white font-medium py-2">Membership</a>
+                        <a href="/community" class="text-gray-900 dark:text-white font-medium py-2">Community</a>
+                        <a href="/mentorship" class="text-gray-900 dark:text-white font-medium py-2">Mentorship</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Formation</h3>
+                    <div class="flex flex-col space-y-2">
+                        <a href="/scripture-memory" class="text-gray-900 dark:text-white font-medium py-2">Scripture Memory</a>
+                        <a href="/growth" class="text-gray-900 dark:text-white font-medium py-2">Growth</a>
+                        <a href="/maturity" class="text-gray-900 dark:text-white font-medium py-2">Maturity</a>
+                        <a href="/availability" class="text-gray-900 dark:text-white font-medium py-2">Availability</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Mission</h3>
+                    <div class="flex flex-col space-y-2">
+                        <a href="/serving" class="text-gray-900 dark:text-white font-medium py-2">Serving</a>
+                        <a href="/generosity" class="text-gray-900 dark:text-white font-medium py-2">Giving / Generosity</a>
+                    </div>
+                </div>
+                <div class="pt-6 border-t border-gray-200 dark:border-white/10">
+                    <a href="/dashboard" class="w-full text-center block px-5 py-3 rounded-xl bg-accent text-white font-bold transition-all shadow-[0_0_15px_rgba(0,117,255,0.3)]">
+                        Leader Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
