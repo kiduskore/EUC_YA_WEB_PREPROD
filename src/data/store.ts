@@ -838,29 +838,64 @@ export const rawStore = new InMemoryStore();
 let saveTimeout: NodeJS.Timeout | null = null;
 let pool: pg.Pool | null = null;
 
-if (process.env.DATABASE_URL) {
-  pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('railway.internal') ? false : { rejectUnauthorized: false }
-  });
+const initDb = () => {
+  const dbUrl = (process.env.DATABASE_URL || '').trim();
+  if (!dbUrl) return;
 
-  // Init table and load data
-  pool.query(`
-    CREATE TABLE IF NOT EXISTS app_state (
-      id SERIAL PRIMARY KEY,
-      data JSONB NOT NULL,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `).then(() => {
-    return pool!.query('SELECT data FROM app_state ORDER BY id DESC LIMIT 1');
-  }).then(res => {
-    if (res.rows.length > 0) {
-      const state = res.rows[0].data;
-      Object.assign(rawStore, state);
-      console.log('Successfully restored app state from PostgreSQL Database');
+  try {
+    // Validate that the URL is syntactically valid before passing to pg.Pool
+    const parsedUrl = new URL(dbUrl);
+    if (!['postgres:', 'postgresql:'].includes(parsedUrl.protocol)) {
+      console.warn('[PostgreSQL Warning] DATABASE_URL must start with postgres:// or postgresql://. Skipping DB sync.');
+      return;
     }
-  }).catch(err => console.error('Failed to init PostgreSQL DB:', err));
-}
+
+    // Check if it's an unexpanded template like ${{...}}
+    if (dbUrl.includes('${{') || dbUrl.includes('}}')) {
+      console.warn('[PostgreSQL Warning] DATABASE_URL contains unresolved template variables (${{...}}). Skipping DB sync.');
+      return;
+    }
+
+    const isInternal = parsedUrl.hostname.includes('railway.internal') || parsedUrl.hostname.includes('localhost') || parsedUrl.hostname === '127.0.0.1';
+
+    pool = new pg.Pool({
+      connectionString: dbUrl,
+      ssl: isInternal ? false : { rejectUnauthorized: false },
+      connectionTimeoutMillis: 5000,
+    });
+
+    pool.on('error', (err) => {
+      console.error('[PostgreSQL Error] Unexpected client error:', err.message);
+    });
+
+    // Init table and load data
+    pool.query(`
+      CREATE TABLE IF NOT EXISTS app_state (
+        id SERIAL PRIMARY KEY,
+        data JSONB NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `).then(() => {
+      return pool!.query('SELECT data FROM app_state ORDER BY id DESC LIMIT 1');
+    }).then(res => {
+      if (res && res.rows.length > 0) {
+        const state = res.rows[0].data;
+        Object.assign(rawStore, state);
+        console.log('[PostgreSQL] Successfully restored app state from PostgreSQL Database');
+      } else {
+        console.log('[PostgreSQL] Database connected. Initializing first state snapshot...');
+        saveToDB();
+      }
+    }).catch(err => {
+      console.error('[PostgreSQL Connection Error]:', err.message);
+    });
+  } catch (err: any) {
+    console.error('[PostgreSQL URL Parse Error]:', err.message);
+    pool = null;
+  }
+};
+
+initDb();
 
 const saveToDB = async () => {
   if (!pool) return;
