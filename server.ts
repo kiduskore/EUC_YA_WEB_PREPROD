@@ -2,7 +2,21 @@ import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import path from 'path';
 import bcrypt from 'bcryptjs';
+import nodemailer from 'nodemailer';
 import { store } from './src/data/store';
+
+// Configure Nodemailer transporter
+const getTransporter = () => {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_SERVER || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_PORT === '465',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+};
 
 // Extend Express Session interface
 declare module 'express-session' {
@@ -144,7 +158,7 @@ app.get('/forgot-password', (req: Request, res: Response) => {
   res.render('forgot_password', { error: null });
 });
 
-app.post('/forgot-password', (req: Request, res: Response) => {
+app.post('/forgot-password', async (req: Request, res: Response) => {
   const email = (req.body.email || '').trim().toLowerCase();
   
   if (!email) {
@@ -153,12 +167,36 @@ app.post('/forgot-password', (req: Request, res: Response) => {
 
   const token = store.createPasswordResetToken(email);
   if (token) {
-    // In a real app, send this via email. For demo, we show it directly.
-    const resetLink = `/reset-password?token=${token}`;
-    return res.render('forgot_password', { 
-      success: 'A password reset link has been generated.', 
-      resetLink 
-    });
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      try {
+        const resetLink = `https://${req.get('host')}/reset-password?token=${token}`;
+        const transporter = getTransporter();
+        await transporter.sendMail({
+          from: `"EUC Young Adults" <${process.env.SMTP_USER}>`,
+          to: email,
+          subject: 'Password Reset Request',
+          text: `You requested a password reset. Click the link below to reset your password:\n\n${resetLink}\n\nIf you did not request this, please ignore this email.`,
+          html: `<p>You requested a password reset.</p><p><a href="${resetLink}">Click here to reset your password</a></p><p>If you did not request this, please ignore this email.</p>`
+        });
+        
+        return res.render('forgot_password', { 
+          success: 'A password reset link has been sent to your email.', 
+          resetLink: null 
+        });
+      } catch (err) {
+        console.error('Email sending error:', err);
+        return res.render('forgot_password', { 
+          error: 'Failed to send the reset email. Please try again later.' 
+        });
+      }
+    } else {
+      // Fallback for demo when SMTP is not configured
+      const resetLink = `/reset-password?token=${token}`;
+      return res.render('forgot_password', { 
+        success: 'A password reset link has been generated. (SMTP not configured)', 
+        resetLink 
+      });
+    }
   } else {
     // Return same generic success to prevent email enumeration
     return res.render('forgot_password', { 
