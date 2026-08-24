@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import pg from 'pg';
 
 export interface User {
   id: number;
@@ -213,6 +214,14 @@ class InMemoryStore {
 
     // Initial Users
     this.users = [
+      {
+        id: this.nextIds.users++,
+        email: 'keku121@gmail.com',
+        password_hash: defaultHash,
+        full_name: 'Kidus',
+        role_id: 1,
+        is_active: true,
+      },
       {
         id: this.nextIds.users++,
         email: 'admin@euc.org',
@@ -824,4 +833,82 @@ class InMemoryStore {
   }
 }
 
-export const store = new InMemoryStore();
+export const rawStore = new InMemoryStore();
+
+let saveTimeout: NodeJS.Timeout | null = null;
+let pool: pg.Pool | null = null;
+
+if (process.env.DATABASE_URL) {
+  pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL.includes('railway.internal') ? false : { rejectUnauthorized: false }
+  });
+
+  // Init table and load data
+  pool.query(`
+    CREATE TABLE IF NOT EXISTS app_state (
+      id SERIAL PRIMARY KEY,
+      data JSONB NOT NULL,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `).then(() => {
+    return pool!.query('SELECT data FROM app_state ORDER BY id DESC LIMIT 1');
+  }).then(res => {
+    if (res.rows.length > 0) {
+      const state = res.rows[0].data;
+      Object.assign(rawStore, state);
+      console.log('Successfully restored app state from PostgreSQL Database');
+    }
+  }).catch(err => console.error('Failed to init PostgreSQL DB:', err));
+}
+
+const saveToDB = async () => {
+  if (!pool) return;
+  try {
+    const stateToSave = {
+      users: rawStore.users,
+      roles: rawStore.roles,
+      permissions: rawStore.permissions,
+      rolePermissions: rawStore.rolePermissions,
+      members: rawStore.members,
+      pods: rawStore.pods,
+      podMembers: rawStore.podMembers,
+      prayerRequests: rawStore.prayerRequests,
+      prayerSupporters: rawStore.prayerSupporters,
+      weeklyPlans: rawStore.weeklyPlans,
+      pipeline: rawStore.pipeline,
+      resources: rawStore.resources,
+      inviteCodes: rawStore.inviteCodes,
+      resetTokens: rawStore.resetTokens,
+      nextIds: rawStore.nextIds
+    };
+
+    const res = await pool.query('SELECT id FROM app_state ORDER BY id DESC LIMIT 1');
+    if (res.rows.length > 0) {
+      await pool.query('UPDATE app_state SET data = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [stateToSave, res.rows[0].id]);
+    } else {
+      await pool.query('INSERT INTO app_state (data) VALUES ($1)', [stateToSave]);
+    }
+  } catch (err) {
+    console.error('Failed to save state to DB:', err);
+  }
+};
+
+export const store = new Proxy(rawStore, {
+  get(target: any, prop: string) {
+    const orig = target[prop];
+    if (typeof orig === 'function') {
+      return function(...args: any[]) {
+        const res = orig.apply(target, args);
+        // Mutations that should trigger a save
+        const mutationPrefixes = ['add', 'update', 'delete', 'claim', 'create', 'reset', 'support', 'answer'];
+        if (mutationPrefixes.some(prefix => prop.startsWith(prefix))) {
+          if (saveTimeout) clearTimeout(saveTimeout);
+          saveTimeout = setTimeout(() => saveToDB(), 500);
+        }
+        return res;
+      };
+    }
+    return orig;
+  }
+});

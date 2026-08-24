@@ -13,7 +13,8 @@
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "nodemailer": "^9.0.5"
+    "nodemailer": "^9.0.5",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -23,6 +24,7 @@
     "@types/express-session": "^1.18.0",
     "@types/node": "^22.13.4",
     "@types/nodemailer": "^8.0.1",
+    "@types/pg": "^8.23.1",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   }

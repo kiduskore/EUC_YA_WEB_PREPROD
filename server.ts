@@ -5,30 +5,23 @@ import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
 import { store } from './src/data/store';
 
+const app = express();
+const PORT = 3000;
+
+app.set('trust proxy', true);
+
 // Configure Nodemailer transporter
 const getTransporter = () => {
   return nodemailer.createTransport({
-    host: process.env.SMTP_SERVER || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_PORT === '465',
+    host: process.env.SMTP_HOST || process.env.SMTP_SERVER || 'smtp.ionos.com',
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    secure: process.env.SMTP_PORT === '465' || process.env.SMTP_SECURE === 'true',
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
   });
 };
-
-// Extend Express Session interface
-declare module 'express-session' {
-  interface SessionData {
-    userId?: number;
-    userEmail?: string;
-    userRole?: string;
-  }
-}
-
-const app = express();
-const PORT = 3000;
 
 // Body parsing middleware
 app.use(express.urlencoded({ extended: true }));
@@ -169,24 +162,40 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
   if (token) {
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
       try {
-        const resetLink = `https://${req.get('host')}/reset-password?token=${token}`;
+        const proto = (req.headers['x-forwarded-proto'] as string) || (req.secure ? 'https' : 'https');
+        const rawHost = (req.headers['x-forwarded-host'] as string) || req.headers.host || req.get('host') || 'ais-pre-tu57w3dlqy2wim2vpmrzen-809481612520.us-east1.run.app';
+        const cleanHost = rawHost.split(',')[0].trim();
+        const resetLink = `${proto}://${cleanHost}/reset-password?token=${token}`;
         const transporter = getTransporter();
-        await transporter.sendMail({
+        const mailResult = await transporter.sendMail({
           from: `"EUC Young Adults" <${process.env.SMTP_USER}>`,
           to: email,
-          subject: 'Password Reset Request',
-          text: `You requested a password reset. Click the link below to reset your password:\n\n${resetLink}\n\nIf you did not request this, please ignore this email.`,
-          html: `<p>You requested a password reset.</p><p><a href="${resetLink}">Click here to reset your password</a></p><p>If you did not request this, please ignore this email.</p>`
+          subject: 'Password Reset Request - EUC Young Adults',
+          text: `You requested a password reset for EUC Young Adults. Click the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.\nIf you did not request this, please ignore this email.`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
+              <h2 style="color: #0075ff; margin-bottom: 15px;">Password Reset Request</h2>
+              <p style="color: #333; font-size: 15px; line-height: 1.5;">You requested to reset your password for the EUC Young Adults Portal.</p>
+              <p style="margin: 25px 0;">
+                <a href="${resetLink}" style="background-color: #0075ff; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+              </p>
+              <p style="color: #666; font-size: 13px;">Or copy and paste this link in your browser:</p>
+              <p style="color: #0075ff; font-size: 13px; word-break: break-all;"><a href="${resetLink}">${resetLink}</a></p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+              <p style="color: #999; font-size: 12px;">This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.</p>
+            </div>
+          `
         });
         
+        console.log(`[SMTP] Reset email sent to ${email}. Response:`, mailResult.response);
         return res.render('forgot_password', { 
-          success: 'A password reset link has been sent to your email.', 
+          success: `A password reset link has been successfully sent to ${email}. Please check your inbox (and spam folder).`, 
           resetLink: null 
         });
-      } catch (err) {
-        console.error('Email sending error:', err);
+      } catch (err: any) {
+        console.error('[SMTP Error] Failed to send email:', err);
         return res.render('forgot_password', { 
-          error: 'Failed to send the reset email. Please try again later.' 
+          error: `Failed to send email: ${err.message || 'Please check SMTP settings'}` 
         });
       }
     } else {
@@ -198,24 +207,23 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
       });
     }
   } else {
-    // Return same generic success to prevent email enumeration
     return res.render('forgot_password', { 
-      success: 'If an account exists with that email, a password reset link has been sent.', 
+      error: `No registered account found with email "${email}". Please verify the email address or register first at /setup.`, 
       resetLink: null 
     });
   }
 });
 
-app.get('/reset-password', (req: Request, res: Response) => {
-  const token = req.query.token as string;
+app.get(['/reset-password', '/reset_password', '/auth/reset-password'], (req: Request, res: Response) => {
+  const token = (req.query.token as string) || '';
   if (!token) {
     return res.redirect('/forgot-password');
   }
   res.render('reset_password', { token, error: null });
 });
 
-app.post('/reset-password', (req: Request, res: Response) => {
-  const token = (req.body.token || '').trim();
+app.post(['/reset-password', '/reset_password', '/auth/reset-password'], (req: Request, res: Response) => {
+  const token = ((req.body.token as string) || (req.query.token as string) || '').trim();
   const newPassword = req.body.new_password || '';
   const confirmPassword = req.body.confirm_password || '';
 
@@ -557,6 +565,34 @@ app.get('/api/bible-verse', (req: Request, res: Response) => {
   ];
   const selected = verses[Math.floor(Math.random() * verses.length)];
   res.json(selected);
+});
+
+// Diagnostic endpoint for SMTP
+app.get('/debug-smtp', async (req: Request, res: Response) => {
+  try {
+    const transporter = getTransporter();
+    await transporter.verify();
+    res.json({
+      success: true,
+      message: 'SMTP connection successful!',
+      config: {
+        host: process.env.SMTP_SERVER || 'smtp.gmail.com',
+        port: process.env.SMTP_PORT || '587',
+        secure: process.env.SMTP_PORT === '465',
+        user: process.env.SMTP_USER ? 'Set (Hidden)' : 'Not Set',
+        pass: process.env.SMTP_PASS ? 'Set (Hidden)' : 'Not Set'
+      }
+    });
+  } catch (error: any) {
+    console.error('SMTP Diagnostic Error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: error.stack,
+      code: error.code,
+      command: error.command
+    });
+  }
 });
 
 // Fallback 404 handler
