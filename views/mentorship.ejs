@@ -1,135 +1,69 @@
 <%- include('partials/header') %>
 <!-- Hero Image Banner -->
-    <header class="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 bg-[url('/static/hero_images/singer.jpg')] bg-cover bg-center"></div>
+    <header class="relative w-full h-[50vh] min-h-[400px] pt-20 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-[url('/static/hero_images/worship_stage.jpg')] bg-cover bg-center"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-white/80 via-white/70 to-[#FAFAFA] dark:from-[#0b1437]/90 dark:via-[#0b1437]/80 dark:to-[#0b1437]"></div>
         
-        <div class="relative z-10 text-center px-6 mt-16">
-            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight drop-shadow-lg">Get Covered.</h1>
-            <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto drop-shadow-md">Structured one-on-one discipleship.</p>
+        <div class="relative z-10 text-center px-6">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight drop-shadow-lg">
+                <%= typeof t !== 'undefined' ? t('mentorship.heroTitle') : 'Walk With the Wise.' %>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto drop-shadow-md">
+                <%= typeof t !== 'undefined' ? t('mentorship.heroSubtitle') : 'Generational wisdom for life, career, and calling.' %>
+            </p>
         </div>
     </header>
 
     <!-- Main Content Overlapping Hero -->
     <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-8 -mt-16 relative z-20 macos-glass mb-12">
         
-        <div class="flex items-center gap-2 mb-4"><span class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 3 MIN READ</span></div><div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-white/10 pb-6">
-            <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Mentorship</h2>
-            <div class="w-24 h-1 rounded-full opacity-80" style="background-color: #8b5cf6"></div>
+        <div class="flex items-center gap-2 mb-4">
+            <span class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <%= typeof t !== 'undefined' ? t('common.readTime', { min: '3' }) : '3 MIN READ' %>
+            </span>
+        </div>
+        <div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-white/10 pb-6">
+            <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                <%= typeof t !== 'undefined' ? t('mentorship.title') : 'Mentorship' %>
+            </h2>
+            <div class="w-24 h-1 rounded-full opacity-80" style="background-color: #6366f1"></div>
         </div>
         
-        <div class="prose  max-w-none">
-            <div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>The Biblical Model</h3><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Jesus didn't launch a program — He chose twelve ordinary men and did life with them for three years. He ate with them, traveled with them, rebuked them, encouraged them, and showed them what it looks like to walk in the Father's will under pressure, in grief, and in glory. But even within the twelve, Jesus went deeper with three — Peter, James, and John — bringing them to the mountaintop of Transfiguration and into the garden of Gethsemane.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">And even among those three, there was one described simply as "the disciple whom Jesus loved" — John, who leaned against the Lord's chest at the Last Supper and stood at the foot of the cross when everyone else had fled. This is the model: intentional, layered, sacrificial investment. Paul understood it.</p><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">He poured his life into Timothy and then gave him the clearest discipleship mandate in Scripture: "The things you have heard me say in the presence of many witnesses, entrust to reliable people who will also be qualified to teach others" (2 Timothy 2:2). That's four generations of faith in a single verse. Discipleship is not optional programming for mature Christians — it is the engine of the church, the strategy Jesus left us, and the means by which the gospel has traveled from a hillside in Galilee to your phone screen today.</p></div></div><div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>What Mentorship Looks Like</h3><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Mentorship here is a mature believer walking alongside you through a specific season of your life — not as a guru on a pedestal, but as a fellow traveler who's a few miles further down the road. You'll meet regularly — bi-weekly or monthly — over coffee, on a walk, or on a video call. Every meeting includes three things: honest conversation about how life is actually going (not the Sunday morning answer), time in Scripture together applying God's Word to your specific situation, and prayer — real, specific, Spirit-led prayer over the areas where you need breakthrough.</p><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Your mentor will ask you the hard questions: How's your thought life? Are you in the Word? Are you running from anything? Are you being honest with the people closest to you? This isn't a lecture series or a classroom experience. It's a partnership rooted in grace, fueled by the Holy Spirit, and aimed at one thing — helping you look more like Jesus in your actual, everyday life. Paul told the Corinthians, "Follow my example, as I follow the example of Christ" (1 Corinthians 11:1).</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">That's what a mentor does — they give you a living, breathing picture of faithfulness to follow.</p></div><div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Who It's For</h3><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">If you're a new believer trying to build a foundation for your faith and you don't know where to start — mentorship is for you. If you've been walking with Jesus for years but you feel stuck, plateaued, going through the motions with no fire and no fruit — mentorship is for you. If you're in leadership and carrying weight that no one else sees, making decisions that affect others while wondering who's covering you — mentorship is for you.</p><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">If you're just hungry to grow, if something in you knows there's more to the Christian life than what you're currently experiencing — mentorship is for you. "Iron sharpens iron, and one person sharpens another" (Proverbs 27:17). Notice that iron doesn't sharpen itself.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">You cannot become who God has called you to be in isolation. You need someone who will speak truth into your blind spots, celebrate your growth, challenge your complacency, and point you back to the cross when you inevitably drift. Age doesn't matter.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Title doesn't matter. Years in church don't matter. What matters is a willing heart that says, "I want to grow, and I'm humble enough to let someone help me.".</p></div><div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Becoming a Mentor</h3><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Here's a kingdom paradox: the fastest way to grow is to pour into someone else. Jesus said, "Give, and it will be given to you" (Luke 6:38) — and that principle applies to discipleship as much as it applies to finances. When you open your life to mentor someone younger in the faith, you'll find that teaching forces you to learn deeper, that praying for someone else's battles strengthens your own faith, and that being accountable to model Christlikeness keeps you sharp in ways nothing else can.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">You don't need a seminary degree. You don't need to have your life perfectly together. You need a genuine walk with Jesus, a willingness to be transparent about your own failures and God's faithfulness, and a heart that cares about the next generation more than your own comfort.</p><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">The Kingdom of God has never advanced through programs, platforms, or productions. It advances through relationships — one life investing in another, who invests in another, who invests in another. That's the 2 Timothy 2:2 chain, and it's been unbroken for two thousand years.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">If you've been walking with Jesus and you're ready to steward what He's given you, step up. Someone is waiting for exactly what God has put in you.</p></div>
+        <div class="prose max-w-none">
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('mentorship.section1.title') : 'The Power of Generational Wisdom' %>
+                </h3>
+                <div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor">
+                    <p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">
+                        <%= typeof t !== 'undefined' ? t('mentorship.section1.q1') : '"Walk with the wise and become wise, for a companion of fools suffers harm." (Proverbs 13:20)' %>
+                    </p>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('mentorship.section1.p1') : 'Every young adult navigating career choices, dating, marriage, and spiritual warfare benefits tremendously from seasoned mentors who have walked the path before them.' %>
+                </p>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('mentorship.section2.title') : 'How Our Mentorship Program Works' %>
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('mentorship.section2.p1') : 'We intentionally pair young adults with mature spiritual leaders for one-on-one discipleship, monthly check-ins, prayer, and practical life navigation.' %>
+                </p>
+            </div>
         </div>
         
         <div class="mt-16 pt-8 border-t border-gray-200 dark:border-white/10">
-            <a  href="/#join" class="w-full text-white font-bold text-lg py-5 rounded-xl hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1"  style="background-color: #8b5cf6">
-                Request a Mentor
+            <a href="/#join" class="block w-full text-center text-white font-bold text-lg py-5 rounded-xl hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1" style="background-color: #6366f1">
+                <%= typeof t !== 'undefined' ? t('mentorship.ctaBtn') : 'Request a Mentor' %>
             </a>
         </div>
     </main>
-<!-- Join Us Section -->
-    <section id="join" class="py-12 relative overflow-hidden bg-transparent">
-        <div class="absolute inset-0 bg-accent/5" style="background-image: radial-gradient(#34c759 1px, transparent 1px); background-size: 40px 40px; opacity: 0.1;"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div class="fade-in">
-                <span class="text-accent dark:text-white font-semibold tracking-wider uppercase text-sm mb-2 block">Connect With Us</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6">Take the Next Step</h2>
-                <p class="text-gray-900/60 dark:text-white/60 mb-8 text-lg">
-                    Whether you are new to the area, exploring faith, or looking for a community to grow deep with—we would love to meet you.
-                </p>
-                
-                <div class="macos-card p-6 rounded-2xl border-l-4 border-l-accent mb-8">
-                    <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-2 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-accent dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        Tuesday Bible Study
-                    </h3>
-                    <p class="text-gray-900/80 dark:text-white/80 font-medium">914 Silver Spring Ave, 204B</p>
-                    <p class="text-gray-900/60 dark:text-white/60 text-sm">Silver Spring, MD</p>
-                    <p class="text-accent dark:text-white font-bold mt-3 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        7:00 PM Every Tuesday
-                    </p>
-                </div>
-            </div>
 
-            <div class="macos-card p-8 rounded-3xl border border-gray-200 dark:border-white/10 fade-in shadow-2xl shadow-accent/10">
-                <form id="contact-form" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Full Name</label>
-                            <input type="text" id="contact-name" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Phone Number</label>
-                            <input type="tel" id="contact-phone" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Email Address</label>
-                        <input type="email" id="contact-email" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Message (Optional)</label>
-                        <textarea id="contact-notes" rows="3" class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"></textarea>
-                    </div>
-                    
-                    <div id="contact-success" class="hidden bg-accent/20 border border-accent/50 text-accent dark:text-white rounded-xl p-3 text-sm font-medium flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Thanks! We will reach out shortly.
-                    </div>
-
-                    <button type="submit" id="contact-submit" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl p-4 hover:bg-accent2 transition-colors mt-4">
-                        Send Message
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    
-    <!-- Instagram Grid Section -->
-    <section class="py-12 px-6 relative z-10 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row items-center justify-between mb-8">
-                <div>
-                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Life at EUCMD</h2>
-                    <p class="text-gray-600 dark:text-gray-400">Follow the journey on Instagram <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="text-gray-900 dark:text-white hover:underline">@eucmdyoungadult</a></p>
-                </div>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="mt-4 md:mt-0 px-6 py-3 rounded-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/20 dark:bg-white/20 transition-colors font-semibold flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    Follow
-                </a>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/dark_worship.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/singer.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/man_praying.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/guitarist.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
+    <!-- Join Us Section -->
+    <%- include('partials/join-section') %>
 <%- include('partials/footer') %>

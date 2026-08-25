@@ -1,0 +1,151 @@
+<!-- Modular 4-Language Switcher Component -->
+<%
+  const currentLangCode = typeof lang !== 'undefined' ? lang : 'en';
+  const availableLangs = (typeof languages !== 'undefined' && languages && languages.length > 0) ? languages : [
+    { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
+    { code: 'am', name: 'Amharic', nativeName: 'አማርኛ', flag: '🇪🇹' },
+    { code: 'ti', name: 'Tigrinya', nativeName: 'ትግርኛ', flag: '🇪🇷' },
+    { code: 'om', name: 'Afaan Oromoo', nativeName: 'Afaan Oromoo', flag: '🌳' }
+  ];
+  const activeLangObj = availableLangs.find(l => l.code === currentLangCode) || availableLangs[0];
+  const switcherVariant = typeof variant !== 'undefined' ? variant : 'dropdown';
+  const switcherPlacement = typeof placement !== 'undefined' ? placement : 'bottom';
+  const showNameOnMobile = typeof showName !== 'undefined' ? showName : false;
+  const uniqueId = Math.random().toString(36).substring(2, 11);
+%>
+
+<% if (switcherVariant === 'dropdown') { %>
+<div class="relative inline-block text-left" id="modular-lang-dropdown-<%= uniqueId %>">
+    <button 
+        id="modular-lang-btn-<%= uniqueId %>" 
+        type="button" 
+        class="min-h-[44px] inline-flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-zinc-100 hover:bg-zinc-200 active:bg-zinc-300 dark:bg-studio-800 dark:hover:bg-studio-700 dark:active:bg-studio-600 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-white/10 transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 touch-manipulation"
+        aria-expanded="false" 
+        aria-haspopup="true"
+        aria-label="<%= typeof t !== 'undefined' ? t('nav.selectLanguage') : 'Select Language' %>"
+    >
+        <span class="text-base sm:text-lg leading-none select-none" aria-hidden="true"><%= activeLangObj.flag %></span>
+        <span class="font-bold tracking-tight <%= showNameOnMobile ? '' : 'hidden sm:inline' %>"><%= activeLangObj.nativeName %></span>
+        <svg class="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 transition-transform duration-200" id="modular-lang-arrow-<%= uniqueId %>" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+    
+    <!-- Dropdown Menu -->
+    <div 
+        id="modular-lang-menu-<%= uniqueId %>" 
+        class="hidden absolute left-0 sm:right-0 sm:left-auto <%= switcherPlacement === 'top' ? 'bottom-full mb-2 origin-bottom-left sm:origin-bottom-right' : 'mt-2 origin-top-left sm:origin-top-right' %> w-56 bg-white dark:bg-studio-800 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-premium dark:shadow-premium-dark p-2 z-[120] transition-all duration-150 focus:outline-none"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="modular-lang-btn-<%= uniqueId %>"
+    >
+        <div class="px-3 py-2 text-[11px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wider border-b border-zinc-100 dark:border-white/5 mb-1">
+            <%= typeof t !== 'undefined' ? t('nav.selectLanguage') : 'Select Language' %> (4)
+        </div>
+        <div class="space-y-1">
+            <% availableLangs.forEach(function(l) { 
+                const isActive = (currentLangCode === l.code);
+            %>
+                <a 
+                    href="/set-language/<%= l.code %>" 
+                    data-lang-code="<%= l.code %>"
+                    class="min-h-[44px] flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-150 touch-manipulation <%= isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold border border-blue-200/50 dark:border-blue-500/20' : 'text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/10 active:bg-zinc-200 dark:active:bg-white/20 font-medium' %>"
+                    role="menuitem"
+                >
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="text-xl leading-none select-none" aria-hidden="true"><%= l.flag %></span>
+                        <div class="text-left truncate">
+                            <div class="leading-tight <%= (l.code === 'am' || l.code === 'ti') ? 'font-ethiopic font-semibold' : 'font-medium' %>"><%= l.nativeName %></div>
+                            <div class="text-[11px] text-zinc-500 dark:text-zinc-400"><%= l.name %></div>
+                        </div>
+                    </div>
+                    <% if (isActive) { %>
+                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    <% } %>
+                </a>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<% } else if (switcherVariant === 'grid') { %>
+<!-- Grid Variant (for Mobile Drawer or Settings Panes) -->
+<div class="w-full">
+    <div class="text-xs font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-wider mb-2.5">
+        <%= typeof t !== 'undefined' ? t('nav.selectLanguage') : 'Language' %>
+    </div>
+    <div class="grid grid-cols-2 gap-2.5">
+        <% availableLangs.forEach(function(l) { 
+            const isActive = (currentLangCode === l.code);
+        %>
+            <a 
+                href="/set-language/<%= l.code %>" 
+                data-lang-code="<%= l.code %>"
+                class="min-h-[48px] flex items-center gap-2.5 p-3 rounded-xl text-xs font-bold border transition-all touch-manipulation active:scale-[0.98] <%= isActive ? 'bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-500/20' : 'bg-white dark:bg-studio-800 text-zinc-800 dark:text-zinc-200 border-zinc-200 dark:border-white/10 hover:bg-zinc-50 dark:hover:bg-studio-700 active:bg-zinc-100 dark:active:bg-studio-600' %>"
+            >
+                <span class="text-lg select-none"><%= l.flag %></span>
+                <span class="truncate <%= (l.code === 'am' || l.code === 'ti') ? 'font-ethiopic' : '' %>"><%= l.nativeName %></span>
+            </a>
+        <% }); %>
+    </div>
+</div>
+
+<% } else if (switcherVariant === 'pill') { %>
+<!-- Inline Pill Variant -->
+<div class="inline-flex items-center gap-1 p-1 rounded-xl bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10">
+    <% availableLangs.forEach(function(l) { 
+        const isActive = (currentLangCode === l.code);
+    %>
+        <a 
+            href="/set-language/<%= l.code %>" 
+            data-lang-code="<%= l.code %>"
+            class="min-h-[44px] inline-flex items-center px-3 py-2 rounded-lg text-xs font-bold transition-all touch-manipulation active:scale-95 <%= isActive ? 'bg-white dark:bg-studio-900 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white' %>"
+        >
+            <span class="mr-1"><%= l.flag %></span><%= l.code.toUpperCase() %>
+        </a>
+    <% }); %>
+</div>
+<% } %>
+
+<script>
+(function() {
+    const btn = document.getElementById('modular-lang-btn-<%= uniqueId %>');
+    const menu = document.getElementById('modular-lang-menu-<%= uniqueId %>');
+    const arrow = document.getElementById('modular-lang-arrow-<%= uniqueId %>');
+
+    if (btn && menu) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = !menu.classList.contains('hidden');
+            if (isOpen) {
+                menu.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+                if (arrow) arrow.classList.remove('rotate-180');
+            } else {
+                menu.classList.remove('hidden');
+                btn.setAttribute('aria-expanded', 'true');
+                if (arrow) arrow.classList.add('rotate-180');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+                if (arrow) arrow.classList.remove('rotate-180');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+                if (arrow) arrow.classList.remove('rotate-180');
+                btn.focus();
+            }
+        });
+    }
+})();
+</script>

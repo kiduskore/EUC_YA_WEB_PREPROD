@@ -1,0 +1,48 @@
+<!-- Modular Dark / Light Mode Toggle Component -->
+<button 
+    id="theme-toggle" 
+    type="button" 
+    class="relative min-w-[44px] min-h-[44px] p-2.5 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-studio-800 active:bg-zinc-200 dark:active:bg-studio-700 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 border border-transparent hover:border-zinc-200 dark:hover:border-white/10 flex items-center justify-center touch-manipulation active:scale-95" 
+    title="<%= typeof t !== 'undefined' ? t('nav.lightMode') : 'Toggle Dark/Light Mode' %>"
+    aria-label="Toggle Dark and Light Mode"
+>
+    <!-- Dark Mode Icon (Moon - shown in Light Mode to toggle to dark) -->
+    <svg id="theme-toggle-dark-icon" class="w-5 h-5 transition-transform duration-300 hover:rotate-12 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+    </svg>
+    
+    <!-- Light Mode Icon (Sun - shown in Dark Mode to toggle to light) -->
+    <svg id="theme-toggle-light-icon" class="w-5 h-5 transition-transform duration-300 hover:rotate-45 hidden text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+    </svg>
+</button>
+
+<script>
+(function() {
+    function initThemeIcons() {
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        if (!darkIcon || !lightIcon) return;
+
+        const isDark = document.documentElement.classList.contains('dark') || 
+            (localStorage.getItem('color-theme') === 'dark') || 
+            (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            darkIcon.classList.add('hidden');
+            lightIcon.classList.remove('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            lightIcon.classList.add('hidden');
+            darkIcon.classList.remove('hidden');
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initThemeIcons);
+    } else {
+        initThemeIcons();
+    }
+})();
+</script>

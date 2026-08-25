@@ -1,135 +1,69 @@
 <%- include('partials/header') %>
 <!-- Hero Image Banner -->
-    <header class="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
+    <header class="relative w-full h-[50vh] min-h-[400px] pt-20 flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-[url('/static/hero_images/worship_crowd.jpg')] bg-cover bg-center"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-white/80 via-white/70 to-[#FAFAFA] dark:from-[#0b1437]/90 dark:via-[#0b1437]/80 dark:to-[#0b1437]"></div>
         
-        <div class="relative z-10 text-center px-6 mt-16">
-            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight drop-shadow-lg">Invest in Eternity.</h1>
-            <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto drop-shadow-md">Biblical stewardship rooted in grace, not guilt — because generosity changes you.</p>
+        <div class="relative z-10 text-center px-6">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight drop-shadow-lg">
+                <%= typeof t !== 'undefined' ? t('generosity.heroTitle') : 'Invest in Eternity.' %>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto drop-shadow-md">
+                <%= typeof t !== 'undefined' ? t('generosity.heroSubtitle') : 'Biblical stewardship rooted in grace, not guilt — because generosity changes you.' %>
+            </p>
         </div>
     </header>
 
     <!-- Main Content Overlapping Hero -->
     <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-8 -mt-16 relative z-20 macos-glass mb-12">
         
-        <div class="flex items-center gap-2 mb-4"><span class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 2 MIN READ</span></div><div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-white/10 pb-6">
-            <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Generosity</h2>
+        <div class="flex items-center gap-2 mb-4">
+            <span class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <%= typeof t !== 'undefined' ? t('common.readTime', { min: '2' }) : '2 MIN READ' %>
+            </span>
+        </div>
+        <div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-white/10 pb-6">
+            <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                <%= typeof t !== 'undefined' ? t('generosity.title') : 'Generosity' %>
+            </h2>
             <div class="w-24 h-1 rounded-full opacity-80" style="background-color: #10b981"></div>
         </div>
         
-        <div class="prose  max-w-none">
-            <div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>God's Heart for Generosity</h3><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Second Corinthians 9:7 tells us that "God loves a cheerful giver." Notice it doesn't say God tolerates reluctant givers or guilts people into giving — He loves it when generosity flows from a heart of joy. That's because generosity is not about obligation; it's about overflow. When you truly understand how much God has given you — "He who did not spare His own Son, but gave Him up for us all, how will He not also, along with Him, graciously give us all things?" (Romans 8:32) — giving becomes the most natural response in the world.</p></div><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Jesus Himself said, "It is more blessed to give than to receive" (Acts 20:35). That sounds counterintuitive in a culture that tells you to hoard, save, and look out for number one. But Jesus was never about playing it safe with what we've been given.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Generosity breaks the power of greed, loosens the grip of anxiety over finances, and positions your heart to trust God as your true provider. It's one of the most freeing things you'll ever do.</p></div><div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>The Tithe & Beyond</h3><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">In Malachi 3:10, God says, "Bring the whole tithe into the storehouse, that there may be food in my house. Test me in this," says the Lord Almighty, "and see if I will not throw open the floodgates of heaven and pour out so much blessing that there will not be room enough to store it." This is one of the only places in Scripture where God actually invites us to test Him. The tithe — 10% of your income — is the biblical starting point, not the ceiling.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">It's an act of faith that declares, "God, You are my provider, not my paycheck.".</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">We know that for many young adults, money is tight. Student loans, rent, entry-level salaries — it's real, and we don't minimize that. But tithing isn't about what makes sense on a spreadsheet; it's about trusting God with what He's already given you.</p><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Beyond the tithe, offerings and spontaneous generosity to those in need reflect the very heart of Christ, who "though He was rich, yet for your sake He became poor, so that you through His poverty might become rich" (2 Corinthians 8:9). Start where you are. Be faithful with what you have.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Watch God move.</p></div><div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Where Your Giving Goes</h3><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Every dollar you give is stewarded with integrity, transparency, and prayerful intentionality. We take this responsibility seriously because it's not our money — it's God's, and you've trusted us to manage it well. Your generosity directly funds our weekly gatherings and worship experiences, creating a space where people encounter Jesus every single week.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">It fuels community outreach and local missions that bring hope to the hurting and the gospel to those who haven't heard it.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Your giving also makes possible young adult retreats and conferences where lives are transformed and lifelong friendships are built. It supports our benevolence fund, which provides real financial relief to individuals and families walking through crisis — because the church should be the first place people turn when life falls apart, not the last. And it resources discipleship and growth tools — study materials, mentorship programs, and leadership development — that help every person in our community take their next step with Jesus.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">When you give here, you're investing in lives that will echo into eternity.</p></div><div class="mb-8"><h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Generosity as Worship</h3><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Here's something that might reframe everything: giving is not a transaction — it's an act of worship. Philippians 4:18 describes financial gifts as "a fragrant offering, an acceptable sacrifice, pleasing to God." When the church at Philippi sent money to support Paul's ministry, the Holy Spirit didn't call it a donation or a contribution — He called it a sacrifice that was fragrant and pleasing to the Lord. That means every time you give, heaven takes notice.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">When you give, you're declaring something profound: that God is bigger than your bank account, that His Kingdom is worth investing in, and that your security is found in Him alone — not in a number on a screen. Generosity rewires your heart. It teaches you to hold things loosely and people tightly.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">It aligns your priorities with the priorities of heaven. And in a generation drowning in financial anxiety and consumer culture, choosing radical generosity is one of the most countercultural, Christ-like things you can do. Let your giving be your worship.</p></div>
+        <div class="prose max-w-none">
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('generosity.section1.title') : 'God\'s Heart for Generosity' %>
+                </h3>
+                <div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor">
+                    <p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">
+                        <%= typeof t !== 'undefined' ? t('generosity.section1.q1') : '"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver." (2 Corinthians 9:7)' %>
+                    </p>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('generosity.section1.p1') : 'Generosity is not about obligation; it is about overflow. Giving breaks the power of materialism and expresses confidence in God as our provider.' %>
+                </p>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('generosity.section2.title') : 'Where Your Giving Goes' %>
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('generosity.section2.p1') : 'Your gifts support young adult gatherings, worship, local food outreaches, benevolence funds for members in need, and global missions.' %>
+                </p>
+            </div>
         </div>
         
         <div class="mt-16 pt-8 border-t border-gray-200 dark:border-white/10">
-            <a  target="_blank" rel="noopener noreferrer" href="https://eucmd.churchcenter.com/giving" class="w-full text-white font-bold text-lg py-5 rounded-xl hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1"  style="background-color: #10b981">
-                Give Online Securely
+            <a target="_blank" rel="noopener noreferrer" href="https://eucmd.churchcenter.com/giving" class="block w-full text-center text-white font-bold text-lg py-5 rounded-xl hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1" style="background-color: #10b981">
+                <%= typeof t !== 'undefined' ? t('generosity.ctaBtn') : 'Give Online Securely' %>
             </a>
         </div>
     </main>
-<!-- Join Us Section -->
-    <section id="join" class="py-12 relative overflow-hidden bg-transparent">
-        <div class="absolute inset-0 bg-accent/5" style="background-image: radial-gradient(#34c759 1px, transparent 1px); background-size: 40px 40px; opacity: 0.1;"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div class="fade-in">
-                <span class="text-accent dark:text-white font-semibold tracking-wider uppercase text-sm mb-2 block">Connect With Us</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6">Take the Next Step</h2>
-                <p class="text-gray-900/60 dark:text-white/60 mb-8 text-lg">
-                    Whether you are new to the area, exploring faith, or looking for a community to grow deep with—we would love to meet you.
-                </p>
-                
-                <div class="macos-card p-6 rounded-2xl border-l-4 border-l-accent mb-8">
-                    <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-2 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-accent dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        Tuesday Bible Study
-                    </h3>
-                    <p class="text-gray-900/80 dark:text-white/80 font-medium">914 Silver Spring Ave, 204B</p>
-                    <p class="text-gray-900/60 dark:text-white/60 text-sm">Silver Spring, MD</p>
-                    <p class="text-accent dark:text-white font-bold mt-3 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        7:00 PM Every Tuesday
-                    </p>
-                </div>
-            </div>
 
-            <div class="macos-card p-8 rounded-3xl border border-gray-200 dark:border-white/10 fade-in shadow-2xl shadow-accent/10">
-                <form id="contact-form" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Full Name</label>
-                            <input type="text" id="contact-name" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Phone Number</label>
-                            <input type="tel" id="contact-phone" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Email Address</label>
-                        <input type="email" id="contact-email" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Message (Optional)</label>
-                        <textarea id="contact-notes" rows="3" class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"></textarea>
-                    </div>
-                    
-                    <div id="contact-success" class="hidden bg-accent/20 border border-accent/50 text-accent dark:text-white rounded-xl p-3 text-sm font-medium flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Thanks! We will reach out shortly.
-                    </div>
-
-                    <button type="submit" id="contact-submit" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl p-4 hover:bg-accent2 transition-colors mt-4">
-                        Send Message
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    
-    <!-- Instagram Grid Section -->
-    <section class="py-12 px-6 relative z-10 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row items-center justify-between mb-8">
-                <div>
-                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Life at EUCMD</h2>
-                    <p class="text-gray-600 dark:text-gray-400">Follow the journey on Instagram <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="text-gray-900 dark:text-white hover:underline">@eucmdyoungadult</a></p>
-                </div>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="mt-4 md:mt-0 px-6 py-3 rounded-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/20 dark:bg-white/20 transition-colors font-semibold flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    Follow
-                </a>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/dark_worship.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/singer.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/man_praying.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/guitarist.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
+    <!-- Join Us Section -->
+    <%- include('partials/join-section') %>
 <%- include('partials/footer') %>

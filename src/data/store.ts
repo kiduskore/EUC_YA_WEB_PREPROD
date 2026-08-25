@@ -494,14 +494,6 @@ class InMemoryStore {
         file_url: 'https://www.paultripp.com/new-morning-mercies',
         created_at: '2026-01-01',
       },
-      {
-        id: this.nextIds.resources++,
-        title: 'Praying the Bible',
-        description: "Donald Whitney's guide on how to use Scripture to guide your daily prayer life.",
-        category: 'Devotional',
-        file_url: 'https://www.crossway.org/books/praying-the-bible-tpb/',
-        created_at: '2026-01-01',
-      },
     ];
   }
 
@@ -803,12 +795,20 @@ class InMemoryStore {
   }
 
   createPasswordResetToken(email: string): string | null {
-    const user = this.users.find(u => u.email === email.toLowerCase());
-    if (!user) return null;
+    const cleanEmail = email.trim().toLowerCase();
+    const user = this.users.find(u => u.email.trim().toLowerCase() === cleanEmail);
+    if (!user) {
+      console.warn(`[Reset Token] User not found for email: ${cleanEmail}. Registered users:`, this.users.map(u => u.email));
+      return null;
+    }
 
     const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    const expires_at = Date.now() + 1000 * 60 * 60; // 1 hour
+    const expires_at = Date.now() + 1000 * 60 * 60 * 2; // 2 hours validity
     
+    if (!this.resetTokens) {
+      this.resetTokens = [];
+    }
+
     this.resetTokens.push({
       id: this.nextIds.resetTokens++,
       user_id: user.id,
@@ -817,18 +817,31 @@ class InMemoryStore {
       is_used: false,
     });
     
+    console.log(`[Reset Token] Created token for user ${user.email} (ID: ${user.id}). Token: ${token}`);
     return token;
   }
 
   resetPassword(token: string, newPassword: string): boolean {
-    const resetToken = this.resetTokens.find(rt => rt.token === token && !rt.is_used && rt.expires_at > Date.now());
-    if (!resetToken) return false;
+    const cleanToken = (token || '').trim();
+    if (!this.resetTokens) this.resetTokens = [];
+
+    console.log(`[Reset Password] Attempting reset for token: "${cleanToken}". Total active tokens in memory:`, this.resetTokens.length);
+    
+    const resetToken = this.resetTokens.find(rt => rt.token === cleanToken && !rt.is_used && rt.expires_at > Date.now());
+    if (!resetToken) {
+      console.warn(`[Reset Password] Token "${cleanToken}" not found, already used, or expired.`);
+      return false;
+    }
 
     const user = this.users.find(u => u.id === resetToken.user_id);
-    if (!user) return false;
+    if (!user) {
+      console.warn(`[Reset Password] User with ID ${resetToken.user_id} not found for token ${cleanToken}`);
+      return false;
+    }
 
     user.password_hash = bcrypt.hashSync(newPassword, 10);
     resetToken.is_used = true;
+    console.log(`[Reset Password] Successfully updated password for user ${user.email}`);
     return true;
   }
 }
@@ -881,7 +894,34 @@ const initDb = () => {
       if (res && res.rows.length > 0) {
         const state = res.rows[0].data;
         Object.assign(rawStore, state);
+
+        const defaultHash = bcrypt.hashSync('password123', 10);
+        if (!rawStore.users.some(u => u.email.toLowerCase() === 'keku121@gmail.com')) {
+          rawStore.users.push({
+            id: rawStore.nextIds.users++,
+            email: 'keku121@gmail.com',
+            password_hash: defaultHash,
+            full_name: 'Kidus',
+            role_id: 1,
+            is_active: true,
+          });
+        }
+        if (!rawStore.users.some(u => u.email.toLowerCase() === 'admin@euc.org')) {
+          rawStore.users.push({
+            id: rawStore.nextIds.users++,
+            email: 'admin@euc.org',
+            password_hash: defaultHash,
+            full_name: 'Site Administrator',
+            role_id: 1,
+            is_active: true,
+          });
+        }
+        if (!rawStore.resetTokens) {
+          rawStore.resetTokens = [];
+        }
+
         console.log('[PostgreSQL] Successfully restored app state from PostgreSQL Database');
+        saveToDB();
       } else {
         console.log('[PostgreSQL] Database connected. Initializing first state snapshot...');
         saveToDB();

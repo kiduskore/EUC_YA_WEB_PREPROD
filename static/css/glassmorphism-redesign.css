@@ -1,0 +1,94 @@
+/* 
+  ==============================================================
+  EUCMD Young Adults - Glassmorphism Redesign CSS
+  ==============================================================
+  
+  (a) LAYOUT DESCRIPTION:
+  - Hero Section: Center-aligned, bold hero typography inside a glass card.
+  - "Your Next Steps": A 3-column responsive grid where each card is a glass panel.
+  - Discipleship Resources: Breakout section with a clean, solid background (light/legible) for high contrast and readability on heavy text.
+  - Testimonials & Video: A 2-column layout (on desktop) with the video embed and testimonial text living in separate floating glass cards.
+  - Forms: Single-column center-aligned glass card containing the form elements.
+  
+  (b) COLOR PALETTE & TYPOGRAPHY:
+  - Background: Deep Charcoal / Navy (#0B1120 to #141E33) to give that premium cinematic feel.
+  - Glass Panels: Semi-transparent white (rgba(255, 255, 255, 0.7)) with a subtle border (rgba(255, 255, 255, 0.4)).
+  - Text on Glass: Dark Slate/Navy (#0F172A) for extremely high contrast against the light glass.
+  - Typography: 
+      - Headings: 'Montserrat' (Black/900 weight for that heavy, modern look).
+      - Body: 'Inter' (Clean, legible, modern).
+      - Alternate Headings (if preferred): 'Poppins Bold'.
+
+  (c) PRODUCTION-READY CSS:
+*/
+
+/* 1. Abstract Flowing Background (Dark Navy/Charcoal Silk) */
+.flowing-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    background-color: #0b1120;
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(30, 45, 80, 0.9) 0%, transparent 45%),
+        radial-gradient(circle at 85% 30%, rgba(60, 45, 20, 0.5) 0%, transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(30, 41, 59, 0.7) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Optional CSS Animation to make the abstract background slowly "flow" */
+@keyframes flowBackground {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.flowing-bg {
+    /* Uncomment below if you want the subtle flowing movement */
+    /* animation: flowBackground 20s ease-in-out infinite; */
+}
+
+/* 2. Frosted Glass Panel */
+.glass-panel {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.12); /* was 0.75 — way too opaque */
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    box-shadow: 
+        0 20px 40px -10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    color: #f1f0ea; /* text now needs to be LIGHT since panel is transparent, not white */
+    overflow: hidden;
+}
+
+/* Fallback for browsers that don't support backdrop-filter (e.g. older Firefox) */
+@supports not (backdrop-filter: blur(20px)) {
+    .glass-panel {
+        background-color: rgba(15, 23, 42, 0.85); /* Darker opaque fallback */
+    }
+}
+
+/* 3. Pill-Shaped Labels (Foundation, Belong, etc.) */
+.tag-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.75rem; /* px-3 py-1 */
+    border-radius: 9999px; /* full rounded */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: transparent;
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #f1f0ea;
+}
+
+/* Typography Utilities (if not using Tailwind) */
+.font-heading {
+    font-family: 'Montserrat', sans-serif;
+}
+.font-sans {
+    font-family: 'Inter', sans-serif;
+}

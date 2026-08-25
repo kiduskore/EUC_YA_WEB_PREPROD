@@ -1,0 +1,96 @@
+    <section id="join" class="py-24 relative overflow-hidden bg-studio-50 dark:bg-studio-900 border-t border-zinc-200 dark:border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="gsap-fade-up">
+                <span class="text-accent2 dark:text-zinc-400 font-bold tracking-[0.15em] uppercase text-xs mb-4 block">
+                    <%= typeof t !== 'undefined' ? t('connect.tag') : 'Connect With Us' %>
+                </span>
+                <h2 class="text-4xl md:text-5xl font-black mb-6 tracking-tight text-studio-900 dark:text-white">
+                    <%= typeof t !== 'undefined' ? t('connect.title') : 'Weekly Gatherings & Life Groups' %>
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-8 text-lg leading-relaxed">
+                    <%= typeof t !== 'undefined' ? t('contact.subtitle') : 'Whether you are visiting for the first time, looking for a life group, or seeking prayer, reach out to us below.' %>
+                </p>
+                
+                <div class="space-y-4 mb-8">
+                    <div class="macos-card p-6 rounded-2xl border-l-4 border-l-blue-600 dark:bg-studio-800">
+                        <h3 class="font-bold text-gray-900 dark:text-white text-base mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#0075ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <%= typeof t !== 'undefined' ? t('connect.location.title') : 'Emmanuel United Church of MD' %>
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-line"><%= typeof t !== 'undefined' ? t('connect.location.desc') : 'Sunday Service, @10:30AM\n12604 New Hampshire Ave, Silver Spring, MD 20904\nCell: +12407162246' %></p>
+                    </div>
+
+                    <div class="macos-card p-6 rounded-2xl border-l-4 border-l-purple-500">
+                        <h3 class="font-bold text-gray-900 dark:text-white text-base mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <%= typeof t !== 'undefined' ? t('connect.schedule.title') : 'Gathering Times' %>
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-line"><%= typeof t !== 'undefined' ? t('connect.schedule.desc') : 'Every Tuesday at 7:00 PM EST\nFollowed by fellowship & prayer' %></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form Card -->
+            <div id="contact" class="macos-card p-8 lg:p-10 dark:bg-studio-800 border-zinc-200 dark:border-white/5 shadow-xl gsap-fade-up">
+                <h3 class="text-2xl font-bold tracking-tight text-studio-900 dark:text-white mb-2">
+                    <%= typeof t !== 'undefined' ? t('contact.tag') : 'Send A Message' %>
+                </h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-8">
+                    <%= typeof t !== 'undefined' ? t('contact.subtitle') : 'Share your info and we will connect with you.' %>
+                </p>
+
+                <form id="contact-form" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                            <%= typeof t !== 'undefined' ? t('contact.nameLabel') : 'YOUR FULL NAME' %>
+                        </label>
+                        <input type="text" id="contact-name" required placeholder="<%= typeof t !== 'undefined' ? t('contact.namePlaceholder') : 'Full Name' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                                <%= typeof t !== 'undefined' ? t('contact.emailLabel') : 'EMAIL ADDRESS' %>
+                            </label>
+                            <input type="email" id="contact-email" required placeholder="<%= typeof t !== 'undefined' ? t('contact.emailPlaceholder') : 'Email' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                                <%= typeof t !== 'undefined' ? t('contact.phoneLabel') : 'PHONE NUMBER' %>
+                            </label>
+                            <input type="tel" id="contact-phone" placeholder="<%= typeof t !== 'undefined' ? t('contact.phonePlaceholder') : 'Phone' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                            <%= typeof t !== 'undefined' ? t('contact.interestLabel') : 'WHAT ARE YOU INTERESTED IN?' %>
+                        </label>
+                        <select id="contact-interest" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20 appearance-none">
+                            <option value="gathering"><%= typeof t !== 'undefined' ? t('contact.interest.gathering') : 'Attending a Tuesday Gathering' %></option>
+                            <option value="smallgroup"><%= typeof t !== 'undefined' ? t('contact.interest.smallgroup') : 'Joining a Small Group' %></option>
+                            <option value="serving"><%= typeof t !== 'undefined' ? t('contact.interest.serving') : 'Serving Opportunities' %></option>
+                            <option value="prayer"><%= typeof t !== 'undefined' ? t('contact.interest.prayer') : 'Prayer Request' %></option>
+                            <option value="other"><%= typeof t !== 'undefined' ? t('contact.interest.other') : 'General Inquiry' %></option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                            <%= typeof t !== 'undefined' ? t('contact.messageLabel') : 'YOUR MESSAGE' %>
+                        </label>
+                        <textarea id="contact-notes" rows="4" placeholder="<%= typeof t !== 'undefined' ? t('contact.messagePlaceholder') : 'Share your note...' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl p-4 text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm resize-none hover:border-zinc-300 dark:hover:border-white/20"></textarea>
+                    </div>
+                    
+                    <div id="contact-success" class="hidden bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 rounded-xl p-4 text-sm font-medium flex items-center gap-3">
+                        <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span><%= typeof t !== 'undefined' ? t('contact.success') : 'Thank you! We will reach out shortly.' %></span>
+                    </div>
+
+                    <button type="submit" id="contact-submit" class="w-full bg-studio-900 text-white dark:bg-white dark:text-studio-900 font-bold rounded-xl min-h-[56px] hover:bg-blue-600 dark:hover:bg-zinc-200 active:bg-blue-700 dark:active:bg-zinc-300 transition-all shadow-md text-sm tracking-wide touch-manipulation active:scale-[0.98]">
+                        <%= typeof t !== 'undefined' ? t('contact.submitBtn') : 'Send Message' %>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>

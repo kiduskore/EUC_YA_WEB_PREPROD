@@ -1,12 +1,15 @@
 import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
 import { store } from './src/data/store';
+import { i18nMiddleware, isSupportedLanguage, SupportedLanguage, getLanguageInfo, SUPPORTED_LANGUAGES, translations } from './src/i18n';
 
 const app = express();
-const PORT = 3000;
+// In AI Studio container, reverse proxy targets port 3000. On Railway / external hosts, respect process.env.PORT.
+const PORT = process.env.APPLET_ID ? 3000 : (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000);
 
 app.set('trust proxy', true);
 
@@ -26,6 +29,7 @@ const getTransporter = () => {
 // Body parsing middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Session setup
 app.use(
@@ -39,6 +43,9 @@ app.use(
     },
   })
 );
+
+// Localization i18n middleware
+app.use(i18nMiddleware);
 
 // CSRF cookie helper for compatibility with apiClient.js
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -56,9 +63,61 @@ app.set('views', path.join(process.cwd(), 'views'));
 // Static assets
 app.use('/static', express.static(path.join(process.cwd(), 'static')));
 
+// Language Switching Endpoints
+app.get('/set-language/:lang', (req: Request, res: Response) => {
+  const targetLang = req.params.lang?.toLowerCase();
+  if (isSupportedLanguage(targetLang)) {
+    res.cookie('lang', targetLang, { maxAge: 365 * 24 * 60 * 60 * 1000, path: '/', sameSite: 'lax' });
+    if (req.session) {
+      (req.session as any).lang = targetLang;
+    }
+  }
+  let redirectUrl = (req.query.returnTo as string) || req.headers.referer || '/';
+  if (isSupportedLanguage(targetLang)) {
+    try {
+      const parsed = new URL(redirectUrl, 'http://localhost');
+      parsed.searchParams.set('lang', targetLang);
+      redirectUrl = redirectUrl.startsWith('http') ? parsed.toString() : (parsed.pathname + parsed.search + parsed.hash);
+    } catch (e) {
+      redirectUrl += (redirectUrl.includes('?') ? '&' : '?') + 'lang=' + targetLang;
+    }
+  }
+  res.redirect(redirectUrl);
+});
+
+app.post('/api/set-language', (req: Request, res: Response) => {
+  const targetLang = (req.body.lang || req.query.lang || '').toString().toLowerCase();
+  if (isSupportedLanguage(targetLang)) {
+    res.cookie('lang', targetLang, { maxAge: 365 * 24 * 60 * 60 * 1000, path: '/', sameSite: 'lax' });
+    if (req.session) {
+      (req.session as any).lang = targetLang;
+    }
+    return res.json({ success: true, lang: targetLang, langInfo: getLanguageInfo(targetLang) });
+  }
+  return res.status(400).json({ error: 'Unsupported language', supported: Object.keys(SUPPORTED_LANGUAGES) });
+});
+
+app.get('/api/languages', (req: Request, res: Response) => {
+  res.json({
+    current: res.locals.currentLang,
+    supported: Object.values(SUPPORTED_LANGUAGES),
+  });
+});
+
+app.get('/api/translations/:lang?', (req: Request, res: Response) => {
+  const lang = (req.params.lang || res.locals.lang || 'en').toLowerCase();
+  const validLang = isSupportedLanguage(lang) ? (lang as SupportedLanguage) : 'en';
+  res.json({
+    lang: validLang,
+    translations: translations[validLang] || translations.en
+  });
+});
+
 // ==========================================
 // 1. PUBLIC DISCIPLESHIP & LANDING PAGES
 // ==========================================
+app.get('/v2', (req: Request, res: Response) => { res.render('preview-v2'); });
+
 app.get('/', (req: Request, res: Response) => {
   res.render('landing');
 });
@@ -115,7 +174,8 @@ app.get('/generosity', (req: Request, res: Response) => {
 // 2. AUTHENTICATION ROUTES
 // ==========================================
 app.get('/login', (req: Request, res: Response) => {
-  res.render('login', { error: null });
+  const success = req.query.reset === 'success' ? 'Password reset successfully! You can now sign in with your new password.' : null;
+  res.render('login', { error: null, success });
 });
 
 app.post('/login', (req: Request, res: Response) => {
@@ -123,13 +183,13 @@ app.post('/login', (req: Request, res: Response) => {
   const password = req.body.password || '';
 
   if (!email || !password) {
-    return res.render('login', { error: 'Email and password are required.' });
+    return res.render('login', { error: 'Email and password are required.', success: null });
   }
 
   const user = store.users.find((u) => u.email.toLowerCase() === email && u.is_active);
 
   if (user) {
-    const isMatch = bcrypt.compareSync(password, user.password_hash) || password === 'password123' || password === 'test';
+    const isMatch = bcrypt.compareSync(password, user.password_hash);
     if (isMatch) {
       req.session.userId = user.id;
       req.session.userEmail = user.email;
@@ -138,11 +198,12 @@ app.post('/login', (req: Request, res: Response) => {
     }
   }
 
-  return res.render('login', { error: 'Invalid email or password.' });
+  return res.render('login', { error: 'Invalid email or password.', success: null });
 });
 
 app.get('/logout', (req: Request, res: Response) => {
   req.session.destroy(() => {
+    res.clearCookie('connect.sid');
     res.redirect('/login');
   });
 });
@@ -162,16 +223,28 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
   if (token) {
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
       try {
-        const proto = (req.headers['x-forwarded-proto'] as string) || (req.secure ? 'https' : 'https');
-        const rawHost = (req.headers['x-forwarded-host'] as string) || req.headers.host || req.get('host') || 'ais-pre-tu57w3dlqy2wim2vpmrzen-809481612520.us-east1.run.app';
+        const rawHost = (req.headers['x-forwarded-host'] as string) || req.headers.host || req.get('host') || '';
         const cleanHost = rawHost.split(',')[0].trim();
-        const resetLink = `${proto}://${cleanHost}/reset-password?token=${token}`;
+        
+        let baseUrl = '';
+        if (process.env.APP_URL) {
+          baseUrl = process.env.APP_URL.replace(/\/$/, '');
+        } else if (process.env.RAILWAY_PUBLIC_DOMAIN) {
+          baseUrl = `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`;
+        } else if (cleanHost) {
+          const proto = (req.headers['x-forwarded-proto'] as string) || (req.secure ? 'https' : (cleanHost.includes('localhost') ? 'http' : 'https'));
+          baseUrl = `${proto}://${cleanHost}`;
+        } else {
+          baseUrl = 'https://ais-pre-tu57w3dlqy2wim2vpmrzen-809481612520.us-east1.run.app';
+        }
+
+        const resetLink = `${baseUrl}/reset-password?token=${token}`;
         const transporter = getTransporter();
         const mailResult = await transporter.sendMail({
           from: `"EUC Young Adults" <${process.env.SMTP_USER}>`,
           to: email,
           subject: 'Password Reset Request - EUC Young Adults',
-          text: `You requested a password reset for EUC Young Adults. Click the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.\nIf you did not request this, please ignore this email.`,
+          text: `You requested a password reset for EUC Young Adults. Click the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 2 hours.\nIf you did not request this, please ignore this email.`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
               <h2 style="color: #0075ff; margin-bottom: 15px;">Password Reset Request</h2>
@@ -182,7 +255,7 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
               <p style="color: #666; font-size: 13px;">Or copy and paste this link in your browser:</p>
               <p style="color: #0075ff; font-size: 13px; word-break: break-all;"><a href="${resetLink}">${resetLink}</a></p>
               <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-              <p style="color: #999; font-size: 12px;">This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email.</p>
+              <p style="color: #999; font-size: 12px;">This link will expire in 2 hours. If you did not request a password reset, you can safely ignore this email.</p>
             </div>
           `
         });
@@ -215,7 +288,7 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
 });
 
 app.get(['/reset-password', '/reset_password', '/auth/reset-password'], (req: Request, res: Response) => {
-  const token = (req.query.token as string) || '';
+  const token = ((req.query.token as string) || '').trim();
   if (!token) {
     return res.redirect('/forgot-password');
   }
@@ -224,8 +297,8 @@ app.get(['/reset-password', '/reset_password', '/auth/reset-password'], (req: Re
 
 app.post(['/reset-password', '/reset_password', '/auth/reset-password'], (req: Request, res: Response) => {
   const token = ((req.body.token as string) || (req.query.token as string) || '').trim();
-  const newPassword = req.body.new_password || '';
-  const confirmPassword = req.body.confirm_password || '';
+  const newPassword = (req.body.new_password || '').trim();
+  const confirmPassword = (req.body.confirm_password || '').trim();
 
   if (!token) {
     return res.redirect('/forgot-password');
@@ -242,9 +315,9 @@ app.post(['/reset-password', '/reset_password', '/auth/reset-password'], (req: R
   const success = store.resetPassword(token, newPassword);
   
   if (success) {
-    res.redirect('/login');
+    return res.redirect('/login?reset=success');
   } else {
-    res.render('reset_password', { token, error: 'Invalid or expired reset token.' });
+    return res.render('reset_password', { token, error: 'Invalid or expired reset token. Please request a new reset link at /forgot-password.' });
   }
 });
 
@@ -316,9 +389,18 @@ app.post('/claim-account', (req: Request, res: Response) => {
 // 3. DASHBOARD ROUTE
 // ==========================================
 app.get('/dashboard', (req: Request, res: Response) => {
-  // If not authenticated, provide active admin session for seamless experience
-  const userId = req.session.userId || 1;
-  const user = store.users.find((u) => u.id === userId) || store.users[0];
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+
+  const userId = req.session.userId;
+  const user = store.users.find((u) => u.id === userId);
+  
+  if (!user) {
+    req.session.destroy(() => {});
+    return res.redirect('/login');
+  }
+
   const permissions = store.getUserPermissions(user.id);
   const role = user.role_id === 1 ? 'admin' : 'leader';
 
@@ -332,6 +414,22 @@ app.get('/dashboard', (req: Request, res: Response) => {
 // ==========================================
 // 4. CORE API ENDPOINTS
 // ==========================================
+
+app.use('/api', (req: Request, res: Response, next: NextFunction) => {
+  const publicApiRoutes = ['/health', '/languages', '/translations', '/bible-verse', '/set-language'];
+  
+  // Allow public routes
+  if (publicApiRoutes.some(route => req.path.startsWith(route))) {
+    return next();
+  }
+
+  // Require auth for all other API routes
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  next();
+});
 
 // Health check
 app.get('/api/health', (req: Request, res: Response) => {

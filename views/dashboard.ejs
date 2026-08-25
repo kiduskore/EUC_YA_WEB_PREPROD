@@ -2,25 +2,42 @@
 <html lang="en">
 <head>
     <meta name="description" content="Dashboard and leader tools for EUCMD Young Adults.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https:;">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>EUC Dashboard</title>
     <script src="/static/js/vendor/tailwindcss.js"></script>
     <script src="/static/js/vendor/vue.global.js"></script>
     <script src="/static/js/vendor/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
                     colors: {
+                        navy: {
+                            900: '#0B1120',
+                            800: '#141E33',
+                        },
+                        slate: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                        },
                         accent: '#3b82f6',
                         success: '#10b981',
-                        brandDark: '#020617',
-                        cardDark: '#0f172a',
-                        borderDark: '#1e293b'
+                        brandDark: '#0B1120',
+                        cardDark: 'rgba(255, 255, 255, 0.12)',
+                        borderDark: 'rgba(255, 255, 255, 0.3)'
                     }
+                }
+            }
+        }
                 }
             }
         }
@@ -33,34 +50,71 @@
 <style>
         [v-cloak] { display: none; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; background: #0b1437; color: white; }
-        .glass, .stat-card, .kanban-card { 
-            background: #111c44; 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            border-radius: 1.25rem; 
-            box-shadow: 0 4px 24px rgba(0,0,0,0.2); 
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .glass-dark { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); }
-        .glass-input { 
-            background: rgba(15, 23, 42, 0.6); 
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            outline: none; 
-        }
-        .glass-input:focus { border-color: rgba(0,117,255,0.5); box-shadow: 0 0 15px rgba(0, 117, 255, 0.3); }
-        .sidebar-bg { background: transparent; }
-        .stat-card:hover, .kanban-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-        .accent { color: #0075ff; }
-        .bg-accent { background-color: #0075ff; box-shadow: 0 0 15px rgba(0, 117, 255, 0.3); }
-        .:hover { box-shadow: 0 0 15px rgba(0, 117, 255, 0.3); }
         
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-font-smoothing: antialiased; 
+            background: #0b1120; 
+            color: #f1f0ea; 
+        }
+
+        /* Abstract Flowing Background */
+        .flowing-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            background-color: #0b1120;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(30, 45, 80, 0.9) 0%, transparent 45%),
+                radial-gradient(circle at 85% 30%, rgba(60, 45, 20, 0.5) 0%, transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(30, 41, 59, 0.7) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .glass, .stat-card, .kanban-card { 
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 1.5rem;
+            box-shadow: 
+                0 20px 40px -10px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            color: #f1f0ea;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+        }
+        
+        .glass-dark { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
+        .glass-input { 
+            background: rgba(255, 255, 255, 0.1); 
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 0.75rem;
+            outline: none; 
+            backdrop-filter: blur(10px);
+        }
+        .glass-input:focus { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.15); }
+        .sidebar-bg { 
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-card:hover, .kanban-card:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5); }
+        .accent { color: #f1f0ea; }
+        .bg-accent { background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.3); }
+        
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Montserrat', sans-serif; }
+
         /* Pulse Animation for Loading */
         .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
     </style>
 </head>
-<body class="bg-brandDark text-white">
+<body class="bg-brandDark text-white font-sans">
+<div class="flowing-bg"></div>
 
 <div id="app" v-cloak class="min-h-screen flex text-slate-200">
     
@@ -68,10 +122,10 @@
     <div v-if="isSidebarOpen" @click="isSidebarOpen = false" class="fixed inset-0 bg-brandDark/80 z-[45] md:hidden backdrop-blur-sm transition-opacity"></div>
     
     <!-- Sidebar -->
-    <aside class="w-72 bg-cardDark md:bg-transparent h-[100dvh] fixed left-0 top-0 text-white flex flex-col z-50 transition-transform duration-300" :class="isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'">
+    <aside class="w-72 bg-cardDark md:bg-transparent backdrop-blur-2xl h-[100dvh] fixed left-0 top-0 text-white flex flex-col z-50 transition-transform duration-300" :class="isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'">
         <div class="p-6">
             <div class="flex items-center gap-3 mb-2">
-                <img src="/static/euc_logo.jpg" alt="EUC Logo" class="h-12 w-12 rounded-full object-cover shadow-sm border border-slate-800">
+                <img src="/static/euc_logo.jpg" alt="EUC Logo" class="h-12 w-12 rounded-full object-cover shadow-sm border border-white/10">
                 <div>
                     <h1 class="text-2xl font-black tracking-tight text-white leading-none">EUC<span class="text-accent text-sm">.</span></h1>
                     <p class="text-white/60 text-[10px] uppercase tracking-widest font-semibold mt-1">Dashboard</p>
@@ -79,15 +133,15 @@
             </div>
         </div>
         
-        <div class="w-full h-px border-t border-slate-800 mb-6"></div>
+        <div class="w-full h-px border-t border-white/10 mb-6"></div>
         
         <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
             <button v-for="nav in navItems" :key="nav.id" @click="currentView = nav.id"
                 class="w-full text-left py-3.5 px-4 rounded-xl text-sm font-semibold transition-all flex items-center gap-4 relative overflow-hidden"
-                :class="currentView === nav.id ? 'bg-slate-800 text-white text-white shadow-sm border border-slate-700' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'">
+                :class="currentView === nav.id ? 'glass shadow-sm border border-white/20 text-white' : 'text-slate-300 hover:text-white hover:bg-white/10'">
                 <!-- Icon box -->
                 <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors"
-                     :class="currentView === nav.id ? 'bg-slate-700 text-white' : 'bg-cardDark text-accent border border-slate-800 shadow-sm'">
+                     :class="currentView === nav.id ? 'bg-white/20 text-white' : 'bg-cardDark text-accent border border-white/10 shadow-sm'">
                     <span v-html="nav.icon" class="w-4 h-4 flex items-center justify-center"></span>
                 </div>
                 {{ nav.label }}
@@ -114,9 +168,9 @@
     <main class="md:ml-72 flex-1 min-h-screen p-4 md:p-8 pt-24 md:pt-8 w-full overflow-x-hidden">
         
         <!-- Header -->
-        <header class="flex justify-between items-center mb-8 fixed md:static top-0 left-0 right-0 p-4 md:p-0 bg-brandDark/90 md:bg-transparent backdrop-blur-md z-40 border-b border-slate-800 md:border-transparent">
+        <header class="flex justify-between items-center mb-8 fixed md:static top-0 left-0 right-0 p-4 md:p-0 bg-brandDark/90 md:bg-transparent backdrop-blur-md z-40 border-b border-white/10 md:border-transparent">
             <div class="flex items-center gap-3">
-                <button aria-label="Toggle mobile menu" @click="isSidebarOpen = !isSidebarOpen" class="md:hidden w-11 h-11 rounded-xl glass flex items-center justify-center text-slate-400 hover:text-white relative z-50">
+                <button aria-label="Toggle mobile menu" @click="isSidebarOpen = !isSidebarOpen" class="md:hidden w-11 h-11 rounded-xl glass flex items-center justify-center text-slate-300 hover:text-white relative z-50">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <h2 class="text-2xl font-bold text-white">{{ currentViewTitle }}</h2>
@@ -124,33 +178,33 @@
             
             <!-- Top YA Menu -->
             <div class="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
-                <button @click="currentView = 'ya_hub'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_hub' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">YA Hub</button>
-                <button @click="currentView = 'ya_groups'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_groups' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Groups</button>
-                <button @click="currentView = 'ya_toolkit'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_toolkit' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Toolkit</button>
-                <button @click="currentView = 'ya_reflections'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_reflections' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Reflections</button>
+                <button @click="currentView = 'ya_hub'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_hub' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">YA Hub</button>
+                <button @click="currentView = 'ya_groups'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_groups' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Groups</button>
+                <button @click="currentView = 'ya_toolkit'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_toolkit' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Toolkit</button>
+                <button @click="currentView = 'ya_reflections'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_reflections' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Reflections</button>
             </div>
             <div class="flex items-center gap-4">
                 <div class="relative">
-                    <button @click="showNotifications = !showNotifications" class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 hover:text-white  transition-colors relative">
+                    <button @click="showNotifications = !showNotifications" class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-300 hover:text-white  transition-colors relative">
                         🔔
                         <span v-if="notifications.length > 0" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full shadow-sm"></span>
                     </button>
                     <!-- Notification Dropdown -->
-                    <div v-show="showNotifications" class="absolute right-0 mt-2 w-72 glass bg-brandDark rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-slate-800 overflow-hidden z-50">
-                        <div class="px-4 py-3 border-b border-slate-800 bg-slate-800/50">
+                    <div v-show="showNotifications" class="absolute right-0 mt-2 w-72 glass bg-brandDark rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden z-50">
+                        <div class="px-4 py-3 border-b border-white/10 bg-white/5">
                             <h3 class="font-bold text-white">Notifications ({{ notifications.length }})</h3>
                         </div>
                         <div class="max-h-64 overflow-y-auto">
-                            <div v-if="notifications.length === 0" class="p-4 text-center text-slate-400 text-sm">
+                            <div v-if="notifications.length === 0" class="p-4 text-center text-slate-300 text-sm">
                                 No new notifications
                             </div>
-                            <button v-for="notif in notifications" :key="notif.id" @click="handleNotificationClick(notif)" class="w-full text-left p-4 border-b border-slate-800 hover:bg-slate-800/50 transition-colors flex items-start gap-3">
+                            <button v-for="notif in notifications" :key="notif.id" @click="handleNotificationClick(notif)" class="w-full text-left p-4 border-b border-white/10 hover:bg-white/10 transition-colors flex items-start gap-3">
                                 <div class="w-8 h-8 rounded-full bg-accent/20 flex flex-shrink-0 items-center justify-center text-accent">
                                     <span v-html="notif.icon"></span>
                                 </div>
                                 <div>
                                     <p class="text-white text-sm font-semibold">{{ notif.title }}</p>
-                                    <p class="text-slate-400 text-xs mt-1">{{ notif.message }}</p>
+                                    <p class="text-slate-300 text-xs mt-1">{{ notif.message }}</p>
                                 </div>
                             </button>
                         </div>
@@ -161,7 +215,7 @@
 
         <!-- Loading State -->
         <div v-if="loading" class="w-full h-64 glass rounded-2xl flex items-center justify-center animate-pulse-slow">
-            <div class="flex flex-col items-center gap-4 text-slate-400">
+            <div class="flex flex-col items-center gap-4 text-slate-300">
                 <svg class="w-8 h-8 animate-spin text-accent" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -224,7 +278,7 @@
                 <div class="z-10 relative">
                     <p class="text-accent font-bold tracking-widest uppercase text-sm mb-2">Live Command Center</p>
                     <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Ministry <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-success">Pulse</span></h2>
-                    <p class="text-slate-400 max-w-lg leading-relaxed">
+                    <p class="text-slate-300 max-w-lg leading-relaxed">
                         Real-time analytics across all ministry departments. Watch your community grow, track prayer requests, and monitor discipleship journeys dynamically.
                     </p>
                 </div>
@@ -241,32 +295,32 @@
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <h3 class="text-xl font-bold text-white mb-1">Community Health</h3>
-                            <p class="text-xs text-slate-400">Members & DNA Pods</p>
+                            <p class="text-xs text-slate-300">Members & DNA Pods</p>
                         </div>
                         <div class="w-10 h-10 rounded-full bg-accent/20 text-accent flex items-center justify-center font-bold shadow-sm">👥</div>
                     </div>
                     
                     <div class="flex items-end gap-3 mb-6">
                         <span class="text-4xl font-extrabold text-white">{{ (allMembers || []).length }}</span>
-                        <span class="text-sm text-slate-400 mb-1">Total Members</span>
+                        <span class="text-sm text-slate-300 mb-1">Total Members</span>
                     </div>
                     
                     <div class="space-y-4">
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                            <div class="flex justify-between text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
                                 <span>Pod Integration</span>
                                 <span class="text-accent">{{ Math.round(((allMembers || []).filter(m => (pods || []).some(p => (p.members || []).some(pm => pm.id === m.id))).length / ((allMembers || []).length || 1)) * 100) }}%</span>
                             </div>
-                            <div class="h-2 bg-brandDark rounded-full overflow-hidden border border-slate-800">
+                            <div class="h-2 bg-brandDark rounded-full overflow-hidden border border-white/10">
                                 <div class="h-full bg-gradient-to-r from-accent to-blue-400 rounded-full anim-bar" :style="`--target-width: ${Math.round(((allMembers || []).filter(m => (pods || []).some(p => (p.members || []).some(pm => pm.id === m.id))).length / ((allMembers || []).length || 1)) * 100)}%`"></div>
                             </div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                            <div class="flex justify-between text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
                                 <span>Active Status</span>
                                 <span class="text-success">{{ Math.round(((allMembers || []).filter(m => m.is_active).length / ((allMembers || []).length || 1)) * 100) }}%</span>
                             </div>
-                            <div class="h-2 bg-brandDark rounded-full overflow-hidden border border-slate-800">
+                            <div class="h-2 bg-brandDark rounded-full overflow-hidden border border-white/10">
                                 <div class="h-full bg-gradient-to-r from-success to-emerald-400 rounded-full anim-bar" :style="`--target-width: ${Math.round(((allMembers || []).filter(m => m.is_active).length / ((allMembers || []).length || 1)) * 100)}%`"></div>
                             </div>
                         </div>
@@ -278,7 +332,7 @@
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <h3 class="text-xl font-bold text-white mb-1">Onboarding Flow</h3>
-                            <p class="text-xs text-slate-400">Pipeline & Journey</p>
+                            <p class="text-xs text-slate-300">Pipeline & Journey</p>
                         </div>
                         <div class="w-10 h-10 rounded-full bg-success/20 text-success flex items-center justify-center font-bold shadow-sm">🔄</div>
                     </div>
@@ -292,13 +346,13 @@
                         <!-- Pipeline Stages -->
                         <div v-for="(col, index) in pipelineCols.slice(0,3)" :key="index" class="relative z-10 flex flex-col items-center">
                             <div class="w-12 h-12 rounded-full border-2 bg-cardDark flex items-center justify-center font-bold shadow-lg transition-transform hover:scale-110" 
-                                 :class="col.items.length > 0 ? 'border-success text-success ' : 'border-slate-800 text-slate-400'">
+                                 :class="col.items.length > 0 ? 'border-success text-success ' : 'border-white/10 text-slate-300'">
                                 {{ col.items.length }}
                             </div>
-                            <p class="text-[9px] font-bold uppercase tracking-wider mt-2 text-center w-16 text-slate-400 leading-tight">{{ col.title.split(' ')[0] }}</p>
+                            <p class="text-[9px] font-bold uppercase tracking-wider mt-2 text-center w-16 text-slate-300 leading-tight">{{ col.title.split(' ')[0] }}</p>
                         </div>
                     </div>
-                    <div class="mt-2 text-center text-xs text-slate-400 italic">Click to view full Kanban board</div>
+                    <div class="mt-2 text-center text-xs text-slate-300 italic">Click to view full Kanban board</div>
                 </div>
 
                 <!-- PRAYER WALL -->
@@ -306,21 +360,21 @@
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <h3 class="text-xl font-bold text-white mb-1">Spiritual Warfare</h3>
-                            <p class="text-xs text-slate-400">Prayer Wall Activity</p>
+                            <p class="text-xs text-slate-300">Prayer Wall Activity</p>
                         </div>
                         <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold shadow-sm ">🙏</div>
                     </div>
                     
                     <div class="flex gap-4">
-                        <div class="flex-1 bg-brandDark/50 rounded-2xl p-4 border border-slate-800 text-center relative overflow-hidden">
+                        <div class="flex-1 bg-white/5 rounded-2xl p-4 border border-white/10 text-center relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/10 rounded-full blur-xl"></div>
                             <p class="text-3xl font-extrabold text-white mb-1">{{ prayers.active ? prayers.active.length : 0 }}</p>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Requests</p>
+                            <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Active Requests</p>
                         </div>
-                        <div class="flex-1 bg-brandDark/50 rounded-2xl p-4 border border-slate-800 text-center relative overflow-hidden">
+                        <div class="flex-1 bg-white/5 rounded-2xl p-4 border border-white/10 text-center relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-16 h-16 bg-success/10 rounded-full blur-xl"></div>
                             <p class="text-3xl font-extrabold text-white mb-1">{{ prayers.answered ? prayers.answered.length : 0 }}</p>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Answered</p>
+                            <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Answered</p>
                         </div>
                     </div>
                     
@@ -342,19 +396,19 @@
                         <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold shadow-sm">📚</div>
                         <div>
                             <h3 class="text-xl font-bold text-white mb-1">Knowledge Base</h3>
-                            <p class="text-xs text-slate-400">Training & Resources</p>
+                            <p class="text-xs text-slate-300">Training & Resources</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button @click="currentView = 'training'" class="bg-brandDark hover:bg-slate-800/50 border border-slate-800 rounded-2xl p-4 text-left transition-colors group">
+                        <button @click="currentView = 'training'" class="bg-brandDark hover:bg-white/10 border border-white/10 rounded-2xl p-4 text-left transition-colors group">
                             <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform origin-left">🎓</span>
                             <span class="font-bold text-sm text-white block">Training Guide</span>
-                            <span class="text-[10px] text-slate-400 block mt-1">CUC Leadership Framework</span>
+                            <span class="text-[10px] text-slate-300 block mt-1">CUC Leadership Framework</span>
                         </button>
-                        <button @click="currentView = 'resources'" class="bg-brandDark hover:bg-slate-800/50 border border-slate-800 rounded-2xl p-4 text-left transition-colors group">
+                        <button @click="currentView = 'resources'" class="bg-brandDark hover:bg-white/10 border border-white/10 rounded-2xl p-4 text-left transition-colors group">
                             <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform origin-left">📁</span>
                             <span class="font-bold text-sm text-white block">Resource Library</span>
-                            <span class="text-[10px] text-slate-400 block mt-1">{{ resources ? resources.length : 0 }} Files Available</span>
+                            <span class="text-[10px] text-slate-300 block mt-1">{{ resources ? resources.length : 0 }} Files Available</span>
                         </button>
                     </div>
                 </div>
@@ -364,26 +418,26 @@
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <h3 class="text-xl font-bold text-white mb-1">Ministry Planner</h3>
-                            <p class="text-xs text-slate-400">Upcoming Events & Services</p>
+                            <p class="text-xs text-slate-300">Upcoming Events & Services</p>
                         </div>
                         <div class="w-10 h-10 rounded-full bg-pink-500/20 text-pink-500 flex items-center justify-center font-bold shadow-sm">📅</div>
                     </div>
                     
-                    <div class="bg-brandDark/50 rounded-2xl p-4 border border-slate-800">
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 bg-slate-800/50 rounded-xl flex flex-col items-center justify-center border border-slate-800">
-                                <span class="text-[10px] uppercase font-bold text-slate-400">Next</span>
+                            <div class="w-14 h-14 bg-white/5 rounded-xl flex flex-col items-center justify-center border border-white/10">
+                                <span class="text-[10px] uppercase font-bold text-slate-300">Next</span>
                                 <span class="text-lg font-black text-white">SUN</span>
                             </div>
                             <div>
                                 <p class="font-bold text-white text-sm">Tuesday Gathering</p>
-                                <p class="text-xs text-slate-400 mt-1">Check Planner tab to assign volunteers and plan worship setlist.</p>
+                                <p class="text-xs text-slate-300 mt-1">Check Planner tab to assign volunteers and plan worship setlist.</p>
                             </div>
                         </div>
                         <div class="h-1.5 bg-brandDark rounded-full overflow-hidden w-full">
                             <div class="h-full bg-gradient-to-r from-pink-500 to-purple-500 anim-bar" style="--target-width: 75%;"></div>
                         </div>
-                        <p class="text-[10px] text-right mt-2 text-slate-400 font-bold uppercase">75% Planned</p>
+                        <p class="text-[10px] text-right mt-2 text-slate-300 font-bold uppercase">75% Planned</p>
                     </div>
                 </div>
             </div>
@@ -393,7 +447,7 @@
         <div v-show="currentView === 'members' && !loading" class="space-y-6">
             <div class="flex justify-between items-center">
                 <div class="relative w-96">
-                    <span class="absolute left-3 top-2.5 text-slate-400">🔍</span>
+                    <span class="absolute left-3 top-2.5 text-slate-300">🔍</span>
                     <input type="text" v-model="searchQuery" placeholder="Search members..." class="glass-input rounded-xl w-full py-2.5 pl-10 pr-4 text-sm">
                 </div>
                 <button @click="showAddMember = !showAddMember" class="bg-accent text-white rounded-xl px-5 py-2.5 font-semibold transition-all  flex items-center gap-2 text-sm">
@@ -407,23 +461,23 @@
                 <h3 class="font-bold text-white mb-4">Add New Member</h3>
                 <form @submit.prevent="saveMember" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Name</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Name</label>
                         <input type="text" v-model="memberForm.name" required class="glass-input w-full rounded-xl p-3 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Email</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email</label>
                         <input type="email" v-model="memberForm.email" class="glass-input w-full rounded-xl p-3 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Phone</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Phone</label>
                         <input type="text" v-model="memberForm.phone" class="glass-input w-full rounded-xl p-3 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Join Date</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Join Date</label>
                         <input type="date" v-model="memberForm.join_date" class="glass-input w-full rounded-xl p-3 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Role</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Role</label>
                         <select v-model="memberForm.role" class="glass-input w-full rounded-xl p-3 text-sm bg-cardDark">
                             <option value="member">Member</option>
                             <option value="leader">Leader</option>
@@ -431,7 +485,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Spiritual Stage</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Spiritual Stage</label>
                         <select v-model="memberForm.spiritual_stage" class="glass-input w-full rounded-xl p-3 text-sm bg-cardDark">
                             <option value="new">New</option>
                             <option value="saved">Saved</option>
@@ -451,7 +505,7 @@
             <div class="glass overflow-x-auto bg-cardDark">
                 <table class="w-full text-left border-collapse ">
                     <thead>
-                        <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400 bg-slate-800/50">
+                        <tr class="border-b border-white/10 text-xs uppercase tracking-wider text-slate-300 bg-white/5">
                             <th class="p-4 font-semibold">Name</th>
                             <th class="p-4 font-semibold">Contact</th>
                             <th class="p-4 font-semibold">Role</th>
@@ -461,35 +515,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="member in filteredMembers" :key="member.id" class="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
+                        <tr v-for="member in filteredMembers" :key="member.id" class="border-b border-white/10 hover:bg-white/10 transition-colors">
                             <td class="p-4 font-medium text-white">{{ member.name }}</td>
                             <td class="p-4 text-sm text-slate-300">
                                 <div>{{ member.email }}</div>
-                                <div class="text-xs text-slate-400">{{ member.phone }}</div>
+                                <div class="text-xs text-slate-300">{{ member.phone }}</div>
                             </td>
                             <td class="p-4">
                                 <span class="px-2.5 py-1 rounded-full text-xs font-bold"
                                     :class="{
                                         'bg-purple-900/50 text-purple-300 border border-purple-500/30': member.role === 'admin',
                                         'bg-accent/20 text-accent border border-accent/30': member.role === 'leader',
-                                        'bg-slate-800 text-slate-300 border border-slate-700': member.role === 'member'
+                                        'bg-white/10 text-slate-300 border border-white/20': member.role === 'member'
                                     }">
                                     {{ member.role }}
                                 </span>
                             </td>
                             <td class="p-4">
-                                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-white/10 text-slate-300 border border-white/20">
                                     {{ formatStage(member.spiritual_stage) }}
                                 </span>
                             </td>
-                            <td class="p-4 text-sm text-slate-400">{{ member.pod || 'Unassigned' }}</td>
+                            <td class="p-4 text-sm text-slate-300">{{ member.pod || 'Unassigned' }}</td>
                             <td class="p-4 text-right space-x-3">
                                 <button @click="editMember(member)" class="text-accent hover:text-white text-sm font-medium transition-colors">Edit</button>
                                 <button @click="deleteMember(member.id)" class="text-red-400 hover:text-red-300 text-sm font-medium transition-colors">Delete</button>
                             </td>
                         </tr>
                         <tr v-if="filteredMembers.length === 0">
-                            <td colspan="6" class="p-8 text-center text-slate-400">No members found.</td>
+                            <td colspan="6" class="p-8 text-center text-slate-300">No members found.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -504,20 +558,20 @@
                 <div class="mb-4">
                     <span class="text-accent font-semibold tracking-wider uppercase text-xs mb-1 block">Leader Resource</span>
                     <h2 class="text-xl font-black text-white">The DNA Pod Strategy</h2>
-                    <p class="text-slate-400 text-sm">We believe true growth happens in small, intentional groups where people are known, loved, and challenged.</p>
+                    <p class="text-slate-300 text-sm">We believe true growth happens in small, intentional groups where people are known, loved, and challenged.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800">
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10">
                         <h3 class="text-accent font-bold mb-1">1. Encounter</h3>
-                        <p class="text-slate-400 text-xs">Experience the love of God and the warmth of genuine community.</p>
+                        <p class="text-slate-300 text-xs">Experience the love of God and the warmth of genuine community.</p>
                     </div>
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800">
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10">
                         <h3 class="text-accent font-bold mb-1">2. Equip</h3>
-                        <p class="text-slate-400 text-xs">Grow deep through Bible study, accountability, and discipleship in a DNA Pod.</p>
+                        <p class="text-slate-300 text-xs">Grow deep through Bible study, accountability, and discipleship in a DNA Pod.</p>
                     </div>
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800">
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10">
                         <h3 class="text-accent font-bold mb-1">3. Empower</h3>
-                        <p class="text-slate-400 text-xs">Be sent out to multiply—leading others and planting new groups.</p>
+                        <p class="text-slate-300 text-xs">Be sent out to multiply—leading others and planting new groups.</p>
                     </div>
                 </div>
             </div>
@@ -527,11 +581,11 @@
                 <h3 class="font-bold text-white mb-4"><span v-if="editingPodId">Edit DNA Pod</span><span v-else>Create New DNA Pod</span></h3>
                 <form @submit.prevent="createPod" class="flex flex-col md:flex-row gap-4 md:items-end">
                     <div class="flex-1">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Pod Name</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Pod Name</label>
                         <input type="text" v-model="podForm.name" required class="glass-input w-full rounded-xl p-3 text-sm">
                     </div>
                     <div class="flex-1">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Assign Leader</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Assign Leader</label>
                         <select v-model="podForm.leader_id" class="glass-input w-full rounded-xl p-3 text-sm bg-cardDark">
                             <option value="">Select Leader...</option>
                             <option v-for="l in leaders" :key="l.id" :value="l.id">{{ l.name }}</option>
@@ -540,7 +594,7 @@
                     <button type="submit" class="bg-accent text-white rounded-xl px-6 py-3 font-semibold text-sm  mb-px transition-all flex items-center gap-2">
                         <span v-if="editingPodId">Update</span><span v-else>Create</span>
                     </button>
-                    <button type="button" v-if="editingPodId" @click="cancelEditPod" class="bg-slate-800 text-white rounded-xl px-4 py-3 font-semibold text-sm hover:bg-slate-700 mb-px transition-all">Cancel</button>
+                    <button type="button" v-if="editingPodId" @click="cancelEditPod" class="bg-white/10 text-white rounded-xl px-4 py-3 font-semibold text-sm hover:bg-white/20 mb-px transition-all">Cancel</button>
                 </form>
             </div>
 
@@ -559,7 +613,7 @@
                                 <button @click="editPod(pod)" class="text-[10px] uppercase font-bold tracking-widest text-accent hover:text-white transition-colors">Edit</button>
                                 <button @click="deletePod(pod.id)" class="text-[10px] uppercase font-bold tracking-widest text-red-400 hover:text-red-300 transition-colors">Delete</button>
                             </div>
-                            <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm bg-brandDark/50 shadow-inner"
+                            <div class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm bg-white/5 shadow-inner"
                             :class="{
                                 'border-amber-400 text-amber-400': pod.members.length < 3,
                                 'border-success text-success': pod.members.length >= 3 && pod.members.length <= 5,
@@ -572,15 +626,15 @@
                     
                     <div class="flex-1 mb-4">
                         <div class="flex flex-wrap gap-2">
-                            <div v-for="m in pod.members" :key="m.id" class="bg-slate-800 border border-slate-800 rounded-full px-3 py-1 text-sm flex items-center gap-2 text-slate-200">
+                            <div v-for="m in pod.members" :key="m.id" class="bg-white/10 border border-white/10 rounded-full px-3 py-1 text-sm flex items-center gap-2 text-slate-200">
                                 {{ m.name }}
-                                <button @click="removeFromPod(pod.id, m.id)" class="text-slate-400 hover:text-red-400 transition-colors">&times;</button>
+                                <button @click="removeFromPod(pod.id, m.id)" class="text-slate-300 hover:text-red-400 transition-colors">&times;</button>
                             </div>
-                            <div v-if="pod.members.length === 0" class="text-sm text-slate-400 italic">No members yet.</div>
+                            <div v-if="pod.members.length === 0" class="text-sm text-slate-300 italic">No members yet.</div>
                         </div>
                     </div>
                     
-                    <div class="mt-auto pt-4 border-t border-slate-800">
+                    <div class="mt-auto pt-4 border-t border-white/10">
                         <select class="glass-input w-full rounded-lg p-2 text-sm text-slate-300 bg-cardDark">
                             <option value="">+ Add unassigned member...</option>
                             <option v-for="um in unassignedMembers" :key="um.id" :value="um.id">{{ um.name }}</option>
@@ -593,7 +647,7 @@
         <!-- 4. PIPELINE -->
         <div v-show="currentView === 'pipeline' && !loading" class="h-full flex flex-col">
             <div class="mb-6 flex justify-between items-center">
-                <p class="text-slate-400 text-sm">Track newcomers through their integration journey.</p>
+                <p class="text-slate-300 text-sm">Track newcomers through their integration journey.</p>
                 <button @click="showAddNewcomer = !showAddNewcomer" class="bg-accent text-white rounded-xl px-4 py-2 font-semibold text-sm  shadow-sm transition-all"><span v-if="!showAddNewcomer">+ Add Newcomer</span><span v-else>Cancel</span></button>
             </div>
             
@@ -602,19 +656,19 @@
                 <h3 class="font-bold text-white mb-4">Add Newcomer manually</h3>
                 <form @submit.prevent="addNewcomer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Name</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Name</label>
                         <input type="text" v-model="newcomerForm.name" required class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Email</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Email</label>
                         <input type="email" v-model="newcomerForm.email" class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Phone</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Phone</label>
                         <input type="text" v-model="newcomerForm.phone" class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Notes</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Notes</label>
                         <input type="text" v-model="newcomerForm.notes" class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                     </div>
                     <div class="col-span-2 flex justify-end mt-2">
@@ -624,20 +678,20 @@
             </div>
             
             <div class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 overflow-x-hidden md:overflow-visible">
-                <div v-for="(col, colIndex) in pipelineCols" :key="col.id" class="bg-slate-800/50 border border-slate-800 rounded-2xl p-4 flex flex-col h-[calc(100vh-220px)]">
+                <div v-for="(col, colIndex) in pipelineCols" :key="col.id" class="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col h-[calc(100vh-220px)]">
                     <div class="flex justify-between items-center mb-4 px-1">
                         <h4 class="font-bold text-slate-200">{{ col.title }}</h4>
-                        <span class="bg-cardDark border border-slate-800 text-slate-300 text-xs font-bold px-2 py-1 rounded-full shadow-sm">{{ col.items.length }}</span>
+                        <span class="bg-cardDark border border-white/10 text-slate-300 text-xs font-bold px-2 py-1 rounded-full shadow-sm">{{ col.items.length }}</span>
                     </div>
                     
                     <div class="flex-1 overflow-y-auto space-y-3 pb-2 pr-1 custom-scrollbar">
                         <div v-for="item in col.items" :key="item.id" class="kanban-card p-4 cursor-grab bg-cardDark">
                             <div class="font-semibold text-white mb-1">{{ item.name }}</div>
-                            <div class="text-xs text-slate-400 mb-2">{{ item.phone }} • {{ item.date }}</div>
-                            <p class="text-sm text-slate-300 line-clamp-2 mb-3 bg-slate-800/50 p-2 rounded-lg text-xs border border-slate-800">{{ item.notes }}</p>
+                            <div class="text-xs text-slate-300 mb-2">{{ item.phone }} • {{ item.date }}</div>
+                            <p class="text-sm text-slate-300 line-clamp-2 mb-3 bg-white/5 p-2 rounded-lg text-xs border border-white/10">{{ item.notes }}</p>
                             
                             <div class="flex justify-between mt-3 items-center">
-                                <button v-if="colIndex > 0" @click="moveNewcomerBack(item, colIndex)" class="text-slate-400 text-xs font-semibold hover:text-white transition-colors">&larr; Back</button>
+                                <button v-if="colIndex > 0" @click="moveNewcomerBack(item, colIndex)" class="text-slate-300 text-xs font-semibold hover:text-white transition-colors">&larr; Back</button>
                                 <div v-else></div>
                                 
                                 <button v-if="colIndex < pipelineCols.length - 1" @click="moveNewcomer(item, colIndex)" class="text-accent text-sm font-semibold hover:text-white transition-colors">Move &rarr;</button>
@@ -658,28 +712,28 @@
                 <form class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Target Pod</label>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Target Pod</label>
                             <select class="glass-input w-full rounded-xl p-2.5 text-sm bg-cardDark">
                                 <option>All Pods</option>
                                 <option v-for="p in pods" :key="p.id">{{ p.name }}</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Week Of</label>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Week Of</label>
                             <input type="date" class="glass-input w-full rounded-xl p-2.5 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Bible Passage</label>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Bible Passage</label>
                             <input type="text" placeholder="e.g. John 15:1-8" class="glass-input w-full rounded-xl p-2.5 text-sm">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Discussion Questions (One per line)</label>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Discussion Questions (One per line)</label>
                             <textarea rows="4" class="glass-input w-full rounded-xl p-3 text-sm"></textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Spiritual Goals (One per line)</label>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Spiritual Goals (One per line)</label>
                             <textarea rows="4" class="glass-input w-full rounded-xl p-3 text-sm"></textarea>
                         </div>
                     </div>
@@ -695,7 +749,7 @@
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <h4 class="font-bold text-lg text-white">{{ plan.pod }}</h4>
-                            <p class="text-sm text-slate-400">Week of {{ plan.date }}</p>
+                            <p class="text-sm text-slate-300">Week of {{ plan.date }}</p>
                         </div>
                         <div class="bg-accent/20 border-l-4 border-accent px-4 py-2 rounded-r-lg font-semibold text-accent text-sm shadow-[inset_0_0_10px_rgba(0,117,255,0.1)]">
                             📖 {{ plan.passage }}
@@ -705,28 +759,28 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
                             <h5 class="text-sm font-bold text-slate-300 mb-2 uppercase tracking-wide">Discussion</h5>
-                            <ol class="list-decimal list-inside space-y-1 text-sm text-slate-400">
+                            <ol class="list-decimal list-inside space-y-1 text-sm text-slate-300">
                                 <li v-for="(q, i) in plan.questions" :key="i">{{ q }}</li>
                             </ol>
                         </div>
                         <div>
                             <h5 class="text-sm font-bold text-slate-300 mb-2 uppercase tracking-wide">Goals</h5>
-                            <ul class="list-disc list-inside space-y-1 text-sm text-slate-400">
+                            <ul class="list-disc list-inside space-y-1 text-sm text-slate-300">
                                 <li v-for="(g, i) in plan.goals" :key="i">{{ g }}</li>
                             </ul>
                         </div>
                     </div>
                     
-                    <details class="group border border-slate-800 rounded-xl bg-slate-800/50">
-                        <summary class="font-semibold text-sm p-4 cursor-pointer text-slate-300 hover:bg-slate-800 transition-colors rounded-xl outline-none">
+                    <details class="group border border-white/10 rounded-xl bg-white/5">
+                        <summary class="font-semibold text-sm p-4 cursor-pointer text-slate-300 hover:bg-white/10 transition-colors rounded-xl outline-none">
                             Post-Meeting Report
                         </summary>
-                        <div class="p-4 border-t border-slate-800">
+                        <div class="p-4 border-t border-white/10">
                             <div v-if="plan.report">
                                 <div class="flex items-center gap-2 text-success font-bold text-sm mb-2 shadow-sm">
                                     <span>✓</span> Report Submitted
                                 </div>
-                                <p class="text-sm text-slate-300 bg-slate-800/50 p-3 rounded-lg border border-slate-800">{{ plan.report }}</p>
+                                <p class="text-sm text-slate-300 bg-white/5 p-3 rounded-lg border border-white/10">{{ plan.report }}</p>
                             </div>
                             <form v-else @submit.prevent="submitReport(plan, $event.target.querySelector('textarea').value)" class="flex flex-col items-end gap-3">
                                 <textarea rows="2" placeholder="How did the pod meeting go? Any breakthroughs or struggles?" class="glass-input w-full rounded-xl p-3 text-sm bg-cardDark"></textarea>
@@ -741,9 +795,9 @@
         <!-- 6. PRAYER WALL -->
         <div v-show="currentView === 'prayer' && !loading" class="space-y-6">
             <div class="flex justify-between items-center mb-6">
-                <div class="flex p-1 bg-brandDark border border-slate-800 rounded-xl">
-                    <button @click="prayerTab = 'active'" class="px-6 py-2 rounded-lg text-sm font-semibold transition-all" :class="prayerTab === 'active' ? 'bg-cardDark shadow-sm text-white' : 'text-slate-400 hover:text-slate-300'">Active</button>
-                    <button @click="prayerTab = 'answered'" class="px-6 py-2 rounded-lg text-sm font-semibold transition-all" :class="prayerTab === 'answered' ? 'bg-cardDark shadow-sm text-white' : 'text-slate-400 hover:text-slate-300'">Answered</button>
+                <div class="flex p-1 bg-brandDark border border-white/10 rounded-xl">
+                    <button @click="prayerTab = 'active'" class="px-6 py-2 rounded-lg text-sm font-semibold transition-all" :class="prayerTab === 'active' ? 'bg-cardDark shadow-sm text-white' : 'text-slate-300 hover:text-slate-300'">Active</button>
+                    <button @click="prayerTab = 'answered'" class="px-6 py-2 rounded-lg text-sm font-semibold transition-all" :class="prayerTab === 'answered' ? 'bg-cardDark shadow-sm text-white' : 'text-slate-300 hover:text-slate-300'">Answered</button>
                 </div>
                 <button @click="showAddPrayer = !showAddPrayer" class="bg-accent text-white rounded-xl px-5 py-2.5 font-semibold  text-sm shadow-sm transition-all">
                     <span v-if="!showAddPrayer">+ New Request</span>
@@ -756,19 +810,19 @@
                 <h3 class="font-bold text-white mb-4">Submit Prayer Request</h3>
                 <form @submit.prevent="addPrayer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Member (Optional)</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Member (Optional)</label>
                         <select v-model="prayerForm.member_id" class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                             <option value="">Anonymous / Unknown</option>
                             <option v-for="m in allMembers" :key="m.id" :value="m.id">{{ m.name }}</option>
                         </select>
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Prayer Request</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Prayer Request</label>
                         <textarea v-model="prayerForm.request_text" required rows="3" class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark" placeholder="How can we pray for you?"></textarea>
                     </div>
                     <div class="col-span-2 flex justify-between items-center mt-2">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" v-model="prayerForm.is_urgent" class="rounded bg-brandDark border-slate-700 text-red-500 focus:ring-red-500">
+                            <input type="checkbox" v-model="prayerForm.is_urgent" class="rounded bg-brandDark border-white/20 text-red-500 focus:ring-red-500">
                             <span class="text-sm font-semibold text-red-400">Mark as Urgent</span>
                         </label>
                         <button type="submit" class="bg-accent text-white rounded-xl px-6 py-2.5 font-semibold text-sm ">Submit Prayer</button>
@@ -781,18 +835,18 @@
                 <div v-for="req in prayers.active" :key="req.id" class="glass p-5 flex flex-col relative overflow-hidden bg-cardDark" :class="{'border-l-4 border-l-red-500': req.urgent}">
                     <div v-if="req.urgent" class="absolute top-3 right-3 bg-red-900/50 text-red-400 border border-red-500/30 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">Urgent</div>
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-slate-300">{{ req.name.charAt(0) }}</div>
+                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-slate-300">{{ req.name.charAt(0) }}</div>
                         <div>
                             <h4 class="font-bold text-white text-sm">{{ req.name }}</h4>
-                            <p class="text-xs text-slate-400">{{ req.time }}</p>
+                            <p class="text-xs text-slate-300">{{ req.time }}</p>
                         </div>
                     </div>
                     <p class="text-sm text-slate-300 mb-6 flex-1">{{ req.text }}</p>
-                    <div class="flex gap-2 mt-auto pt-4 border-t border-slate-800">
-                        <button @click="supportPrayer(req.id)" class="flex-1 bg-slate-800/50 rounded-lg py-2 text-xs font-bold text-slate-400 hover:bg-accent/20 hover:text-accent transition-colors flex items-center justify-center gap-1 border border-slate-800 hover:border-accent/30">
+                    <div class="flex gap-2 mt-auto pt-4 border-t border-white/10">
+                        <button @click="supportPrayer(req.id)" class="flex-1 bg-white/5 rounded-lg py-2 text-xs font-bold text-slate-300 hover:bg-accent/20 hover:text-accent transition-colors flex items-center justify-center gap-1 border border-white/10 hover:border-accent/30">
                             🙏 Praying ({{ req.prays }})
                         </button>
-                        <button @click="promptAndMarkAnswered(req.id)" class="flex-1 bg-slate-800/50 rounded-lg py-2 text-xs font-bold text-accent hover:bg-accent hover:text-white  transition-all border border-slate-800 hover:border-transparent">
+                        <button @click="promptAndMarkAnswered(req.id)" class="flex-1 bg-white/5 rounded-lg py-2 text-xs font-bold text-accent hover:bg-accent hover:text-white  transition-all border border-white/10 hover:border-transparent">
                             Mark Answered
                         </button>
                     </div>
@@ -807,12 +861,12 @@
                             <div class="w-10 h-10 rounded-full bg-success/20 text-success flex items-center justify-center font-bold shadow-sm">✓</div>
                             <div>
                                 <h4 class="font-bold text-white text-sm">{{ req.name }}</h4>
-                                <p class="text-xs text-slate-400">Answered {{ req.answeredDate }}</p>
+                                <p class="text-xs text-slate-300">Answered {{ req.answeredDate }}</p>
                             </div>
                         </div>
                         <span class="bg-success/20 border border-success/30 text-success text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">Answered</span>
                     </div>
-                    <div class="bg-slate-800/50 border border-slate-800 p-3 rounded-xl mb-3 text-sm text-slate-400 line-through opacity-70">
+                    <div class="bg-white/5 border border-white/10 p-3 rounded-xl mb-3 text-sm text-slate-300 line-through opacity-70">
                         Original: {{ req.text }}
                     </div>
                     <div class="text-sm text-slate-200 font-medium">
@@ -828,7 +882,7 @@
                 <div v-for="(count, stage) in stageCounts" :key="stage" class="glass rounded-xl px-5 py-3 flex-shrink-0 flex items-center gap-3 bg-cardDark">
                     <div class="w-3 h-3 rounded-full" :class="getStageBg(stage)"></div>
                     <div>
-                        <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider">{{ formatStage(stage) }}</div>
+                        <div class="text-xs text-slate-300 font-semibold uppercase tracking-wider">{{ formatStage(stage) }}</div>
                         <div class="font-black text-lg text-white">{{ count }}</div>
                     </div>
                 </div>
@@ -836,15 +890,15 @@
 
             <div class="glass overflow-x-auto bg-cardDark">
                 <div class="">
-                <div v-for="member in allMembers" :key="member.id" class="p-6 border-b border-slate-800 last:border-0 flex items-center gap-8 hover:bg-slate-800/50 transition-colors">
+                <div v-for="member in allMembers" :key="member.id" class="p-6 border-b border-white/10 last:border-0 flex items-center gap-8 hover:bg-white/10 transition-colors">
                     <div class="w-48 flex-shrink-0">
                         <h4 class="font-bold text-white">{{ member.name }}</h4>
-                        <p class="text-xs text-slate-400">{{ formatStage(member.spiritual_stage) }}</p>
+                        <p class="text-xs text-slate-300">{{ formatStage(member.spiritual_stage) }}</p>
                     </div>
                     
                     <div class="flex-1 flex items-center relative">
                         <!-- Perfect track spanning exactly between the centers of the first and last w-8 circles -->
-                        <div class="absolute left-4 right-4 h-1 bg-slate-800 z-0 top-[16px] -translate-y-1/2 rounded-full">
+                        <div class="absolute left-4 right-4 h-1 bg-white/10 z-0 top-[16px] -translate-y-1/2 rounded-full">
                             <div class="h-full bg-accent z-0 rounded-full transition-all duration-500 shadow-sm" :style="{ width: getJourneyProgress(member.spiritual_stage) }"></div>
                         </div>
                         
@@ -854,12 +908,12 @@
                                     :class="{
                                         'border-accent bg-accent text-white shadow-sm': isStageCompleted(member.spiritual_stage, stage),
                                         'border-accent animate-pulse shadow-sm': member.spiritual_stage === stage,
-                                        'border-slate-700': !isStageCompleted(member.spiritual_stage, stage) && member.spiritual_stage !== stage
+                                        'border-white/20': !isStageCompleted(member.spiritual_stage, stage) && member.spiritual_stage !== stage
                                     }">
                                     <span v-if="isStageCompleted(member.spiritual_stage, stage)" class="text-xs font-bold">✓</span>
                                 </div>
                                 <span class="text-[10px] font-bold uppercase tracking-wide"
-                                    :class="member.spiritual_stage === stage || isStageCompleted(member.spiritual_stage, stage) ? 'text-slate-200' : 'text-slate-400'">
+                                    :class="member.spiritual_stage === stage || isStageCompleted(member.spiritual_stage, stage) ? 'text-slate-200' : 'text-slate-300'">
                                     {{ formatStage(stage) }}
                                 </span>
                             </div>
@@ -883,10 +937,10 @@
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <h2 class="text-2xl font-bold text-white mb-1">Team Invites</h2>
-                    <p class="text-sm text-slate-400">Generate secure signup codes for new leaders.</p>
+                    <p class="text-sm text-slate-300">Generate secure signup codes for new leaders.</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <select v-model="inviteRole" class="glass-input px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-slate-800/50 border border-slate-700 outline-none focus:border-blue-500">
+                    <select v-model="inviteRole" class="glass-input px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/5 border border-white/20 outline-none focus:border-blue-500">
                         <option :value="2">Basic Manager</option>
                         <option :value="1">Site Admin</option>
                     </select>
@@ -899,24 +953,24 @@
             <div class="glass overflow-x-auto bg-cardDark">
                 <table class="w-full text-left border-collapse ">
                     <thead>
-                        <tr class="bg-slate-800/50 border-b border-slate-800">
-                            <th class="p-4 text-xs font-semibold text-slate-400 uppercase">Code</th>
-                            <th class="p-4 text-xs font-semibold text-slate-400 uppercase">Role</th>
-                            <th class="p-4 text-xs font-semibold text-slate-400 uppercase">Generated On</th>
-                            <th class="p-4 text-xs font-semibold text-slate-400 uppercase text-right">Actions</th>
+                        <tr class="bg-white/5 border-b border-white/10">
+                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase">Code</th>
+                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase">Role</th>
+                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase">Generated On</th>
+                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/10">
-                        <tr v-for="inv in invitesList" :key="inv.id" class="hover:bg-slate-800/30 transition-colors">
+                        <tr v-for="inv in invitesList" :key="inv.id" class="hover:bg-white/5 transition-colors">
                             <td class="p-4 font-mono text-blue-500 font-bold tracking-widest">{{ inv.code }}</td>
-                            <td class="p-4"><span class="bg-slate-800 px-2 py-1 rounded text-xs font-medium text-slate-300">{{ inv.role_name }}</span></td>
-                            <td class="p-4 text-sm text-slate-400">{{ new Date(inv.created_at).toLocaleDateString() }}</td>
+                            <td class="p-4"><span class="bg-white/10 px-2 py-1 rounded text-xs font-medium text-slate-300">{{ inv.role_name }}</span></td>
+                            <td class="p-4 text-sm text-slate-300">{{ new Date(inv.created_at).toLocaleDateString() }}</td>
                             <td class="p-4 text-right">
                                 <button @click="revokeInvite(inv.id)" class="text-xs font-bold text-red-400 hover:text-red-300 transition-colors bg-red-400/10 hover:bg-red-400/20 px-3 py-1.5 rounded-lg">Revoke</button>
                             </td>
                         </tr>
                         <tr v-if="!invitesList || invitesList.length === 0">
-                            <td colspan="4" class="p-8 text-center text-slate-400 font-medium">No active invite codes. Generate one above!</td>
+                            <td colspan="4" class="p-8 text-center text-slate-300 font-medium">No active invite codes. Generate one above!</td>
                         </tr>
                     </tbody>
                 </table>
@@ -929,8 +983,8 @@
                 <div class="flex gap-2">
                     <button v-for="cat in ['All', 'Bible Study', 'Leadership', 'Devotional']" :key="cat"
                         @click="resourceCategory = cat"
-                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all border border-slate-800"
-                        :class="resourceCategory === cat ? 'bg-accent text-white shadow-sm border-transparent' : 'glass text-slate-400 hover:text-white hover:bg-slate-800'">
+                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all border border-white/10"
+                        :class="resourceCategory === cat ? 'bg-accent text-white shadow-sm border-transparent' : 'glass text-slate-300 hover:text-white hover:bg-white/10'">
                         {{ cat }}
                     </button>
                 </div>
@@ -945,11 +999,11 @@
                 <h3 class="font-bold text-white mb-4">Add New Resource</h3>
                 <form @submit.prevent="addResource" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Title</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Title</label>
                         <input type="text" v-model="resourceForm.title" required class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Category</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Category</label>
                         <select v-model="resourceForm.category" required class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                             <option value="">Select category...</option>
                             <option value="Bible Study">Bible Study</option>
@@ -958,11 +1012,11 @@
                         </select>
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Description</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Description</label>
                         <input type="text" v-model="resourceForm.description" required class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Link / File URL</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Link / File URL</label>
                         <input type="text" v-model="resourceForm.file_url" required class="glass-input w-full rounded-xl p-3 text-sm bg-brandDark">
                     </div>
                     <div class="col-span-2 flex justify-end mt-2">
@@ -974,13 +1028,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <div v-for="res in filteredResources" :key="res.id" class="glass p-6 flex flex-col  transition-shadow group bg-cardDark">
                     <div class="mb-4">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-800 bg-slate-800/50" :class="getResourceCatClass(res.category)">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/10 bg-white/5" :class="getResourceCatClass(res.category)">
                             {{ res.category }}
                         </span>
                     </div>
                     <h4 class="font-bold text-lg text-white mb-2 group-hover:text-accent transition-colors drop-shadow-sm">{{ res.title }}</h4>
-                    <p class="text-sm text-slate-400 mb-6 flex-1">{{ res.description }}</p>
-                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-800">
+                    <p class="text-sm text-slate-300 mb-6 flex-1">{{ res.description }}</p>
+                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-white/10">
                         <a :href="res.file_url || '#'" target="_blank" rel="noopener noreferrer" class="text-sm font-bold text-accent hover:text-white transition-colors flex items-center gap-1 drop-shadow-sm">Open &rarr;</a>
                         <button @click="deleteResource(res.id)" class="text-xs text-red-400 hover:text-red-300 font-medium transition-colors">Delete</button>
                     </div>
@@ -1009,27 +1063,27 @@
     </header>
 
     <!-- Values -->
-    <section class="py-10 px-6 border-t border-slate-800">
+    <section class="py-10 px-6 border-t border-white/10">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold mb-4">Our Core Values</h2>
-                <p class="text-slate-400">What it means to be part of this community.</p>
+                <p class="text-slate-300">What it means to be part of this community.</p>
             </div>
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="glass p-8 rounded-3xl text-center hover:bg-slate-800/50 transition-colors">
+                <div class="glass p-8 rounded-3xl text-center hover:bg-white/10 transition-colors">
                     <div class="w-16 h-16 bg-[#0075ff]/20 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl shadow-inner">🤝</div>
                     <h3 class="text-xl font-bold mb-3">Authentic Community</h3>
-                    <p class="text-slate-400 leading-relaxed">No masks required. Bring your doubts, your questions, and your real self.</p>
+                    <p class="text-slate-300 leading-relaxed">No masks required. Bring your doubts, your questions, and your real self.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl text-center hover:bg-slate-800/50 transition-colors">
+                <div class="glass p-8 rounded-3xl text-center hover:bg-white/10 transition-colors">
                     <div class="w-16 h-16 bg-[#01b574]/20 text-[#01b574] rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl shadow-inner">🌱</div>
                     <h3 class="text-xl font-bold mb-3">Spiritual Growth</h3>
-                    <p class="text-slate-400 leading-relaxed">We believe faith is a journey. We explore big questions together through scripture, discussion, and prayer.</p>
+                    <p class="text-slate-300 leading-relaxed">We believe faith is a journey. We explore big questions together through scripture, discussion, and prayer.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl text-center hover:bg-slate-800/50 transition-colors">
+                <div class="glass p-8 rounded-3xl text-center hover:bg-white/10 transition-colors">
                     <div class="w-16 h-16 bg-amber-500/20 text-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl shadow-inner">🔥</div>
                     <h3 class="text-xl font-bold mb-3">Meaningful Action</h3>
-                    <p class="text-slate-400 leading-relaxed">We don't just consume; we contribute. We are passionate about serving our city and fighting for justice.</p>
+                    <p class="text-slate-300 leading-relaxed">We don't just consume; we contribute. We are passionate about serving our city and fighting for justice.</p>
                 </div>
             </div>
         </div>
@@ -1043,8 +1097,8 @@
                 <div class="absolute top-0 right-0 w-64 h-64 bg-[#0075ff]/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
                 <h3 class="text-2xl font-bold text-blue-500 mb-2">Every Tuesday Night</h3>
                 <p class="text-xl text-white mb-4">7:00 PM &bull; Room 204B</p>
-                <p class="text-slate-400 mb-8 max-w-xl mx-auto">Join us for our weekly Young Adult Gathering. Expect good coffee, honest conversation, and a welcoming environment.</p>
-                <a target="_blank" rel="noopener noreferrer" href="https://maps.google.com/?q=914+Silver+Spring+Ave+204B,+Silver+Spring,+MD" class="text-white border border-slate-700 hover:bg-slate-800 px-6 py-3 rounded-xl font-medium transition-colors">Get Directions</a>
+                <p class="text-slate-300 mb-8 max-w-xl mx-auto">Join us for our weekly Young Adult Gathering. Expect good coffee, honest conversation, and a welcoming environment.</p>
+                <a target="_blank" rel="noopener noreferrer" href="https://maps.google.com/?q=914+Silver+Spring+Ave+204B,+Silver+Spring,+MD" class="text-white border border-white/20 hover:bg-white/10 px-6 py-3 rounded-xl font-medium transition-colors">Get Directions</a>
             </div>
         </div>
     </section>
@@ -1055,7 +1109,7 @@
             <header class="pt-24 pb-16 px-6 text-center">
         <div class="max-w-3xl mx-auto">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-6">Circles Are Better Than Rows.</h1>
-            <p class="text-xl text-slate-400 leading-relaxed">
+            <p class="text-xl text-slate-300 leading-relaxed">
                 Sunday services are great, but real life transformation happens in circles. Our small groups are designed to help you build lasting friendships and grow spiritually.
             </p>
         </div>
@@ -1071,24 +1125,24 @@
             </p>
             
             <div class="grid md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-brandDark/50 p-6 rounded-2xl border border-slate-800">
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div class="text-lg font-bold mb-1">Tuesday Evenings</div>
                     <div class="text-blue-500 font-medium mb-2">7:00 PM &bull; In-Person</div>
-                    <p class="text-sm text-slate-400">At the Church (Room 204B). Dinner provided.</p>
+                    <p class="text-sm text-slate-300">At the Church (Room 204B). Dinner provided.</p>
                 </div>
-                <div class="bg-brandDark/50 p-6 rounded-2xl border border-slate-800">
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
                     <div class="text-lg font-bold mb-1">Thursday Evenings</div>
                     <div class="text-[#01b574] font-medium mb-2">8:00 PM &bull; Virtual</div>
-                    <p class="text-sm text-slate-400">Via Zoom. Great for those with busy schedules.</p>
+                    <p class="text-sm text-slate-300">Via Zoom. Great for those with busy schedules.</p>
                 </div>
             </div>
             
-            <hr class="border-slate-800 mb-8">
+            <hr class="border-white/10 mb-8">
             
             <h3 class="text-xl font-bold mb-4">Ready to dive in?</h3>
-            <p class="text-slate-400 mb-6">Fill out the short form below and one of our facilitators will reach out to get you connected.</p>
+            <p class="text-slate-300 mb-6">Fill out the short form below and one of our facilitators will reach out to get you connected.</p>
             <form @submit.prevent class="flex gap-4 max-w-md">
-                <input type="email" name="email" placeholder="Enter your email address" required class="flex-1 bg-slate-800/50 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#0075ff]">
+                <input type="email" name="email" placeholder="Enter your email address" required class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#0075ff]">
                 <button type="submit" class="bg-[#0075ff] text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 transition-colors">Sign Up</button>
             </form>
         </div>
@@ -1097,10 +1151,10 @@
         
         <!-- YA TOOLKIT -->
         <div v-show="currentView === 'ya_toolkit' && !loading" class="space-y-6 pb-12 animate-fade-in">
-            <header class="pt-24 pb-16 px-6 text-center border-b border-slate-800 bg-cardDark">
+            <header class="pt-24 pb-16 px-6 text-center border-b border-white/10 bg-cardDark">
         <div class="max-w-3xl mx-auto">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Equip. Empower. Lead.</h1>
-            <p class="text-xl text-slate-400 leading-relaxed">
+            <p class="text-xl text-slate-300 leading-relaxed">
                 Thank you for stepping up to lead! This toolkit contains everything you need to facilitate a group, welcome newcomers, and foster a healthy community.
             </p>
         </div>
@@ -1110,57 +1164,57 @@
         <h2 class="text-2xl font-bold mb-8">Ministry Tools & Downloads</h2>
         
         <div class="grid gap-6">
-            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/50 transition-colors cursor-pointer group">
+            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors cursor-pointer group">
                 <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-slate-800/50 rounded-xl flex items-center justify-center text-2xl group-hover:bg-[#0075ff]/20 group-hover:text-blue-500 transition-colors">👋</div>
+                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-2xl group-hover:bg-[#0075ff]/20 group-hover:text-blue-500 transition-colors">👋</div>
                     <div>
                         <h3 class="text-lg font-bold mb-1">The Welcome Checklist</h3>
-                        <p class="text-sm text-slate-400">Best practices for greeting newcomers and making them feel at home without overwhelming them.</p>
+                        <p class="text-sm text-slate-300">Best practices for greeting newcomers and making them feel at home without overwhelming them.</p>
                     </div>
                 </div>
                 <a href="/static/resources/welcome_checklist.pdf" download class="text-blue-500 font-medium px-4 py-2 bg-[#0075ff]/10 rounded-lg text-sm hover:bg-[#0075ff]/20 transition-colors inline-block text-center">Download PDF</a>
             </div>
             
-            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/50 transition-colors cursor-pointer group">
+            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors cursor-pointer group">
                 <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-slate-800/50 rounded-xl flex items-center justify-center text-2xl group-hover:bg-[#01b574]/20 group-hover:text-[#01b574] transition-colors">💬</div>
+                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-2xl group-hover:bg-[#01b574]/20 group-hover:text-[#01b574] transition-colors">💬</div>
                     <div>
                         <h3 class="text-lg font-bold mb-1">Small Group Facilitation Guide</h3>
-                        <p class="text-sm text-slate-400">Tips for keeping discussions engaging, managing dominant talkers, and creating a safe space.</p>
+                        <p class="text-sm text-slate-300">Tips for keeping discussions engaging, managing dominant talkers, and creating a safe space.</p>
                     </div>
                 </div>
                 <a href="/static/resources/small_group_facilitation.pdf" download class="text-[#01b574] font-medium px-4 py-2 bg-[#01b574]/10 rounded-lg text-sm hover:bg-[#01b574]/20 transition-colors inline-block text-center">Download PDF</a>
             </div>
             
-            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/50 transition-colors cursor-pointer group">
+            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors cursor-pointer group">
                 <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-slate-800/50 rounded-xl flex items-center justify-center text-2xl group-hover:bg-amber-500/20 group-hover:text-amber-500 transition-colors">📊</div>
+                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-2xl group-hover:bg-amber-500/20 group-hover:text-amber-500 transition-colors">📊</div>
                     <div>
                         <h3 class="text-lg font-bold mb-1">Congregational Self-Assessment</h3>
-                        <p class="text-sm text-slate-400">Use this rubric to evaluate how well our church is welcoming and integrating young adults.</p>
+                        <p class="text-sm text-slate-300">Use this rubric to evaluate how well our church is welcoming and integrating young adults.</p>
                     </div>
                 </div>
                 <a href="/static/resources/congregational_assessment.pdf" download class="text-amber-500 font-medium px-4 py-2 bg-amber-500/10 rounded-lg text-sm hover:bg-amber-500/20 transition-colors inline-block text-center">Download PDF</a>
             </div>
             
-            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-slate-800/50 transition-colors cursor-pointer group">
+            <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors cursor-pointer group">
                 <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-slate-800/50 rounded-xl flex items-center justify-center text-2xl group-hover:bg-purple-500/20 group-hover:text-purple-500 transition-colors">🌉</div>
+                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-2xl group-hover:bg-purple-500/20 group-hover:text-purple-500 transition-colors">🌉</div>
                     <div>
                         <h3 class="text-lg font-bold mb-1">Bridging Mentorship Guidelines</h3>
-                        <p class="text-sm text-slate-400">A framework for older adults mentoring high school graduates transitioning into young adult ministry.</p>
+                        <p class="text-sm text-slate-300">A framework for older adults mentoring high school graduates transitioning into young adult ministry.</p>
                     </div>
                 </div>
                 <a href="/static/resources/bridging_mentorship.pdf" download class="text-purple-400 font-medium px-4 py-2 bg-purple-500/10 rounded-lg text-sm hover:bg-purple-500/20 transition-colors inline-block text-center">Download PDF</a>
             </div>
         </div>
         
-        <div class="mt-16 bg-slate-800/50 border border-slate-800 p-8 rounded-3xl text-center">
+        <div class="mt-16 bg-white/5 border border-white/10 p-8 rounded-3xl text-center">
             <h3 class="text-xl font-bold mb-3">Need Support?</h3>
-            <p class="text-slate-400 mb-6 max-w-lg mx-auto">Ministry is a team effort. If you need guidance, prayer, or resources, reach out to our pastoral team. Also, don't forget you can use the Leader Dashboard to manage your DNA Pod!</p>
+            <p class="text-slate-300 mb-6 max-w-lg mx-auto">Ministry is a team effort. If you need guidance, prayer, or resources, reach out to our pastoral team. Also, don't forget you can use the Leader Dashboard to manage your DNA Pod!</p>
             <div class="flex items-center justify-center gap-4">
                 <a href="mailto:pastor@eucmaryland.org" class="bg-white text-black px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">Contact Leadership</a>
-                <a href="/dashboard" class="bg-transparent border border-slate-700 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Open Dashboard</a>
+                <a href="/dashboard" class="bg-transparent border border-white/20 text-white px-6 py-3 rounded-xl font-bold hover:bg-white/10 transition-colors">Open Dashboard</a>
             </div>
         </div>
     </section>
@@ -1171,7 +1225,7 @@
             <header class="pt-24 pb-16 px-6 text-center">
         <div class="max-w-3xl mx-auto">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-6">Fuel for Your Journey.</h1>
-            <p class="text-xl text-slate-400 leading-relaxed">
+            <p class="text-xl text-slate-300 leading-relaxed">
                 We've curated a collection of resources to help you navigate the intersection of faith, culture, and daily life.
             </p>
         </div>
@@ -1184,17 +1238,17 @@
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="glass p-8 rounded-3xl bg-cardDark flex flex-col h-full">
                     <h3 class="font-bold text-xl mb-2 text-white">Becoming</h3>
-                    <p class="text-sm text-slate-400 mb-4 uppercase tracking-wider font-semibold">A Spiritual Guide for Navigating Adulthood</p>
+                    <p class="text-sm text-slate-300 mb-4 uppercase tracking-wider font-semibold">A Spiritual Guide for Navigating Adulthood</p>
                     <p class="text-slate-300 flex-1 leading-relaxed text-sm">A collection of reflections by young adults speaking to relevant themes of transition and growth. We use this closely with our small groups.</p>
                 </div>
                 <div class="glass p-8 rounded-3xl bg-cardDark flex flex-col h-full">
                     <h3 class="font-bold text-xl mb-2 text-white">Growing Young</h3>
-                    <p class="text-sm text-slate-400 mb-4 uppercase tracking-wider font-semibold">Fuller Youth Institute</p>
+                    <p class="text-sm text-slate-300 mb-4 uppercase tracking-wider font-semibold">Fuller Youth Institute</p>
                     <p class="text-slate-300 flex-1 leading-relaxed text-sm">Essential strategies for discovering and loving the church community in a modern world. A vital read for our leadership.</p>
                 </div>
                 <div class="glass p-8 rounded-3xl bg-cardDark flex flex-col h-full">
                     <h3 class="font-bold text-xl mb-2 text-white">Heart to Heart</h3>
-                    <p class="text-sm text-slate-400 mb-4 uppercase tracking-wider font-semibold">Small Group Resources</p>
+                    <p class="text-sm text-slate-300 mb-4 uppercase tracking-wider font-semibold">Small Group Resources</p>
                     <p class="text-slate-300 flex-1 leading-relaxed text-sm">Excellent small group resources on forgiveness, loss, nature, money, and friendship.</p>
                 </div>
             </div>
@@ -1202,36 +1256,36 @@
         
         <div class="mb-16">
             <h2 class="text-2xl font-bold mb-8 flex items-center gap-3"><span class="text-[#01b574]">🎙️</span> Latest Community Voices</h2>
-            <div class="bg-slate-800/50 border border-slate-800 rounded-3xl overflow-hidden divide-y divide-white/10">
-                <div class="p-6 flex md:flex-row flex-col md:items-center justify-between gap-4 hover:bg-slate-800/50 transition-colors cursor-pointer">
+            <div class="bg-white/5 border border-white/10 rounded-3xl overflow-hidden divide-y divide-white/10">
+                <div class="p-6 flex md:flex-row flex-col md:items-center justify-between gap-4 hover:bg-white/10 transition-colors cursor-pointer">
                     <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-xl flex-shrink-0">📝</div>
+                        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-xl flex-shrink-0">📝</div>
                         <div>
                             <h4 class="font-bold text-lg mb-1">Finding Faith in the Quarter-Life Crisis</h4>
-                            <p class="text-sm text-slate-400">Written by Sarah J. &bull; 5 min read</p>
+                            <p class="text-sm text-slate-300">Written by Sarah J. &bull; 5 min read</p>
                         </div>
                     </div>
-                    <button class="text-sm font-bold text-white border border-slate-700 rounded-lg px-4 py-2 hover:bg-slate-800">Read Post</button>
+                    <button class="text-sm font-bold text-white border border-white/20 rounded-lg px-4 py-2 hover:bg-white/10">Read Post</button>
                 </div>
-                <div class="p-6 flex md:flex-row flex-col md:items-center justify-between gap-4 hover:bg-slate-800/50 transition-colors cursor-pointer">
+                <div class="p-6 flex md:flex-row flex-col md:items-center justify-between gap-4 hover:bg-white/10 transition-colors cursor-pointer">
                     <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-xl flex-shrink-0">🎧</div>
+                        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-xl flex-shrink-0">🎧</div>
                         <div>
                             <h4 class="font-bold text-lg mb-1">Navigating Career and Calling</h4>
-                            <p class="text-sm text-slate-400">Audio Sermon &bull; 35 mins</p>
+                            <p class="text-sm text-slate-300">Audio Sermon &bull; 35 mins</p>
                         </div>
                     </div>
-                    <button class="text-sm font-bold text-white border border-slate-700 rounded-lg px-4 py-2 hover:bg-slate-800">Listen Now</button>
+                    <button class="text-sm font-bold text-white border border-white/20 rounded-lg px-4 py-2 hover:bg-white/10">Listen Now</button>
                 </div>
-                <div class="p-6 flex md:flex-row flex-col md:items-center justify-between gap-4 hover:bg-slate-800/50 transition-colors cursor-pointer">
+                <div class="p-6 flex md:flex-row flex-col md:items-center justify-between gap-4 hover:bg-white/10 transition-colors cursor-pointer">
                     <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-xl flex-shrink-0">▶️</div>
+                        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-xl flex-shrink-0">▶️</div>
                         <div>
                             <h4 class="font-bold text-lg mb-1">Why I Stayed: A Testimony of Community</h4>
-                            <p class="text-sm text-slate-400">Video Story &bull; 8 mins</p>
+                            <p class="text-sm text-slate-300">Video Story &bull; 8 mins</p>
                         </div>
                     </div>
-                    <button class="text-sm font-bold text-white border border-slate-700 rounded-lg px-4 py-2 hover:bg-slate-800">Watch Video</button>
+                    <button class="text-sm font-bold text-white border border-white/20 rounded-lg px-4 py-2 hover:bg-white/10">Watch Video</button>
                 </div>
             </div>
         </div>
@@ -1251,10 +1305,10 @@
         <!-- 9. LEADER TRAINING -->
         <div v-show="currentView === 'training' && !loading" class="space-y-8 pb-10">
             <div class="glass bg-cardDark p-8 rounded-3xl border-t-4 border-t-accent shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
-                <div class="mb-8 border-b border-slate-800 pb-6">
+                <div class="mb-8 border-b border-white/10 pb-6">
                     <span class="text-accent font-bold tracking-wider uppercase text-xs mb-2 block">Leader Preparation Guide</span>
                     <h2 class="text-3xl font-black text-white mb-2">Planting a Disciple Making Church</h2>
-                    <p class="text-slate-400">By Bobby Harrington, Point Leader, Discipleship.org</p>
+                    <p class="text-slate-300">By Bobby Harrington, Point Leader, Discipleship.org</p>
                 </div>
 
                 <div class="space-y-8 text-slate-300 leading-relaxed text-sm md:text-base">
@@ -1270,14 +1324,14 @@
                         <p>What if we reversed the process? What if church planting started with disciple making before it started with Sunday gatherings?</p>
                     </section>
 
-                    <section class="space-y-4 pt-6 border-t border-slate-800">
+                    <section class="space-y-4 pt-6 border-t border-white/10">
                         <h3 class="text-xl font-bold text-white text-accent">Be What You Want the Church to Become</h3>
                         <p>Every church planter (and minister/pastor) reproduces who they are. The church plant will be more effected by the lead planter than by any strategy, program, or ministry model. People will imitate what they see.</p>
                         <p>Before we gather a crowd, we must personally invest in and disciple people in smaller communities. Before we build systems, we must model obedience. Church planters should never outsource disciple making to a future ministry leader.</p>
-                        <p class="font-bold text-white bg-slate-800/50 p-4 rounded-lg inline-block">The church will become what its leaders consistently practice.</p>
+                        <p class="font-bold text-white bg-white/5 p-4 rounded-lg inline-block">The church will become what its leaders consistently practice.</p>
                     </section>
 
-                    <section class="space-y-4 pt-6 border-t border-slate-800">
+                    <section class="space-y-4 pt-6 border-t border-white/10">
                         <h3 class="text-xl font-bold text-white text-accent">Start with Simple and Reproducible Disciple Making Communities</h3>
                         <p>The first step is not launching a service. It is making disciples. We begin by gathering a simple disciple making group. In these disciple-making communities, people learn to:</p>
                         <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
@@ -1291,10 +1345,10 @@
                         <p class="mt-4">Because simplicity drives multiplication, these groups should be easy to reproduce. The goal is reaching lost people and spiritual reproduction.</p>
                     </section>
 
-                    <section class="space-y-4 pt-6 border-t border-slate-800">
+                    <section class="space-y-4 pt-6 border-t border-white/10">
                         <h3 class="text-xl font-bold text-white text-accent">Reproduce Before You Gather</h3>
                         <p>A critical principle in planting a disciple making church is this: <strong>Reproduce Multiple Disciple Making Communities Before Launching Larger Tuesday Gatherings.</strong></p>
-                        <div class="bg-black/30 p-6 rounded-xl border border-slate-800 space-y-4 my-6">
+                        <div class="bg-black/30 p-6 rounded-xl border border-white/10 space-y-4 my-6">
                             <div class="flex items-start gap-4">
                                 <div class="w-8 h-8 rounded-full bg-accent text-black font-bold flex items-center justify-center shrink-0">1</div>
                                 <p>A leader starts two disciple making communities.</p>
@@ -1311,7 +1365,7 @@
                         <p>By the time a larger church gathering begins, the expectation that everyday disciples make disciples is already deeply rooted in the culture.</p>
                     </section>
 
-                    <section class="space-y-4 pt-6 border-t border-slate-800">
+                    <section class="space-y-4 pt-6 border-t border-white/10">
                         <h3 class="text-xl font-bold text-white text-accent">The End Goal</h3>
                         <p>The goal is not merely to plant a church. The goal is to plant a disciple making church. We want disciples who make disciples, who make more disciples, who then gather together in larger Sunday gatherings. Then they make more disciple making disciples who plant more churches… and on and on it goes.</p>
                         <p>When disciple making comes first, Sunday gatherings become stronger. Leadership becomes healthier. Mission becomes clearer. Multiplication becomes normal.</p>
@@ -1323,5 +1377,7 @@
 </div>
 
 <script type="module" src="/static/js/dashboard/main.js"></script>
+
+
 </body>
 </html>

@@ -1,0 +1,99 @@
+<!-- Responsive Grid-Based Main Layout Component -->
+<%
+  const containerMaxWidth = typeof maxWidth !== 'undefined' ? maxWidth : 'max-w-7xl';
+  const gridColumns = typeof columns !== 'undefined' ? columns : '12';
+  const gridGap = typeof gap !== 'undefined' ? gap : 'gap-6 lg:gap-8';
+  const layoutType = typeof layout !== 'undefined' ? layout : 'standard'; // 'standard' | 'bento' | 'sidebar' | 'masonry'
+  const containerId = typeof id !== 'undefined' ? id : 'main-grid-layout';
+%>
+
+<section id="<%= containerId %>" class="w-full <%= containerMaxWidth %> mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 transition-colors duration-300">
+    <% if (typeof title !== 'undefined' && title) { %>
+        <div class="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-200 dark:border-white/10 pb-6">
+            <div>
+                <% if (typeof badge !== 'undefined' && badge) { %>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-3 border border-blue-200/50 dark:border-blue-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                        <%= badge %>
+                    </span>
+                <% } %>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-900 dark:text-white">
+                    <%= title %>
+                </h1>
+            </div>
+            <% if (typeof subtitle !== 'undefined' && subtitle) { %>
+                <p class="text-zinc-600 dark:text-zinc-400 text-sm sm:text-base max-w-lg leading-relaxed">
+                    <%= subtitle %>
+                </p>
+            <% } %>
+        </div>
+    <% } %>
+
+    <% if (layoutType === 'bento') { %>
+        <!-- Bento Grid Preset (Asymmetric Responsive Hero + Stat + Feature Layout) -->
+        <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 <%= gridGap %> auto-rows-[minmax(180px,auto)]">
+            <%- typeof content !== 'undefined' ? content : '' %>
+        </div>
+    <% } else if (layoutType === 'sidebar') { %>
+        <!-- 2-Column Sidebar + Content Grid Preset -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 <%= gridGap %> items-start">
+            <aside class="lg:col-span-4 xl:col-span-3 sticky top-24 space-y-6">
+                <%- typeof sidebarContent !== 'undefined' ? sidebarContent : '' %>
+            </aside>
+            <main class="lg:col-span-8 xl:col-span-9 space-y-6">
+                <%- typeof content !== 'undefined' ? content : '' %>
+            </main>
+        </div>
+    <% } else if (layoutType === 'masonry') { %>
+        <!-- Dynamic Fluid Masonry Grid -->
+        <div class="masonry-grid <%= gridGap %>">
+            <%- typeof content !== 'undefined' ? content : '' %>
+        </div>
+    <% } else { %>
+        <!-- Standard 12-Column Responsive CSS Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 <%= gridGap %>">
+            <%- typeof content !== 'undefined' ? content : '' %>
+        </div>
+    <% } %>
+</section>
+
+<!-- CSS Grid Helper Utilities & Card Archetypes for Dark/Light Mode -->
+<style>
+    /* Card Component Archetypes */
+    .grid-card {
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.3s ease;
+        overflow: hidden;
+    }
+
+    html.dark .grid-card {
+        background-color: #18181b; /* zinc-900 */
+        border-color: rgba(255, 255, 255, 0.07);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+    }
+
+    .grid-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+    }
+
+    html.dark .grid-card:hover {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Bento Grid Column Spans */
+    .bento-hero {
+        grid-column: span 1 / -1;
+    }
+    @media (min-width: 1024px) {
+        .bento-hero { grid-column: span 8; }
+        .bento-side { grid-column: span 4; }
+        .bento-third { grid-column: span 4; }
+        .bento-half { grid-column: span 6; }
+        .bento-full { grid-column: span 12; }
+    }
+</style>

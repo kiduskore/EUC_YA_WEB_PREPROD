@@ -1,14 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= typeof lang !== 'undefined' ? lang : 'en' %>" dir="ltr">
 <head>
     <meta name="description" content="Emmanuel United Church of Maryland Young Adults community. Growing together in faith, leadership, and discipleship.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https:;">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EUCMD Young Adults</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="format-detection" content="telephone=no">
+    <title><%= typeof t !== 'undefined' ? t('hero.tag') : 'EUCMD Young Adults' %></title>
+    
+    <!-- Modern Web Fonts: Noto Sans Ethiopic (for Amharic & Tigrinya) + Plus Jakarta Sans (for English & Afaan Oromoo) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for Smooth Scroll & Animations (with graceful fallback for iOS Safari) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+
     <script src="/static/js/vendor/tailwindcss.js"></script>
     <script>
         tailwind.config = {
@@ -16,64 +26,191 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        serif: ['"Plus Jakarta Sans"', 'sans-serif']
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans Ethiopic"', 'system-ui', '-apple-system', 'sans-serif'],
+                        ethiopic: ['"Noto Sans Ethiopic"', '"Plus Jakarta Sans"', 'sans-serif']
                     },
                     colors: {
-                        brandDark: '#FAFAFA',
+                        brandDark: '#F4F4F5', // zinc-100
                         cardDark: '#FFFFFF',
-                        accent: '#111111',
-                        accent2: '#666666',
-                        success: '#000000'
+                        accent: '#000000',
+                        accent2: '#52525B', // zinc-600
+                        success: '#000000',
+                        studio: {
+                            900: '#09090b', // zinc-950
+                            800: '#18181b', // zinc-900
+                            700: '#27272a', // zinc-800
+                            100: '#f4f4f5',
+                            50: '#fafafa'
+                        }
+                    },
+                    boxShadow: {
+                        'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.1)',
+                        'premium-dark': '0 20px 40px -10px rgba(0, 0, 0, 0.4)',
+                        'glow': '0 0 20px rgba(0, 117, 255, 0.15)'
+                    },
+                    transitionTimingFunction: {
+                        'butter': 'cubic-bezier(0.19, 1, 0.22, 1)'
                     }
                 }
             }
         }
     </script>
     <style>
+        :root {
+            --font-main: 'Plus Jakarta Sans', 'Noto Sans Ethiopic', system-ui, -apple-system, sans-serif;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation;
+            scroll-behavior: smooth;
+        }
+
+        /* Mobile touch & iOS optimizations */
+        *, *::before, *::after {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button, a, input, select, textarea {
+            touch-action: manipulation;
+        }
+
+        /* Prevent iOS Safari from auto-zooming on focus while keeping desktop typography crisp */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Safe area insets for iOS devices (iPhone with notch/dynamic island & home indicator) */
+        .ios-safe-top {
+            padding-top: max(1.25rem, env(safe-area-inset-top));
+        }
+
+        .ios-safe-bottom {
+            padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        }
+
+        /* Touch device active states (replaces mouse-dependent hover) */
+        @media (hover: none) and (pointer: coarse) {
+            .macos-glass:active,
+            .macos-card:active {
+                transform: scale(0.99);
+                transition: transform 0.15s ease;
+            }
+            .macos-glass:hover {
+                transform: none;
+            }
+            button:active,
+            a:active {
+                opacity: 0.85;
+            }
+        }
+
         body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            font-family: var(--font-main);
             margin: 0;
             min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: -webkit-fill-available;
+            transition: background-color 0.4s cubic-bezier(0.19, 1, 0.22, 1), color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Ethiopic Script Optimization for Amharic and Tigrinya */
+        html[lang="am"] body,
+        html[lang="ti"] body,
+        .font-ethiopic {
+            font-family: 'Noto Sans Ethiopic', 'Plus Jakarta Sans', system-ui, sans-serif;
+            letter-spacing: normal;
+        }
+        
+        /* Layout Utilities */
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            grid-auto-flow: dense;
+        }
+        
+        .masonry-item-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .masonry-item-large {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+
+        /* Progressive Enhancement: Elements are ALWAYS visible by default to guarantee instant iPhone loading */
+        .gsap-reveal, .gsap-fade-up, .gsap-stagger-item, .gsap-scale-up {
+            visibility: visible;
+            opacity: 1;
         }
         
         .macos-glass {
-            background-color: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 1.5rem;
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .macos-glass:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
         }
         
         .macos-nav {
-            
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            
+            background-color: rgba(255, 255, 255, 0.6) !important;
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
         }
         
         .macos-card {
-            background-color: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+            background-color: rgba(255, 255, 255, 0.6) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05) !important;
             border-radius: 1.5rem;
+            overflow: hidden;
         }
     
         html.dark body {
-            background-color: #0b1437;
-            color: #ffffff;
+            background-color: #09090b; /* Zinc 950 */
+            color: #f4f4f5; /* Zinc 100 */
         }
         
         html.dark .macos-glass {
-            background-color: #111c44;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            background-color: rgba(24, 24, 27, 0.5) !important; /* Zinc 900 with opacity */
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+        }
+        
+        html.dark .macos-nav {
+            background-color: rgba(9, 9, 11, 0.65) !important; /* Zinc 950 */
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
         html.dark .macos-card {
-            background-color: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: none;
+            background-color: rgba(24, 24, 27, 0.4) !important; /* Zinc 900 */
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5) !important;
         }
 
         /* Reading Progress Bar */
@@ -87,156 +224,14 @@
             z-index: 9999;
             transition: width 0.1s ease;
         }
-
-        /* Smooth Scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Dropcap for articles */
-        .prose > div:first-child > p:first-of-type::first-letter {
-            font-size: 3.5rem;
-            font-weight: 900;
-            float: left;
-            margin-right: 0.5rem;
-            margin-top: -0.5rem;
-            line-height: 1;
-            color: #111111;
-        }
-        html.dark .prose > div:first-child > p:first-of-type::first-letter {
-            color: #ffffff;
-        }
     </style>
 </head>
-<body class="bg-[#FAFAFA] dark:bg-[#0b1437] text-gray-900 dark:text-white overflow-x-hidden">
+<body class="bg-studio-50 dark:bg-studio-900 text-zinc-900 dark:text-zinc-100 overflow-x-hidden min-h-screen flex flex-col">
     <div id="progress-bar"></div>
 
-    <!-- Navigation -->
-    
-    <!-- Unified Navigation -->
-    <nav class="fixed top-0 w-full z-[100] transition-all duration-300 macos-nav bg-white/80 dark:bg-[#0b1437]/90 border-b border-gray-200 dark:border-white/10">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="/" class="flex items-center text-lg font-bold tracking-tight text-gray-900 dark:text-white whitespace-nowrap mr-8">
-                EUC<span class="text-gray-500 font-light ml-1">Young Adults</span>
-            </a>
-            
-            <div class="hidden lg:flex items-center space-x-8">
-                <!-- 1. Foundation Dropdown -->
-                <div class="relative group">
-                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
-                        Foundation
-                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="absolute top-20 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
-                        <a href="/salvation" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Salvation</a>
-                        <a href="/water-baptism" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Water Baptism</a>
-                        <a href="/kingdom" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Kingdom</a>
-                    </div>
-                </div>
+    <!-- Modular Navigation Header (Includes 4-Language Switcher & Theme Toggle) -->
+    <%- include('navbar') %>
 
-                <!-- 2. Belong Dropdown -->
-                <div class="relative group">
-                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
-                        Belong
-                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="absolute top-20 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
-                        <a href="/membership" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Membership</a>
-                        <a href="/community" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Community</a>
-                        <a href="/mentorship" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Mentorship</a>
-                    </div>
-                </div>
+    <!-- Global i18n Synchronization Engine -->
+    <script src="/static/js/i18n-client.js"></script>
 
-                <!-- 3. Formation Dropdown -->
-                <div class="relative group">
-                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
-                        Formation
-                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="absolute top-20 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
-                        <a href="/scripture-memory" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Scripture Memory</a>
-                        <a href="/growth" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Growth</a>
-                        <a href="/maturity" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Maturity</a>
-                        <a href="/availability" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Availability</a>
-                    </div>
-                </div>
-
-                <!-- 4. Mission Dropdown -->
-                <div class="relative group">
-                    <button class="text-gray-900/70 hover:text-gray-900 dark:text-white transition-colors text-sm font-medium flex items-center gap-1 py-8">
-                        Mission
-                        <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="absolute top-20 right-0 mt-0 w-48 bg-white dark:bg-[#111c44] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
-                        <a href="/serving" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Serving</a>
-                        <a href="/generosity" class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors">Giving / Generosity</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-center ml-auto">
-                <!-- Dark Mode Toggle -->
-                <button id="theme-toggle" class="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none rounded-lg text-sm transition-colors mr-2 lg:mr-4">
-                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                    </svg>
-                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 2.32a1 1 0 011.415 0l.708.708a1 1 0 01-1.414 1.414l-.708-.708a1 1 0 010-1.414zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-4.22 4.22a1 1 0 010 1.414l-.708.708a1 1 0 01-1.414-1.414l.708-.708a1 1 0 011.414 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-2.32a1 1 0 01-1.415 0l-.708-.708a1 1 0 011.414-1.414l.708.708a1 1 0 010 1.414zM4 10a1 1 0 01-1 1H2a1 1 0 110-2h1a1 1 0 011 1zm2.32-4.22a1 1 0 010-1.414l-.708-.708a1 1 0 01-1.414 1.414l.708.708a1 1 0 011.414 0zM10 5a5 5 0 100 10 5 5 0 000-10z" fill-rule="evenodd" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-                
-                <a href="/dashboard" class="block px-3 md:px-5 py-2 md:py-2.5 rounded-full bg-accent text-white border border-transparent shadow-[0_0_10px_rgba(0,117,255,0.3)] hover:bg-blue-600 transition-colors text-xs md:text-sm font-bold whitespace-nowrap mr-2 lg:mr-0">
-                    Dashboard
-                </a>
-                
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" class="lg:hidden p-2.5 text-gray-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </button>
-            </div>
-        </div>
-
-    </nav>
-
-        <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu" class="fixed inset-0 top-20 bg-white/95 dark:bg-[#0b1437]/95 z-50 lg:hidden overflow-y-auto border-t border-gray-200 dark:border-white/10 transition-opacity duration-300" style="display: none; opacity: 0; pointer-events: none;">
-            <div class="px-6 pt-8 space-y-6" style="padding-bottom: calc(6rem + env(safe-area-inset-bottom));">
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Foundation</h3>
-                    <div class="flex flex-col space-y-2">
-                        <a href="/salvation" class="text-gray-900 dark:text-white font-medium py-2">Salvation</a>
-                        <a href="/water-baptism" class="text-gray-900 dark:text-white font-medium py-2">Water Baptism</a>
-                        <a href="/kingdom" class="text-gray-900 dark:text-white font-medium py-2">Kingdom</a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Belong</h3>
-                    <div class="flex flex-col space-y-2">
-                        <a href="/membership" class="text-gray-900 dark:text-white font-medium py-2">Membership</a>
-                        <a href="/community" class="text-gray-900 dark:text-white font-medium py-2">Community</a>
-                        <a href="/mentorship" class="text-gray-900 dark:text-white font-medium py-2">Mentorship</a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Formation</h3>
-                    <div class="flex flex-col space-y-2">
-                        <a href="/scripture-memory" class="text-gray-900 dark:text-white font-medium py-2">Scripture Memory</a>
-                        <a href="/growth" class="text-gray-900 dark:text-white font-medium py-2">Growth</a>
-                        <a href="/maturity" class="text-gray-900 dark:text-white font-medium py-2">Maturity</a>
-                        <a href="/availability" class="text-gray-900 dark:text-white font-medium py-2">Availability</a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Mission</h3>
-                    <div class="flex flex-col space-y-2">
-                        <a href="/serving" class="text-gray-900 dark:text-white font-medium py-2">Serving</a>
-                        <a href="/generosity" class="text-gray-900 dark:text-white font-medium py-2">Giving / Generosity</a>
-                    </div>
-                </div>
-                <div class="pt-6 border-t border-gray-200 dark:border-white/10">
-                    <a href="/dashboard" class="w-full text-center block px-5 py-3 rounded-xl bg-accent text-white font-bold transition-all shadow-[0_0_15px_rgba(0,117,255,0.3)]">
-                        Leader Dashboard
-                    </a>
-                </div>
-            </div>
-        </div>

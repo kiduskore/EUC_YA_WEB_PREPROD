@@ -1,154 +1,99 @@
 <%- include('partials/header') %>
 <!-- Hero Image Banner -->
-    <header class="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 bg-[url('/static/hero_images/guitarist.jpg')] bg-cover bg-center"></div>
+    <header class="relative w-full h-[50vh] min-h-[400px] pt-20 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-[url('/static/hero_images/singer.jpg')] bg-cover bg-center"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-white/80 via-white/70 to-[#FAFAFA] dark:from-[#0b1437]/90 dark:via-[#0b1437]/80 dark:to-[#0b1437]"></div>
         
-        <div class="relative z-10 text-center px-6 mt-16">
-            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight drop-shadow-lg">Go Public.</h1>
-            <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto drop-shadow-md">Declare your faith through the waters.</p>
+        <div class="relative z-10 text-center px-6">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight drop-shadow-lg">
+                <%= typeof t !== 'undefined' ? t('waterBaptism.heroTitle') : 'Go Public.' %>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-medium max-w-2xl mx-auto drop-shadow-md">
+                <%= typeof t !== 'undefined' ? t('waterBaptism.heroSubtitle') : 'Declare your faith through the waters.' %>
+            </p>
         </div>
     </header>
 
     <!-- Main Content Overlapping Hero -->
     <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-8 -mt-16 relative z-20 macos-glass mb-12">
         
-        <div class="flex items-center gap-2 mb-4"><span class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 3 MIN READ</span></div><div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-white/10 pb-6">
-            <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Water Baptism</h2>
+        <div class="flex items-center gap-2 mb-4">
+            <span class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <%= typeof t !== 'undefined' ? t('common.readTime', { min: '3' }) : '3 MIN READ' %>
+            </span>
+        </div>
+        <div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-white/10 pb-6">
+            <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                <%= typeof t !== 'undefined' ? t('waterBaptism.title') : 'Water Baptism' %>
+            </h2>
             <div class="w-24 h-1 rounded-full opacity-80" style="background-color: #06b6d4"></div>
         </div>
         
-        <div class="prose  max-w-none">
+        <div class="prose max-w-none">
             <div class="mb-8">
-                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>What Is Baptism?</h3>
-                <div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Let's clear something up right away: baptism doesn't save you — Jesus does. Baptism is not a requirement for getting into heaven, but it is an act of obedience to the One who saved you. Before Jesus ascended, He gave this command: "Go therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit" (Matthew 28:19).</p></div><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Peter echoed this on the day the Church was born: "Repent and be baptized, every one of you, in the name of Jesus Christ for the forgiveness of your sins" (Acts 2:38). Baptism is your public declaration — an outward picture of an inward reality.</p></div>
-                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">The symbolism is powerful and intentional. When you go under the water, it represents the burial of your old life — the person you were before Christ, with all of its guilt, shame, and brokenness, buried with Him. When you come up out of the water, it represents resurrection — you are raised to walk in the newness of life that Jesus purchased for you.</p><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">Paul captures it perfectly: "We were therefore buried with Him through baptism into death in order that, just as Christ was raised from the dead through the glory of the Father, we too may live a new life" (Romans 6:3-4). Baptism is a physical, tangible act that tells the world: the old me is gone, and I am alive in Christ.</p></div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section1.title') : 'What Is Baptism?' %>
+                </h3>
+                <div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor">
+                    <p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">
+                        <%= typeof t !== 'undefined' ? t('waterBaptism.section1.q1') : 'Baptism does not save you — Jesus does. Baptism is an act of joyful obedience to the One who saved you. Before Jesus ascended, He gave this command: "Go therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit" (Matthew 28:19).' %>
+                    </p>
+                </div>
+                <div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor">
+                    <p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">
+                        <%= typeof t !== 'undefined' ? t('waterBaptism.section1.q2') : 'Peter declared on the day of Pentecost: "Repent and be baptized, every one of you, in the name of Jesus Christ for the forgiveness of your sins" (Acts 2:38). Baptism is your outward picture of an inward reality.' %>
+                    </p>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section1.p1') : 'When you go under the water, it represents the burial of your old life — buried with Christ. When you come up out of the water, it represents resurrection — raised to walk in newness of life (Romans 6:3-4).' %>
+                </p>
             </div>
+
             <div class="mb-8">
-                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Why Get Baptized?</h3>
-                <div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">First and most importantly: because Jesus did it. When Jesus came to John at the Jordan River, He didn't need to be baptized — He was sinless. But He chose to step into those waters to "fulfill all righteousness" and model what obedience looks like (Matthew 3:13-17).</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">And when He came up out of the water, the heavens opened, the Spirit of God descended like a dove, and the Father spoke audibly: "This is my Son, whom I love; with Him I am well pleased." If Jesus considered baptism important enough to do Himself, it matters.</p>
-                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Baptism is your first act of obedience as a follower of Jesus. It's a bold, counter-cultural, public statement that you are no longer living for yourself — you belong to Christ. In a world where everyone curates their identity online, baptism is the most honest post you'll ever make: "I was lost, and now I'm found." Look at the early church — when the Ethiopian eunuch heard the gospel from Philip, his immediate response was, "Look, here is water.</p><div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor"><p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">What can stand in the way of my being baptized?" (Acts 8:36-38). He didn't wait for a special program or perfect timing. He heard the truth, believed it, and acted on it.</p></div><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">That same urgency should mark us today.</p>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section2.title') : 'Why Get Baptized?' %>
+                </h3>
+                <div class="p-6 bg-gray-50 hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg dark:bg-white/5 rounded-2xl border-l-4 my-6" style="border-color: currentColor">
+                    <p class="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed italic">
+                        <%= typeof t !== 'undefined' ? t('waterBaptism.section2.q1') : 'First and most importantly: because Jesus did it (Matthew 3:13-17). If Jesus considered baptism essential to fulfill all righteousness, it matters deeply for every believer.' %>
+                    </p>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section2.p1') : 'Baptism is your public confession that you belong to Christ in a culture that tries to define your identity.' %>
+                </p>
             </div>
+
             <div class="mb-8">
-                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Who Should Be Baptized?</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">If you have made a personal decision to follow Jesus Christ as your Lord and Savior, you are ready to be baptized. Full stop. It doesn't matter how old you are, what your background is, how long you've been a Christian, or how messy your story has been.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Baptism isn't for people who have it all together — it's for people who have surrendered to the One who does. You don't need to complete a theological degree or memorize a certain number of verses first. You just need faith in Jesus.</p>
-                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Maybe you gave your life to Christ years ago and never got baptized. Maybe you were baptized as an infant but have since made a personal, conscious decision to follow Jesus and want to make that declaration yourself. Maybe you literally just prayed the salvation prayer for the first time this week.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Wherever you are in that journey, if you believe that Jesus is Lord and you've turned your life over to Him, the water is for you. Don't let overthinking or insecurity keep you from obedience. The enemy would love nothing more than for you to delay this step indefinitely.</p>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section3.title') : 'Who Should Be Baptized?' %>
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section3.p1') : 'If you have made a personal decision to follow Jesus Christ as your Lord and Savior, you are ready to be baptized. It does not require years of perfection, only genuine faith in Jesus.' %>
+                </p>
             </div>
+
             <div class="mb-8">
-                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3"><svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>What to Expect</h3>
-                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Baptism Sunday is one of the most joy-filled, Spirit-charged moments you'll ever experience. Here's what it looks like practically: wear comfortable clothes you don't mind getting soaked in — dark colors are best, and we'll provide a towel and a change area. You'll be guided into the water by a pastor or ministry leader who will ask you to share briefly why you've decided to follow Jesus.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Then they'll lower you under the water and bring you back up. It takes seconds, but it echoes into eternity.</p>
-                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">When you come up out of that water, expect the room to erupt. Your church family — many of whom have walked the same road you're walking now — will be cheering, clapping, and praising God over your decision. It's not a solemn, quiet ritual.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">It's a celebration. It's a family welcoming a brother or sister into the visible body of Christ. Some people cry.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Some people shout. Some people just grin from ear to ear because for the first time, the weight of their old identity has been publicly laid down. You'll remember this day for the rest of your life.</p><p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">Don't miss it.</p>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section4.title') : 'What to Expect' %>
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+                    <%= typeof t !== 'undefined' ? t('waterBaptism.section4.p1') : 'Baptism Sunday is a celebration! You will be guided by leaders, declare your faith, and be baptized in water while your church family rejoices and prays over you.' %>
+                </p>
             </div>
         </div>
         
         <div class="mt-16 pt-8 border-t border-gray-200 dark:border-white/10">
-            <a  href="/#join" class="w-full text-white font-bold text-lg py-5 rounded-xl hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1"  style="background-color: #06b6d4">
-                Sign Up for Water Baptism
+            <a href="/#join" class="block w-full text-center text-white font-bold text-lg py-5 rounded-xl hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1" style="background-color: #06b6d4">
+                <%= typeof t !== 'undefined' ? t('waterBaptism.ctaBtn') : 'Sign Up for Water Baptism' %>
             </a>
         </div>
     </main>
-<!-- Join Us Section -->
-    <section id="join" class="py-12 relative overflow-hidden bg-transparent">
-        <div class="absolute inset-0 bg-accent/5" style="background-image: radial-gradient(#34c759 1px, transparent 1px); background-size: 40px 40px; opacity: 0.1;"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div class="fade-in">
-                <span class="text-accent dark:text-white font-semibold tracking-wider uppercase text-sm mb-2 block">Connect With Us</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6">Take the Next Step</h2>
-                <p class="text-gray-900/60 dark:text-white/60 mb-8 text-lg">
-                    Whether you are new to the area, exploring faith, or looking for a community to grow deep with—we would love to meet you.
-                </p>
-                
-                <div class="macos-card p-6 rounded-2xl border-l-4 border-l-accent mb-8">
-                    <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-2 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-accent dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        Tuesday Bible Study
-                    </h3>
-                    <p class="text-gray-900/80 dark:text-white/80 font-medium">914 Silver Spring Ave, 204B</p>
-                    <p class="text-gray-900/60 dark:text-white/60 text-sm">Silver Spring, MD</p>
-                    <p class="text-accent dark:text-white font-bold mt-3 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        7:00 PM Every Tuesday
-                    </p>
-                </div>
-            </div>
 
-            <div class="macos-card p-8 rounded-3xl border border-gray-200 dark:border-white/10 fade-in shadow-2xl shadow-accent/10">
-                <form id="contact-form" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Full Name</label>
-                            <input type="text" id="contact-name" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Phone Number</label>
-                            <input type="tel" id="contact-phone" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Email Address</label>
-                        <input type="email" id="contact-email" required class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Message (Optional)</label>
-                        <textarea id="contact-notes" rows="3" class="w-full bg-transparent/50 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all"></textarea>
-                    </div>
-                    
-                    <div id="contact-success" class="hidden bg-accent/20 border border-accent/50 text-accent dark:text-white rounded-xl p-3 text-sm font-medium flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Thanks! We will reach out shortly.
-                    </div>
-
-                    <button type="submit" id="contact-submit" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl p-4 hover:bg-accent2 transition-colors mt-4">
-                        Send Message
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    
-    <!-- Instagram Grid Section -->
-    <section class="py-12 px-6 relative z-10 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row items-center justify-between mb-8">
-                <div>
-                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Life at EUCMD</h2>
-                    <p class="text-gray-600 dark:text-gray-400">Follow the journey on Instagram <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="text-gray-900 dark:text-white hover:underline">@eucmdyoungadult</a></p>
-                </div>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="mt-4 md:mt-0 px-6 py-3 rounded-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/20 dark:bg-white/20 transition-colors font-semibold flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    Follow
-                </a>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/dark_worship.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/singer.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/man_praying.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-                <a href="https://www.instagram.com/eucmdyoungadult/" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/10">
-                    <img src="/static/hero_images/guitarist.jpg" class="object-cover w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
+    <!-- Join Us Section -->
+    <%- include('partials/join-section') %>
 <%- include('partials/footer') %>
