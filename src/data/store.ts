@@ -877,8 +877,12 @@ const initDb = () => {
       connectionTimeoutMillis: 5000,
     });
 
-    pool.on('error', (err) => {
+    pool.on('error', (err: any) => {
       console.error('[PostgreSQL Error] Unexpected client error:', err.message);
+      if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND') {
+         console.warn('[PostgreSQL] Database host is unreachable. Disabling database sync.');
+         pool = null;
+      }
     });
 
     // Init table and load data
@@ -889,7 +893,8 @@ const initDb = () => {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `).then(() => {
-      return pool!.query('SELECT data FROM app_state ORDER BY id DESC LIMIT 1');
+      if (!pool) return;
+      return pool.query('SELECT data FROM app_state ORDER BY id DESC LIMIT 1');
     }).then(res => {
       if (res && res.rows.length > 0) {
         const state = res.rows[0].data;
@@ -922,12 +927,16 @@ const initDb = () => {
 
         console.log('[PostgreSQL] Successfully restored app state from PostgreSQL Database');
         saveToDB();
-      } else {
+      } else if (res) {
         console.log('[PostgreSQL] Database connected. Initializing first state snapshot...');
         saveToDB();
       }
     }).catch(err => {
       console.error('[PostgreSQL Connection Error]:', err.message);
+      if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND' || err.message.includes('getaddrinfo')) {
+        console.warn('[PostgreSQL] Database host is unreachable. Disabling database sync and using in-memory store.');
+        pool = null;
+      }
     });
   } catch (err: any) {
     console.error('[PostgreSQL URL Parse Error]:', err.message);
@@ -964,8 +973,12 @@ const saveToDB = async () => {
     } else {
       await pool.query('INSERT INTO app_state (data) VALUES ($1)', [stateToSave]);
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Failed to save state to DB:', err);
+    if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND' || err.message?.includes('getaddrinfo')) {
+      console.warn('[PostgreSQL] Disabling database sync due to unreachable host.');
+      pool = null;
+    }
   }
 };
 
