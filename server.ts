@@ -698,6 +698,12 @@ app.get('/debug-smtp', async (req: Request, res: Response) => {
 
 // Fallback 404 handler
 app.use((req: Request, res: Response) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Endpoint not found: ' + req.path });
+  }
+  if (req.path.startsWith('/static/')) {
+    return res.status(404).send('Not found');
+  }
   if (req.accepts('html')) {
     res.redirect('/');
   } else {
