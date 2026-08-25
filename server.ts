@@ -267,8 +267,11 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
         });
       } catch (err: any) {
         console.error('[SMTP Error] Failed to send email:', err);
+        const resetLink = `/reset-password?token=${token}`;
         return res.render('forgot_password', { 
-          error: `Failed to send email: ${err.message || 'Please check SMTP settings'}` 
+          error: `Failed to send email: ${err.message || 'Please check SMTP settings'}`,
+          success: 'A fallback reset link has been generated below.',
+          resetLink
         });
       }
     } else {
