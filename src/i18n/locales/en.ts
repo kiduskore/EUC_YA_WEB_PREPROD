@@ -24,7 +24,6 @@ export const en = {
   'nav.language': 'Language',
   'nav.lightMode': 'Switch to Light Mode',
   'nav.darkMode': 'Switch to Dark Mode',
-
   // Hero Section
   'hero.tag': 'EUCMD Young Adults',
   'hero.followInstagram': 'Follow us on Instagram →',
@@ -33,7 +32,6 @@ export const en = {
   'hero.subtitle': 'We are a community of young adults in Maryland passionate about encountering Jesus, equipping believers, and empowering disciples.',
   'hero.joinGroup': 'Join a Small Group',
   'hero.freeResources': 'Free Resources',
-
   // Discipleship Resources
   'resources.tag': 'Equip & Grow',
   'resources.title': 'Discipleship Resources',
@@ -42,7 +40,6 @@ export const en = {
   'resources.loading': 'Loading resources...',
   'resources.empty': 'More resources coming soon!',
   'resources.defaultDesc': 'Discipleship and spiritual growth resource',
-
   // Next Steps
   'steps.tag': 'Get Involved',
   'steps.title': 'Your Next Steps',
@@ -55,7 +52,6 @@ export const en = {
   'steps.step3.title': '3. Discover Your Calling',
   'steps.step3.desc': 'Use your God-given gifts to serve others and advance the Kingdom in Maryland and beyond.',
   'steps.step3.link': 'Start Serving →',
-
   // Discipleship Pillars / Core Track
   'pillars.tag': 'Discipleship Journey',
   'pillars.title': 'Four Pillars of Our Community',
@@ -68,7 +64,6 @@ export const en = {
   'pillars.formation.desc': 'Transformed by scripture memorization, personal spiritual disciplines, emotional maturity, and availability to God.',
   'pillars.mission.title': 'Mission',
   'pillars.mission.desc': 'Mobilized for global impact through faithful local serving, evangelism, and radical kingdom generosity.',
-
   // Connect & Meeting Times
   'connect.tag': 'Connect With Us',
   'connect.title': 'Weekly Gatherings & Life Groups',
@@ -78,7 +73,6 @@ export const en = {
   'connect.schedule.desc': 'Every Tuesday at 7:00 PM EST\nFollowed by fellowship & prayer',
   'connect.contact.title': 'Get In Touch',
   'connect.contact.desc': 'Have questions or need prayer? Our team is always here for you.',
-
   // Contact Form
   'contact.tag': 'Send A Message',
   'contact.title': 'We Would Love to Hear From You',
@@ -101,7 +95,6 @@ export const en = {
   'contact.sending': 'Sending...',
   'contact.success': 'Thank you! Your message has been received. Our leadership team will reach out to you shortly.',
   'contact.error': 'Unable to send message at this moment. Please try again or email us directly.',
-
   // Common UI
   'common.readTime': '{min} MIN READ',
   'common.connectWithUs': 'Connect With Us',
@@ -111,7 +104,6 @@ export const en = {
   'common.backToPublic': '← Back to Public Site',
   'common.selectLanguage': 'Select Language',
   'common.switchSuccess': 'Language updated successfully',
-
   // 1. Salvation Page
   'salvation.heroTitle': 'New Life Starts Here.',
   'salvation.heroSubtitle': 'Real Grace for Real Life.',
@@ -139,7 +131,6 @@ export const en = {
   'salvation.section4.q2': 'You are literally a new creation: "Therefore, if anyone is in Christ, he is a new creation. The old has passed away; behold, the new has come" (2 Corinthians 5:17).',
   'salvation.section4.p2': 'Your past does not define you anymore. Here is what to do next: get baptized, find a Christ-centered community, and begin reading the Word of God starting with the Gospel of John.',
   'salvation.ctaBtn': 'I Just Gave My Life to Jesus - What\'s Next?',
-
   // 2. Water Baptism Page
   'waterBaptism.heroTitle': 'Go Public.',
   'waterBaptism.heroSubtitle': 'Declare your faith through the waters.',
@@ -156,7 +147,6 @@ export const en = {
   'waterBaptism.section4.title': 'What to Expect',
   'waterBaptism.section4.p1': 'Baptism Sunday is a celebration! You will be guided by leaders, declare your faith, and be baptized in water while your church family rejoices and prays over you.',
   'waterBaptism.ctaBtn': 'Sign Up for Water Baptism',
-
   // 3. Kingdom Page
   'kingdom.heroTitle': 'See the Bigger Picture.',
   'kingdom.heroSubtitle': 'Theology that transforms daily decisions.',
@@ -174,7 +164,6 @@ export const en = {
   'kingdom.section4.q1': '"You will receive power when the Holy Spirit comes on you; and you will be my witnesses" (Acts 1:8).',
   'kingdom.section4.p1': 'We do not live the Christian life in our own strength. The Holy Spirit indwells us, producing supernatural fruit and empowering us for service.',
   'kingdom.ctaBtn': 'Start the Kingdom Worldview Course',
-
   // 4. Membership Page
   'membership.heroTitle': 'Plant Your Roots.',
   'membership.heroSubtitle': 'Moving from an attendee to an active family member.',
@@ -188,7 +177,6 @@ export const en = {
   'membership.section4.title': 'How to Join EUCMD',
   'membership.section4.p1': 'Attend our New Members Class, meet with a pastor, and take your place in the family of God.',
   'membership.ctaBtn': 'Join the Next Membership Class',
-
   // 5. Community Page
   'community.heroTitle': 'Doing Life Together.',
   'community.heroSubtitle': 'Authentic Christ-centered brotherhood & sisterhood.',
@@ -202,7 +190,6 @@ export const en = {
   'community.section4.title': 'Find Your Group Today',
   'community.section4.p1': 'Join one of our young adult life groups meeting across Maryland throughout the week.',
   'community.ctaBtn': 'Find a Life Group Near You',
-
   // 6. Mentorship Page
   'mentorship.heroTitle': 'Iron Sharpens Iron.',
   'mentorship.heroSubtitle': 'Generational wisdom and discipleship coaching.',
@@ -216,7 +203,6 @@ export const en = {
   'mentorship.section4.title': 'Get Connected with a Mentor',
   'mentorship.section4.p1': 'Our leadership team pairs young adults with mature, seasoned believers who are eager to invest in you.',
   'mentorship.ctaBtn': 'Request a Mentor',
-
   // 7. Scripture Memory Page
   'scriptureMemory.heroTitle': 'Hide the Word in Your Heart.',
   'scriptureMemory.heroSubtitle': 'Renew your mind with unchanging truth.',
@@ -230,7 +216,6 @@ export const en = {
   'scriptureMemory.section4.title': 'Monthly Memory Challenges',
   'scriptureMemory.section4.p1': 'Join our community-wide Scripture Memory Track and memorize core passages together.',
   'scriptureMemory.ctaBtn': 'Download the Scripture Memory Guide',
-
   // 8. Growth Page
   'growth.heroTitle': 'From Seed to Tree.',
   'growth.heroSubtitle': 'Developing personal spiritual disciplines.',
@@ -244,7 +229,6 @@ export const en = {
   'growth.section4.title': 'Next Steps in Growth',
   'growth.section4.p1': 'Set daily devotional rhythms and join our discipleship reading plans.',
   'growth.ctaBtn': 'Start the 30-Day Growth Plan',
-
   // 9. Maturity Page
   'maturity.heroTitle': 'Beyond the Basics.',
   'maturity.heroSubtitle': 'Walking in spiritual wisdom and emotional wholeness.',
@@ -258,7 +242,6 @@ export const en = {
   'maturity.section4.title': 'Sound Biblical Doctrine',
   'maturity.section4.p1': 'Anchor your theological foundation in the authority and inerrancy of God\'s holy Word.',
   'maturity.ctaBtn': 'Join the Advanced Theology Track',
-
   // 10. Availability Page
   'availability.heroTitle': 'Here I Am, Lord.',
   'availability.heroSubtitle': 'A life surrendered and ready for the Master\'s use.',
@@ -272,7 +255,6 @@ export const en = {
   'availability.section4.title': 'Stepping into God\'s Promptings',
   'availability.section4.p1': 'When the Holy Spirit prompts you to pray for someone, give generously, or share the gospel, obey immediately.',
   'availability.ctaBtn': 'Dedicate Your Time & Talents',
-
   // 11. Serving Page
   'serving.heroTitle': 'Hands and Feet of Jesus.',
   'serving.heroSubtitle': 'Serving our church, community, and city.',
@@ -286,7 +268,6 @@ export const en = {
   'serving.section4.title': 'Impacting Maryland & Beyond',
   'serving.section4.p1': 'Step out into local community outreaches, food distributions, and regional evangelism initiatives.',
   'serving.ctaBtn': 'Join a Serving Team',
-
   // 12. Generosity Page
   'generosity.heroTitle': 'Living with Open Hands.',
   'generosity.heroSubtitle': 'Honoring God through biblical giving and radical stewardship.',
@@ -300,7 +281,6 @@ export const en = {
   'generosity.section4.title': 'Ways to Give at EUCMD',
   'generosity.section4.p1': 'Support our local and international young adult missions, ministries, and benevolence funds safely and securely.',
   'generosity.ctaBtn': 'Give Online to EUCMD Young Adults',
-
   // Auth & Account
   'auth.welcomeBack': 'Welcome Back',
   'auth.signInDashboard': 'Sign in to the Leader Dashboard',
@@ -320,7 +300,6 @@ export const en = {
   'auth.resetSubtitle': 'Enter your email to receive a password reset link',
   'auth.sendResetLink': 'Send Reset Link',
   'auth.backToLogin': '← Back to Sign In',
-
   // Footer
   'footer.title': 'EUCMD Young Adults',
   'footer.motto': 'Raising up a generation of disciples who make disciples.',
@@ -329,5 +308,30 @@ export const en = {
   'footer.mainChurch': 'Emmanuel United Church of MD',
   'footer.leaderAccess': 'Leader Dashboard Access',
   'footer.allRightsReserved': 'Emmanuel United Church MD Young Adults. All rights reserved.',
-  'footer.languageNotice': 'Available in 4 languages: English, አማርኛ, ትግርኛ, and Afaan Oromoo.'
+  'footer.languageNotice': 'Available in 4 languages: English, አማርኛ, ትግርኛ, and Afaan Oromoo.',
+  'auth.updatePasswordBtn': 'Update Password',
+  'auth.confirmPasswordLabel': 'Confirm Password',
+  'auth.resetPasswordSubtitle': 'Enter your new password below.',
+  'auth.rememberPassword': 'Remember your password?',
+  'auth.returnToSignIn': 'Return to Sign In',
+  'auth.openResetForm': 'Open Password Reset Form →',
+  'auth.directResetLink': 'Direct Reset Link:',
+  'auth.forgotPasswordSubtitle': 'Enter your email and we\'ll send you a link to reset your password.',
+  'auth.forgotPasswordTitle': 'Forgot Password',
+  'auth.createAccountBtn': 'Create Account',
+  'auth.newPasswordLabel': 'New Password',
+  'auth.emailLabel': 'Email Address',
+  'auth.fullNameLabel': 'Full Name',
+  'auth.joinDashboardSubtitle': 'Enter your invite code to create your account.',
+  'auth.joinDashboard': 'Join Dashboard',
+  'serving.section1.q1': '"For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do." (Ephesians 2:10)',
+  'scriptureMemory.section1.q1': '"I have hidden your word in my heart that I might not sin against you." (Psalm 119:11)',
+  'mentorship.section1.q1': '"Walk with the wise and become wise, for a companion of fools suffers harm." (Proverbs 13:20)',
+  'membership.section2.q1': 'We believe the Bible is the inspired, authoritative Word of God. We believe in one God eternally existent in three persons: Father, Son, and Holy Spirit. We believe in salvation by grace through faith in Jesus Christ alone.',
+  'membership.section1.q1': 'The New Testament doesn\'t know anything about isolated, free-agent Christians. When Paul wrote his letters, he wrote them to churches — specific, named, local communities of believers who were committed to one another (1 Corinthians 12:12-27).',
+  'maturity.section1.q1': '"Then we will no longer be infants, tossed back and forth by the waves... Instead, speaking the truth in love, we will grow to become in every respect the mature body of him who is the head, that is, Christ." (Ephesians 4:14-15)',
+  'growth.section1.q1': '"Train yourself to be godly. For physical training is of some value, but godliness has value for all things." (1 Timothy 4:7-8)',
+  'generosity.section1.q1': '"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver." (2 Corinthians 9:7)',
+  'community.section1.q1': '"Two are better than one, because they have a good return for their labor: If either of them falls down, one can help the other up." (Ecclesiastes 4:9-10)',
+  'availability.section1.q1': '"Then I heard the voice of the Lord saying, "Whom shall I send? And who will go for us?" And I said, "Here am I. Send me!"" (Isaiah 6:8)',
 };
