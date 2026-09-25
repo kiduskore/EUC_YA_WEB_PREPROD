@@ -209,18 +209,21 @@
                     <p class="text-slate-200 mt-2">Our team would love to stand in faith with you.</p>
                 </div>
 
-                <form class="space-y-6">
+                <form id="publicPrayerForm" class="space-y-6">
                     <div>
                         <label class="block text-sm font-semibold text-slate-100 mb-2">Name (Optional)</label>
-                        <input type="text" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/20 transition-colors" placeholder="Your name">
+                        <input type="text" id="prayerName" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/20 transition-colors" placeholder="Your name">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-100 mb-2">Prayer Request</label>
-                        <textarea rows="4" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/20 transition-colors resize-none" placeholder="Share what's on your heart..."></textarea>
+                        <textarea id="prayerText" required rows="4" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/20 transition-colors resize-none" placeholder="Share what's on your heart..."></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-white text-navy-900 font-bold py-4 rounded-xl hover:bg-slate-200 transition-colors shadow-lg">
+                    <button type="submit" id="prayerSubmitBtn" class="w-full bg-white text-navy-900 font-bold py-4 rounded-xl hover:bg-slate-200 transition-colors shadow-lg">
                         Submit Request
                     </button>
+                    <div id="prayerSuccess" class="hidden text-center text-green-400 font-bold mt-4 p-4 bg-green-900/30 rounded-xl border border-green-500/30">
+                        Your prayer request has been submitted. We are praying for you!
+                    </div>
                 </form>
             </div>
         </section>
@@ -229,6 +232,55 @@
 
     <script>
         lucide.createIcons();
+        
+        document.getElementById('publicPrayerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('prayerSubmitBtn');
+            const success = document.getElementById('prayerSuccess');
+            const reqText = document.getElementById('prayerText').value;
+            const reqName = document.getElementById('prayerName').value;
+            
+            if (!reqText.trim()) return;
+            
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+            btn.classList.add('opacity-70');
+            
+            try {
+                const response = await fetch('/api/prayer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        requester_name: reqName,
+                        request_text: reqText,
+                        is_urgent: false
+                    })
+                });
+                
+                if (response.ok) {
+                    success.classList.remove('hidden');
+                    document.getElementById('prayerText').value = '';
+                    document.getElementById('prayerName').value = '';
+                    btn.style.display = 'none';
+                    setTimeout(() => {
+                        success.classList.add('hidden');
+                        btn.style.display = 'block';
+                        btn.disabled = false;
+                        btn.textContent = 'Submit Request';
+                        btn.classList.remove('opacity-70');
+                    }, 5000);
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch (err) {
+                alert('An error occurred submitting your prayer. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Submit Request';
+                btn.classList.remove('opacity-70');
+            }
+        });
     </script>
 </body>
 </html>

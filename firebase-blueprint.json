@@ -1,0 +1,40 @@
+{
+  "entities": {
+    "NewsletterSubscriber": {
+      "title": "NewsletterSubscriber",
+      "description": "Email subscriber for young adults updates, devotionals, and member follow-up",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Subscriber email address"
+        },
+        "name": {
+          "type": "string",
+          "description": "Optional subscriber name"
+        },
+        "source": {
+          "type": "string",
+          "description": "Where the user subscribed (e.g. footer_form)"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["subscribed", "unsubscribed"],
+          "description": "Subscription status"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Timestamp when subscribed"
+        }
+      },
+      "required": ["email", "status", "created_at"]
+    }
+  },
+  "firestore": {
+    "/newsletter_subscribers/{subscriberId}": {
+      "schema": "NewsletterSubscriber",
+      "description": "Collection of newsletter subscriber emails for follow-up and engagement"
+    }
+  }
+}

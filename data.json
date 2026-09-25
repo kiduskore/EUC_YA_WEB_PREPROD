@@ -1,0 +1,508 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "keku121@gmail.com",
+      "role_id": 1,
+      "full_name": "Kidus",
+      "is_active": true,
+      "password_hash": "$2b$10$9/8oeycNfBxD9YcFA43G2e3Oyp1yhEg6Pl3LobZMPf14mQUvJoVcy"
+    },
+    {
+      "id": 2,
+      "email": "admin@euc.org",
+      "role_id": 1,
+      "full_name": "Site Administrator",
+      "is_active": true,
+      "password_hash": "$2b$10$QgrG1G15zLUJ0a4m58rPyu.TU56gdR1f3pGo0ceaUosO2rx9Ka4Zq"
+    },
+    {
+      "id": 3,
+      "email": "leader@euc.org",
+      "role_id": 2,
+      "full_name": "Kidus Kore",
+      "is_active": true,
+      "password_hash": "$2b$10$QgrG1G15zLUJ0a4m58rPyu.TU56gdR1f3pGo0ceaUosO2rx9Ka4Zq"
+    }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "name": "Site Admin"
+    },
+    {
+      "id": 2,
+      "name": "Basic Manager"
+    }
+  ],
+  "permissions": [
+    {
+      "id": 1,
+      "name": "manage_users"
+    },
+    {
+      "id": 2,
+      "name": "manage_pods"
+    },
+    {
+      "id": 3,
+      "name": "manage_members"
+    },
+    {
+      "id": 4,
+      "name": "manage_settings"
+    },
+    {
+      "id": 5,
+      "name": "view_dashboard"
+    }
+  ],
+  "rolePermissions": [
+    {
+      "role_id": 1,
+      "permission_id": 1
+    },
+    {
+      "role_id": 1,
+      "permission_id": 2
+    },
+    {
+      "role_id": 1,
+      "permission_id": 3
+    },
+    {
+      "role_id": 1,
+      "permission_id": 4
+    },
+    {
+      "role_id": 1,
+      "permission_id": 5
+    },
+    {
+      "role_id": 2,
+      "permission_id": 5
+    },
+    {
+      "role_id": 2,
+      "permission_id": 3
+    },
+    {
+      "role_id": 2,
+      "permission_id": 2
+    }
+  ],
+  "members": [],
+  "pods": [],
+  "podMembers": [],
+  "prayerRequests": [
+    {
+      "id": 5,
+      "status": "active",
+      "is_urgent": true,
+      "member_id": null,
+      "testimony": null,
+      "created_at": "2026-09-17",
+      "request_text": "Testing prayer text",
+      "requester_name": "Anonymous",
+      "supporter_count": 1
+    },
+    {
+      "id": 1,
+      "status": "active",
+      "is_urgent": true,
+      "member_id": null,
+      "created_at": "2026-02-22",
+      "request_text": "Prayers for our upcoming young adult discipleship retreat and wisdom for new pod leaders stepping up.",
+      "requester_name": "Kidus Kore",
+      "supporter_count": 8
+    },
+    {
+      "id": 2,
+      "status": "active",
+      "is_urgent": false,
+      "member_id": null,
+      "created_at": "2026-02-23",
+      "request_text": "Seeking God's guidance regarding a job offer and career transition into non-profit ministry.",
+      "requester_name": "Meron Alemayehu",
+      "supporter_count": 5
+    },
+    {
+      "id": 3,
+      "status": "active",
+      "is_urgent": true,
+      "member_id": null,
+      "created_at": "2026-02-24",
+      "request_text": "Health and healing for my mother who had outpatient surgery this past Friday.",
+      "requester_name": "Hanna Wolde",
+      "supporter_count": 11
+    },
+    {
+      "id": 4,
+      "status": "answered",
+      "is_urgent": false,
+      "member_id": null,
+      "testimony": "God proved faithful when we had exhausted all human options. Thank you church family for standing in faith!",
+      "created_at": "2026-02-10",
+      "answered_at": "2026-02-20",
+      "request_text": "Praise God! The immigration visa process was approved after two years of praying!",
+      "requester_name": "Ephrem Girma",
+      "supporter_count": 14
+    }
+  ],
+  "prayerSupporters": [],
+  "weeklyPlans": [],
+  "pipeline": [
+    {
+      "id": 1,
+      "name": "Emanuel Bekele",
+      "email": "emanuel.b@gmail.com",
+      "notes": "Visited Tuesday gathering; interested in Silver Spring Pod.",
+      "phone": "(240) 555-0142",
+      "stage": "first_contact",
+      "created_at": "2026-02-24",
+      "first_visit_date": "2026-02-24"
+    },
+    {
+      "id": 2,
+      "name": "Tigist Assefa",
+      "email": "tigist.a@yahoo.com",
+      "notes": "Followed up via text and sent welcome packet; invited for coffee.",
+      "phone": "(301) 555-0176",
+      "stage": "welcomed",
+      "created_at": "2026-02-17",
+      "first_visit_date": "2026-02-17"
+    },
+    {
+      "id": 3,
+      "name": "Nathnael Teshome",
+      "email": "nathnael.t@gmail.com",
+      "notes": "Connected with Dawit for College Park DNA Pod; attended first session.",
+      "phone": "(202) 555-0118",
+      "stage": "invited_to_pod",
+      "created_at": "2026-02-10",
+      "first_visit_date": "2026-02-10"
+    },
+    {
+      "id": 4,
+      "name": "Liya Desta",
+      "email": "liya.d@gmail.com",
+      "notes": "Fully integrated into Bethesda pod; interested in worship team serving.",
+      "phone": "(301) 555-0192",
+      "stage": "integrated",
+      "created_at": "2026-01-20",
+      "first_visit_date": "2026-01-20"
+    },
+    {
+      "id": 5,
+      "name": "test_seeker",
+      "email": "test_seeker@example.com",
+      "notes": "Subscribed to Young Adults Newsletter (footer_form) for follow-up and engagement",
+      "phone": "",
+      "stage": "first_contact",
+      "created_at": "2026-09-25",
+      "assigned_to": null,
+      "first_visit_date": "2026-09-25"
+    },
+    {
+      "id": 6,
+      "name": "Bethlehem Tadesse",
+      "email": "new_member_seeker@gmail.com",
+      "notes": "Subscribed to Young Adults Newsletter (footer_form) for follow-up and engagement",
+      "phone": "",
+      "stage": "first_contact",
+      "created_at": "2026-09-25",
+      "assigned_to": null,
+      "first_visit_date": "2026-09-25"
+    },
+    {
+      "id": 7,
+      "name": "Samuel Alemu",
+      "email": "new_believer@example.com",
+      "notes": "Subscribed to Young Adults Newsletter (footer_form) for follow-up and engagement",
+      "phone": "",
+      "stage": "first_contact",
+      "created_at": "2026-09-25",
+      "assigned_to": null,
+      "first_visit_date": "2026-09-25"
+    },
+    {
+      "id": 8,
+      "name": "keku121",
+      "email": "keku121@gmail.com",
+      "notes": "Subscribed to Young Adults Newsletter (footer_form) for follow-up and engagement",
+      "phone": "",
+      "stage": "first_contact",
+      "created_at": "2026-09-25",
+      "assigned_to": null,
+      "first_visit_date": "2026-09-25"
+    },
+    {
+      "id": 9,
+      "name": "test_subscriber_1",
+      "phone": "",
+      "email": "test_subscriber_1@gmail.com",
+      "stage": "first_contact",
+      "notes": "Subscribed to Young Adults Newsletter (footer_form) for follow-up and engagement",
+      "assigned_to": null,
+      "first_visit_date": "2026-09-25",
+      "created_at": "2026-09-25"
+    },
+    {
+      "id": 10,
+      "name": "test_subscriber_2",
+      "phone": "",
+      "email": "test_subscriber_2@gmail.com",
+      "stage": "first_contact",
+      "notes": "Subscribed to Young Adults Newsletter (footer_form) for follow-up and engagement",
+      "assigned_to": null,
+      "first_visit_date": "2026-09-25",
+      "created_at": "2026-09-25"
+    },
+    {
+      "id": 11,
+      "name": "test_subscriber_3",
+      "phone": "",
+      "email": "test_subscriber_3@gmail.com",
+      "stage": "first_contact",
+      "notes": "Subscribed to Young Adults Newsletter (footer_form) for follow-up and engagement",
+      "assigned_to": null,
+      "first_visit_date": "2026-09-25",
+      "created_at": "2026-09-25"
+    }
+  ],
+  "subscribers": [
+    {
+      "id": null,
+      "email": "test_seeker@example.com",
+      "source": "footer_form",
+      "status": "subscribed",
+      "created_at": "2026-09-25T12:44:28.651Z"
+    },
+    {
+      "id": 2,
+      "name": "Bethlehem Tadesse",
+      "email": "new_member_seeker@gmail.com",
+      "source": "footer_form",
+      "status": "subscribed",
+      "created_at": "2026-09-25T12:45:13.098Z"
+    },
+    {
+      "id": 3,
+      "name": "Samuel Alemu",
+      "email": "new_believer@example.com",
+      "source": "footer_form",
+      "status": "subscribed",
+      "created_at": "2026-09-25T12:58:03.677Z"
+    },
+    {
+      "id": 4,
+      "email": "keku121@gmail.com",
+      "source": "footer_form",
+      "status": "subscribed",
+      "created_at": "2026-09-25T13:01:13.337Z"
+    },
+    {
+      "id": 5,
+      "email": "test_subscriber_1@gmail.com",
+      "source": "footer_form",
+      "status": "subscribed",
+      "created_at": "2026-09-25T13:09:28.300Z"
+    },
+    {
+      "id": 6,
+      "email": "test_subscriber_2@gmail.com",
+      "source": "footer_form",
+      "status": "subscribed",
+      "created_at": "2026-09-25T13:09:29.072Z"
+    },
+    {
+      "id": 7,
+      "email": "test_subscriber_3@gmail.com",
+      "source": "footer_form",
+      "status": "subscribed",
+      "created_at": "2026-09-25T13:09:29.218Z"
+    }
+  ],
+  "newsletterBroadcasts": [
+    {
+      "id": 2,
+      "message": "Grace and peace everyone! We look forward to meeting tomorrow night for praise, prayer, and community fellowship.",
+      "sent_at": "2026-09-25T13:02:24.753Z",
+      "subject": "Tuesday Gathering Reminder: 7:00 PM EST at Silver Spring",
+      "sender_email": "keku121@gmail.com",
+      "recipients_count": 1
+    },
+    {
+      "id": 1,
+      "message": "Join us tomorrow night at 914 Silver Spring Ave 204B for worship, prayer, and fellowship!",
+      "sent_at": "2026-09-25T12:59:06.036Z",
+      "subject": "Tuesday Gathering Reminder: 7:00 PM EST",
+      "sender_email": "keku121@gmail.com",
+      "recipients_count": 3
+    }
+  ],
+  "resources": [
+    {
+      "id": 1,
+      "title": "How to Read the Bible for All Its Worth",
+      "category": "Bible Study",
+      "file_url": "https://bibleproject.com/explore/how-to-read-the-bible/",
+      "created_at": "2026-01-01",
+      "description": "A foundational guide to understanding and interpreting Scripture effectively."
+    },
+    {
+      "id": 2,
+      "title": "Gospel of John Study Guide",
+      "category": "Bible Study",
+      "file_url": "https://www.thegospelcoalition.org/course/knowing-bible-john/",
+      "created_at": "2026-01-01",
+      "description": "A 12-week deep dive into the Gospel of John focusing on the identity of Jesus."
+    },
+    {
+      "id": 3,
+      "title": "The Master Plan of Evangelism",
+      "category": "Leadership",
+      "file_url": "https://discipleship.org/resources/",
+      "created_at": "2026-01-01",
+      "description": "Robert Coleman's classic on how Jesus made disciples and how we can follow His model."
+    },
+    {
+      "id": 4,
+      "title": "Spiritual Leadership",
+      "category": "Leadership",
+      "file_url": "https://discipleship.org/resources/",
+      "created_at": "2026-01-01",
+      "description": "J. Oswald Sanders' essential principles for guiding others through spiritual maturity."
+    },
+    {
+      "id": 5,
+      "title": "DNA Pod Leader Guide",
+      "category": "Leadership",
+      "file_url": "https://www.desiringgod.org/articles/how-to-lead-a-small-group",
+      "created_at": "2026-01-01",
+      "description": "Internal guide on how to facilitate effective DNA pods, navigate difficult conversations, and multiply leaders."
+    },
+    {
+      "id": 6,
+      "title": "New Morning Mercies",
+      "category": "Devotional",
+      "file_url": "https://www.paultripp.com/new-morning-mercies",
+      "created_at": "2026-01-01",
+      "description": "Daily gospel-centered devotionals by Paul David Tripp."
+    }
+  ],
+  "inviteCodes": [
+    {
+      "id": 1,
+      "code": "EUCleader26",
+      "is_used": false,
+      "role_id": 1,
+      "role_name": "Site Admin",
+      "created_at": "2026-09-16T13:25:19.848Z"
+    },
+    {
+      "id": 2,
+      "code": "GROWTH2026",
+      "is_used": false,
+      "role_id": 2,
+      "role_name": "Basic Manager",
+      "created_at": "2026-09-16T13:25:19.849Z"
+    }
+  ],
+  "resetTokens": [
+    {
+      "id": 1,
+      "token": "kha40rp0c0ms17lybh6aq9",
+      "is_used": true,
+      "user_id": 1,
+      "expires_at": 1789576530822
+    },
+    {
+      "id": 2,
+      "token": "n2o2583n88aq1p4w9mlxk",
+      "is_used": true,
+      "user_id": 1,
+      "expires_at": 1789611249162
+    }
+  ],
+  "events": [
+    {
+      "id": 1,
+      "date": "2026-09-29",
+      "time": "7:00 PM - 9:00 PM",
+      "title": "Tuesday DNA Gathering: Worship, Word & Fellowship",
+      "capacity": 120,
+      "category": "gathering",
+      "location": "EUC Sanctuary, 12604 New Hampshire Ave, Silver Spring, MD 20904",
+      "created_at": "2026-09-01",
+      "description": "Our weekly young adults gathering dedicated to authentic worship, biblical teaching, table discussions, and deep fellowship.",
+      "is_featured": true
+    },
+    {
+      "id": 2,
+      "date": "2026-10-02",
+      "time": "7:30 PM - 10:00 PM",
+      "title": "First Friday Encounter: Worship & Intercession",
+      "capacity": 80,
+      "category": "prayer",
+      "location": "EUC Prayer Chapel, 12604 New Hampshire Ave, Silver Spring, MD",
+      "created_at": "2026-09-01",
+      "description": "An unhurried night of worship, deep prayer, and intercession for our cities, generation, and spiritual breakthroughs.",
+      "is_featured": true
+    },
+    {
+      "id": 3,
+      "date": "2026-10-10",
+      "time": "11:00 AM - 2:00 PM",
+      "title": "12 Tribes Community Brunch & Fellowship",
+      "capacity": 75,
+      "category": "fellowship",
+      "location": "Fellowship Pavilion, 12604 New Hampshire Ave, Silver Spring, MD",
+      "created_at": "2026-09-01",
+      "description": "Join your tribe family for food, games, and rich fellowship outside Tuesday. A wonderful time to invite friends and connect deeper!",
+      "is_featured": false
+    },
+    {
+      "id": 4,
+      "date": "2026-10-17",
+      "time": "10:00 AM - 1:00 PM",
+      "title": "Kingdom Outreach: City Blessing & Food Distribution",
+      "capacity": 40,
+      "category": "service",
+      "location": "Silver Spring Downtown & Local Community Center",
+      "created_at": "2026-09-01",
+      "description": "Hands-on practical love for our local community. Packing essentials kits, food distribution, and prayer for local families.",
+      "is_featured": false
+    },
+    {
+      "id": 5,
+      "date": "2026-11-06",
+      "time": "Fri 5:00 PM – Sun 1:00 PM",
+      "title": "Fall Young Adults Discipleship Retreat 2026",
+      "capacity": 60,
+      "category": "retreat",
+      "location": "Blue Ridge Mountain Christian Retreat Center, VA",
+      "created_at": "2026-09-01",
+      "description": "Three transformative days unplugged in the mountains with worship, deep teaching, campfire fellowship, and visionary leadership sessions.",
+      "is_featured": true
+    }
+  ],
+  "eventRsvps": [],
+  "nextIds": {
+    "pods": 1,
+    "users": 4,
+    "events": 6,
+    "members": 1,
+    "pipeline": 12,
+    "resources": 7,
+    "attendance": 1,
+    "eventRsvps": 1,
+    "devotionals": 1,
+    "inviteCodes": 3,
+    "resetTokens": 3,
+    "subscribers": null,
+    "weeklyPlans": 1,
+    "prayerRequests": 8,
+    "prayerSupporters": 1
+  }
+}

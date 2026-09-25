@@ -14,7 +14,14 @@
         <div class="bg-red-500/10 border border-red-500/50 text-red-400 rounded-xl p-3 text-sm mb-6"><%= error %></div>
         <% } %>
 
-        <form method="POST" action="/claim-account" class="space-y-4 text-left">
+        <% if (typeof alreadySignedIn !== "undefined" && alreadySignedIn) { %>
+            <div class="bg-blue-500/10 border border-blue-500/30 text-blue-400 p-6 rounded-xl text-center mb-6">
+                <p class="font-bold mb-4">You are already signed in.</p>
+                <a href="/dashboard" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Go to Dashboard</a>
+            </div>
+            <% } else { %>
+            <form method="POST" action="/claim-account" class="space-y-4 text-left">
+                        <input type="hidden" name="csrf_token" value="<%= typeof csrf_token !== 'undefined' ? csrf_token : '' %>">
             <div>
                 <label class="block text-xs font-semibold text-gray-400 mb-1">
                     <%= typeof t !== 'undefined' ? t('auth.inviteCode') : 'Invite Code' %>
@@ -43,6 +50,7 @@
                 <%= typeof t !== 'undefined' ? t('auth.createAccountBtn') : 'Create Account' %>
             </button>
         </form>
+            <% } %>
         <div class="mt-8">
             <a href="/login" class="text-xs text-gray-500 hover:text-white transition-colors">
                 ← <%= typeof t !== 'undefined' ? t('auth.backToLogin') : 'Back to Login' %>

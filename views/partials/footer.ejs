@@ -1,8 +1,282 @@
 <!-- Footer -->
     
 <!-- Footer -->
-    <footer class="bg-white dark:bg-studio-900 pt-20 pb-12 border-t border-zinc-200 dark:border-white/10 mt-auto relative z-10">
+    <footer class="bg-white dark:bg-studio-900 pt-16 pb-12 border-t border-zinc-200 dark:border-white/10 mt-auto relative z-10">
         <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
+            
+            <!-- Newsletter Subscription Card -->
+            <div class="mb-16 p-8 sm:p-10 lg:p-12 rounded-3xl bg-gradient-to-br from-zinc-50 via-zinc-100/50 to-blue-50/30 dark:from-studio-800/80 dark:via-studio-900 dark:to-blue-950/20 border border-zinc-200/80 dark:border-white/10 shadow-sm relative overflow-hidden">
+                <div class="absolute -right-12 -bottom-12 w-72 h-72 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-12 -top-12 w-72 h-72 rounded-full bg-purple-500/10 blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider mb-3">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span><%= typeof t !== 'undefined' ? t('footer.newsletter.tag') : 'Stay Connected' %></span>
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-studio-900 dark:text-white tracking-tight mb-2">
+                            <%= typeof t !== 'undefined' ? t('footer.newsletter.title') : 'Subscribe to Our Newsletter' %>
+                        </h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm sm:text-base leading-relaxed">
+                            <%= typeof t !== 'undefined' ? t('footer.newsletter.subtitle') : 'Get weekly gathering reminders, devotionals, small group updates, and retreat announcements delivered to your inbox.' %>
+                        </p>
+                    </div>
+
+                    <div class="lg:col-span-5">
+                        <div id="footer-newsletter-container" class="space-y-3 relative z-20">
+                            <!-- Input Form View -->
+                            <form id="newsletter-form" 
+                                  class="space-y-3" 
+                                  action="javascript:void(0);" 
+                                  method="POST" 
+                                  onsubmit="window.submitNewsletter && window.submitNewsletter(event); return false;">
+                                <div id="newsletter-input-view" class="space-y-3">
+                                    <div class="flex flex-col sm:flex-row gap-2 relative">
+                                        <div class="relative flex-1">
+                                            <input type="email" 
+                                                   id="newsletter-email" 
+                                                   name="email" 
+                                                   placeholder="<%= typeof t !== 'undefined' ? t('footer.newsletter.placeholder') : 'Enter your email address' %>" 
+                                                   class="w-full bg-white dark:bg-studio-950/80 border border-zinc-300 dark:border-white/10 rounded-2xl px-4 py-3.5 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all shadow-xs"
+                                                   autocomplete="email">
+                                        </div>
+                                        <button type="submit" 
+                                                id="newsletter-submit-btn" 
+                                                class="px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-95 shrink-0 flex items-center justify-center gap-2 cursor-pointer touch-manipulation relative z-30 select-none">
+                                            <span id="newsletter-btn-text" class="pointer-events-none"><%= typeof t !== 'undefined' ? t('footer.newsletter.button') : 'Subscribe' %></span>
+                                            <span id="newsletter-btn-arrow" class="pointer-events-none font-bold">&rarr;</span>
+                                        </button>
+                                    </div>
+                                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 text-left">
+                                        <%= typeof t !== 'undefined' ? t('footer.newsletter.privacy') : 'We respect your privacy. Unsubscribe at any time with one click.' %>
+                                    </p>
+
+                                    <!-- Error Banner -->
+                                    <div id="newsletter-error" style="display: none;" class="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-800 dark:text-rose-200 text-xs sm:text-sm font-semibold flex items-center gap-3 shadow-sm transition-all">
+                                        <div class="w-6 h-6 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                                            ✕
+                                        </div>
+                                        <div class="flex-1 text-left">
+                                            <span id="newsletter-error-text">Please enter a valid email address.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Success Confirmation View -->
+                            <div id="newsletter-success-view" style="display: none;" class="p-6 rounded-3xl bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-teal-500/10 border-2 border-emerald-500/40 text-left space-y-3 shadow-lg transition-all">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl shadow-md shrink-0">
+                                        ✓
+                                    </div>
+                                    <div>
+                                        <h4 class="text-base font-black text-emerald-950 dark:text-emerald-100 tracking-tight">You're Subscribed!</h4>
+                                        <p class="text-xs text-emerald-800 dark:text-emerald-300 font-bold" id="newsletter-success-confirmed-email"></p>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed" id="newsletter-success-desc">
+                                    Thank you for subscribing! A welcome email with our weekly Tuesday gathering details (7:00 PM EST at 914 Silver Spring Ave) and discipleship resources has been sent to your inbox.
+                                </p>
+                                <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-emerald-500/20">
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        <span>Welcome Email Sent to Inbox</span>
+                                    </span>
+                                    <button type="button" 
+                                            id="newsletter-reset-btn"
+                                            onclick="window.resetNewsletterView && window.resetNewsletterView(event)"
+                                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-studio-900 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200 hover:bg-emerald-50 dark:hover:bg-studio-800 text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer touch-manipulation relative z-30 select-none">
+                                        <span>Subscribe another email</span>
+                                        <span class="font-bold">&rarr;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                        // Global reset function
+                        window.resetNewsletterView = function(e) {
+                            if (e) {
+                                if (e.preventDefault) e.preventDefault();
+                                if (e.stopPropagation) e.stopPropagation();
+                            }
+
+                            const inputView = document.getElementById('newsletter-input-view');
+                            const successView = document.getElementById('newsletter-success-view');
+                            const emailInput = document.getElementById('newsletter-email');
+                            const errorBox = document.getElementById('newsletter-error');
+                            const submitBtn = document.getElementById('newsletter-submit-btn');
+                            const btnText = document.getElementById('newsletter-btn-text');
+                            const btnArrow = document.getElementById('newsletter-btn-arrow');
+
+                            if (inputView) inputView.style.display = 'block';
+                            if (successView) successView.style.display = 'none';
+                            if (errorBox) errorBox.style.display = 'none';
+                            if (submitBtn) submitBtn.disabled = false;
+                            if (btnText) btnText.textContent = '<%= typeof t !== "undefined" ? t("footer.newsletter.button") : "Subscribe" %>';
+                            if (btnArrow) btnArrow.innerHTML = '&rarr;';
+
+                            if (emailInput) {
+                                emailInput.value = '';
+                                emailInput.classList.remove('ring-2', 'ring-rose-500', 'border-rose-500');
+                                setTimeout(function() {
+                                    emailInput.focus();
+                                }, 50);
+                            }
+                            return false;
+                        };
+
+                        // Global submit function
+                        window.submitNewsletter = async function submitNewsletter(e) {
+                            if (e) {
+                                if (e.preventDefault) e.preventDefault();
+                                if (e.stopPropagation) e.stopPropagation();
+                            }
+
+                            const emailInput = document.getElementById('newsletter-email');
+                            const submitBtn = document.getElementById('newsletter-submit-btn');
+                            const btnText = document.getElementById('newsletter-btn-text');
+                            const btnArrow = document.getElementById('newsletter-btn-arrow');
+                            const inputView = document.getElementById('newsletter-input-view');
+                            const successView = document.getElementById('newsletter-success-view');
+                            const confirmedEmail = document.getElementById('newsletter-success-confirmed-email');
+                            const successDesc = document.getElementById('newsletter-success-desc');
+                            const errorBox = document.getElementById('newsletter-error');
+                            const errorText = document.getElementById('newsletter-error-text');
+
+                            if (!emailInput) return false;
+                            const email = (emailInput.value || '').trim();
+
+                            if (!email) {
+                                emailInput.classList.add('ring-2', 'ring-rose-500', 'border-rose-500');
+                                if (errorBox) errorBox.style.display = 'flex';
+                                if (errorText) errorText.textContent = 'Please enter an email address.';
+                                emailInput.focus();
+                                return false;
+                            }
+
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(email)) {
+                                emailInput.classList.add('ring-2', 'ring-rose-500', 'border-rose-500');
+                                if (errorBox) errorBox.style.display = 'flex';
+                                if (errorText) errorText.textContent = 'Please enter a valid email format (e.g. name@example.com).';
+                                emailInput.focus();
+                                return false;
+                            }
+
+                            emailInput.classList.remove('ring-2', 'ring-rose-500', 'border-rose-500');
+                            if (errorBox) errorBox.style.display = 'none';
+
+                            if (submitBtn) submitBtn.disabled = true;
+                            if (btnText) btnText.textContent = 'Subscribing...';
+                            if (btnArrow) btnArrow.innerHTML = '<svg class="animate-spin w-4 h-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+
+                            try {
+                                let res = null;
+                                let data = null;
+
+                                const endpoints = ['/api/newsletter/subscribe', '/api/members/subscribe', '/api/subscribe'];
+                                let success = false;
+
+                                for (const endpoint of endpoints) {
+                                    try {
+                                        res = await fetch(endpoint, {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ email: email, source: 'footer_form' })
+                                        });
+                                        if (res.ok) {
+                                            data = await res.json();
+                                            if (data && data.success) {
+                                                success = true;
+                                                break;
+                                            }
+                                        }
+                                    } catch (fetchErr) {
+                                        console.warn('Endpoint', endpoint, 'failed, attempting fallback...', fetchErr);
+                                    }
+                                }
+
+                                if (success) {
+                                    if (confirmedEmail) confirmedEmail.textContent = email;
+                                    if (successDesc && data && data.message) {
+                                        successDesc.textContent = data.message;
+                                    }
+                                    if (inputView) inputView.style.display = 'none';
+                                    if (successView) {
+                                        successView.style.display = 'block';
+                                    }
+                                } else {
+                                    const errMsg = (data && data.error) ? data.error : 'Failed to subscribe. Please try again.';
+                                    if (errorText) errorText.textContent = errMsg;
+                                    if (errorBox) errorBox.style.display = 'flex';
+                                }
+                            } catch (err) {
+                                console.error('Newsletter subscription error:', err);
+                                if (errorText) errorText.textContent = 'Connection error. Please check your network and try again.';
+                                if (errorBox) errorBox.style.display = 'flex';
+                            } finally {
+                                if (submitBtn) submitBtn.disabled = false;
+                                if (btnText) btnText.textContent = '<%= typeof t !== "undefined" ? t("footer.newsletter.button") : "Subscribe" %>';
+                                if (btnArrow) btnArrow.innerHTML = '&rarr;';
+                            }
+                            return false;
+                        };
+
+                        // Aliases for any legacy references
+                        window.submitNewsletterForm = window.submitNewsletter;
+                        window.handleNewsletterSubmit = window.submitNewsletter;
+
+                        // Event binding
+                        function setupNewsletterListeners() {
+                            const form = document.getElementById('newsletter-form');
+                            if (form) {
+                                form.addEventListener('submit', function(ev) {
+                                    ev.preventDefault();
+                                    ev.stopPropagation();
+                                    window.submitNewsletter(ev);
+                                    return false;
+                                });
+                            }
+
+                            const btn = document.getElementById('newsletter-submit-btn');
+                            if (btn) {
+                                btn.addEventListener('click', function(ev) {
+                                    ev.preventDefault();
+                                    window.submitNewsletter(ev);
+                                });
+                            }
+
+                            const resetBtn = document.getElementById('newsletter-reset-btn');
+                            if (resetBtn) {
+                                resetBtn.addEventListener('click', function(ev) {
+                                    ev.preventDefault();
+                                    ev.stopPropagation();
+                                    window.resetNewsletterView(ev);
+                                });
+                            }
+
+                            const input = document.getElementById('newsletter-email');
+                            if (input) {
+                                input.addEventListener('input', function() {
+                                    input.classList.remove('ring-2', 'ring-rose-500', 'border-rose-500');
+                                    const errorBox = document.getElementById('newsletter-error');
+                                    if (errorBox) errorBox.style.display = 'none';
+                                });
+                            }
+                        }
+
+                        if (document.readyState === 'loading') {
+                            document.addEventListener('DOMContentLoaded', setupNewsletterListeners);
+                        } else {
+                            setupNewsletterListeners();
+                        }
+                        </script>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
                 <!-- Col 1: Brand & Mission -->
                 <div class="md:col-span-2">
@@ -84,38 +358,61 @@
                     const data = await res.json();
                     const container = document.getElementById('public-resources');
                     if (!container) return;
+                    
+                    container.innerHTML = ''; // clear old loading state
+                    
                     if (data.length === 0) {
-                        container.innerHTML = '<div class="text-center py-12 text-gray-900/50 dark:text-white/60 col-span-3">More resources coming soon!</div>';
+                        const empty = document.createElement('div');
+                        empty.className = 'text-center py-12 text-gray-900/50 dark:text-white/60 col-span-3';
+                        empty.textContent = 'More resources coming soon!';
+                        container.appendChild(empty);
                         return;
                     }
-                    
-                    const escapeHTML = (str) => {
-                        if (!str) return '';
-                        return str.replace(/[&<>'"]/g, 
-                            tag => ({
-                                '&': '&amp;',
-                                '<': '&lt;',
-                                '>': '&gt;',
-                                "'": '&#39;',
-                                '"': '&quot;'
-                            }[tag])
-                        );
-                    };
 
-                    // Render all resources (removed slice(0,6) to fix missing 7th item)
-                    container.innerHTML = data.map(r => `
-                        <div class="macos-card p-8 rounded-3xl flex flex-col h-full bg-white dark:bg-studio-900 border border-zinc-200/80 dark:border-white/5 hover:border-blue-500/30 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex-1 basis-[300px]">
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                            <div class="relative z-10 flex flex-col h-full">
-                                <span class="inline-block px-3 py-1 bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest rounded-lg mb-6 w-max border border-zinc-200/50 dark:border-white/5">${escapeHTML(r.category)}</span>
-                                <h3 class="text-xl font-bold text-studio-900 dark:text-white mb-3 tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">${escapeHTML(r.title)}</h3>
-                                <p class="text-zinc-600 dark:text-zinc-400 text-sm mb-8 flex-1 leading-relaxed">${escapeHTML(r.description) || 'Discipleship resource'}</p>
-                                <a href="${escapeHTML(r.file_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-studio-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors mt-auto touch-manipulation group/link">
-                                    Open Resource <span class="transform group-hover/link:translate-x-1 transition-transform">→</span>
-                                </a>
-                            </div>
-                        </div>
-                    `).join('');
+                    data.forEach(r => {
+                        const card = document.createElement('div');
+                        card.className = 'macos-card p-8 rounded-3xl flex flex-col h-full bg-white dark:bg-studio-900 border border-zinc-200/80 dark:border-white/5 hover:border-blue-500/30 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex-1 basis-[300px]';
+                        
+                        const bg = document.createElement('div');
+                        bg.className = 'absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none';
+                        card.appendChild(bg);
+
+                        const inner = document.createElement('div');
+                        inner.className = 'relative z-10 flex flex-col h-full';
+
+                        const cat = document.createElement('span');
+                        cat.className = 'inline-block px-3 py-1 bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest rounded-lg mb-6 w-max border border-zinc-200/50 dark:border-white/5';
+                        cat.textContent = r.category;
+                        inner.appendChild(cat);
+
+                        const title = document.createElement('h3');
+                        title.className = 'text-xl font-bold text-studio-900 dark:text-white mb-3 tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors';
+                        title.textContent = r.title;
+                        inner.appendChild(title);
+
+                        const desc = document.createElement('p');
+                        desc.className = 'text-zinc-600 dark:text-zinc-400 text-sm mb-8 flex-1 leading-relaxed';
+                        desc.textContent = r.description || 'Discipleship resource';
+                        inner.appendChild(desc);
+
+                        const link = document.createElement('a');
+                        link.href = r.file_url;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        link.className = 'inline-flex items-center gap-2 text-sm font-bold text-studio-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors mt-auto touch-manipulation group/link';
+                        
+                        const linkText = document.createTextNode('Open Resource ');
+                        const arrow = document.createElement('span');
+                        arrow.className = 'transform group-hover/link:translate-x-1 transition-transform';
+                        arrow.textContent = '→';
+                        
+                        link.appendChild(linkText);
+                        link.appendChild(arrow);
+                        inner.appendChild(link);
+
+                        card.appendChild(inner);
+                        container.appendChild(card);
+                    });
                 }
             } catch (err) {
                 console.error(err);
@@ -139,13 +436,28 @@
                 const email = document.getElementById('contact-email').value;
                 const phone = document.getElementById('contact-phone').value;
                 const notes = document.getElementById('contact-notes').value;
+                const interestEl = document.getElementById('contact-interest');
+                const interest = interestEl ? interestEl.value : '';
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
 
                 try {
-                    await fetch('/api/pipeline', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, email, phone, notes })
-                    });
+                    if (interest === 'prayer') {
+                        await fetch('/api/prayer', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
+                            body: JSON.stringify({ 
+                                requester_name: name || 'Anonymous',
+                                request_text: notes || 'Prayer request from website'
+                            })
+                        });
+                    } else {
+                        await fetch('/api/pipeline', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
+                            body: JSON.stringify({ name, email, phone, notes, interest })
+                        });
+                    }
                     
                     contactForm.reset();
                     successMsg.classList.remove('hidden');

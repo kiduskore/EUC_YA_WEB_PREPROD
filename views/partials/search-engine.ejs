@@ -1,0 +1,785 @@
+<!-- Global Site Search Engine & Command Palette Modal (Ctrl+K / Cmd+K) -->
+<div id="site-search-modal" 
+     class="fixed inset-0 z-[99999] flex items-start justify-center p-3 sm:p-6 md:p-10 transition-all duration-150 hidden" 
+     style="display: none;" 
+     role="dialog" 
+     aria-modal="true" 
+     aria-labelledby="site-search-title">
+    
+    <!-- Backdrop Blur with click-to-dismiss -->
+    <div class="fixed inset-0 bg-zinc-950/80 backdrop-blur-md transition-opacity cursor-pointer" 
+         onclick="closeSiteSearchModal()" 
+         aria-hidden="true"></div>
+
+    <!-- Search Modal Card -->
+    <div class="relative w-full max-w-2xl bg-white dark:bg-studio-900 border border-zinc-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] z-[100000] scale-100" 
+         id="site-search-dialog">
+        
+        <!-- Search Input Bar Form -->
+        <form action="/search" method="GET" class="m-0 p-0" onsubmit="handleSearchModalSubmit(event)">
+            <div class="relative flex items-center px-4 sm:px-6 py-4 border-b border-zinc-200 dark:border-white/10 bg-zinc-50/70 dark:bg-studio-950/70">
+                <span class="text-blue-500 mr-3 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </span>
+                <input type="text" 
+                       name="q"
+                       id="site-search-input" 
+                       placeholder="Search salvation, small groups, scriptures, events..." 
+                       class="w-full bg-transparent text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 text-base sm:text-lg font-medium focus:outline-none focus:ring-0 border-none p-0"
+                       autocomplete="off" 
+                       spellcheck="false"
+                       oninput="handleSearchQueryChange(this.value)"
+                       onkeydown="handleSearchKeyNav(event)">
+                
+                <!-- Clear Button -->
+                <button id="search-clear-btn" 
+                        type="button" 
+                        onclick="clearSearchInput()" 
+                        class="hidden p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors mr-2 cursor-pointer"
+                        aria-label="Clear search input">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                
+                <!-- ESC Close Badge -->
+                <button type="button" 
+                        onclick="closeSiteSearchModal()" 
+                        class="px-2.5 py-1 text-xs font-semibold font-mono text-zinc-500 dark:text-zinc-400 bg-zinc-200/80 dark:bg-white/10 rounded-lg hover:bg-zinc-300 dark:hover:bg-white/20 transition-all select-none cursor-pointer">
+                    ESC
+                </button>
+            </div>
+        </form>
+
+        <!-- Filter Chips Bar -->
+        <div class="flex items-center gap-1.5 px-4 sm:px-6 py-2.5 bg-white dark:bg-studio-900 border-b border-zinc-100 dark:border-white/5 overflow-x-auto no-scrollbar text-xs">
+            <span class="text-zinc-400 dark:text-zinc-500 font-semibold mr-1 shrink-0">Filter:</span>
+            <button type="button" onclick="setSearchFilter('all')" class="search-filter-pill px-3 py-1 rounded-full font-bold transition-all bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shrink-0 cursor-pointer" data-filter="all">All</button>
+            <button type="button" onclick="setSearchFilter('teachings')" class="search-filter-pill px-3 py-1 rounded-full font-semibold transition-all bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10 shrink-0 cursor-pointer" data-filter="teachings">Teachings</button>
+            <button type="button" onclick="setSearchFilter('events')" class="search-filter-pill px-3 py-1 rounded-full font-semibold transition-all bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10 shrink-0 cursor-pointer" data-filter="events">Events</button>
+            <button type="button" onclick="setSearchFilter('groups')" class="search-filter-pill px-3 py-1 rounded-full font-semibold transition-all bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10 shrink-0 cursor-pointer" data-filter="groups">Small Groups</button>
+            <button type="button" onclick="setSearchFilter('scriptures')" class="search-filter-pill px-3 py-1 rounded-full font-semibold transition-all bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10 shrink-0 cursor-pointer" data-filter="scriptures">Scriptures</button>
+            <button type="button" onclick="setSearchFilter('faqs')" class="search-filter-pill px-3 py-1 rounded-full font-semibold transition-all bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10 shrink-0 cursor-pointer" data-filter="faqs">FAQs</button>
+        </div>
+
+        <!-- Search Results Scroll Area -->
+        <div id="search-results-container" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 overscroll-contain">
+            <!-- Results dynamically injected here -->
+        </div>
+
+        <!-- Search Modal Footer -->
+        <div class="px-4 sm:px-6 py-3 border-t border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-studio-950/60 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1">
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-white/10 font-mono text-[10px]">↑</kbd>
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-white/10 font-mono text-[10px]">↓</kbd>
+                    Navigate
+                </span>
+                <span class="inline-flex items-center gap-1">
+                    <kbd class="px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-white/10 font-mono text-[10px]">↵</kbd>
+                    Open
+                </span>
+            </div>
+            <a id="search-view-all-link" href="/search" class="text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-1 cursor-pointer">
+                <span>Open Full Search Page</span>
+                <span>→</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search Engine Database (Cleaned of 12 tribes - 12 tribes is exclusively on Leader Dashboard)
+    const EUCMD_SEARCH_INDEX = [
+        // Core Discipleship Pillars
+        {
+            title: "Salvation (The Gospel of Jesus Christ)",
+            category: "teachings",
+            pillar: "Foundation",
+            desc: "The good news of Jesus Christ, forgiveness of sins, repentance, and eternal life through grace.",
+            keywords: "salvation jesus gospel cross faith grace repentance eternal life born again forgiven sin savior christ hope bible",
+            url: "/salvation",
+            icon: "✝️",
+            badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+        },
+        {
+            title: "Water Baptism",
+            category: "teachings",
+            pillar: "Foundation",
+            desc: "Public declaration of faith, identification with Christ in death and resurrection, and baptism classes.",
+            keywords: "water baptism immersion testimony obedience church sacraments rebirth baptize immersed public declaration",
+            url: "/water-baptism",
+            icon: "💧",
+            badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+        },
+        {
+            title: "The Kingdom of God",
+            category: "teachings",
+            pillar: "Foundation",
+            desc: "Living under the reign and lordship of Jesus Christ, kingdom culture, righteousness, peace, and divine purpose.",
+            keywords: "kingdom of god reign lordship authority heaven king jesus gospel of the kingdom crown sovereignty purpose",
+            url: "/kingdom",
+            icon: "👑",
+            badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+        },
+        {
+            title: "Church Membership & Covenant",
+            category: "teachings",
+            pillar: "Belong",
+            desc: "Belonging to the local church body, covenant relationships, spiritual home, and mutual accountability.",
+            keywords: "membership covenant church family commitment belonging local church eucmd member accountable",
+            url: "/membership",
+            icon: "🤝",
+            badgeColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+        },
+        {
+            title: "Spiritual Mentorship",
+            category: "teachings",
+            pillar: "Belong",
+            desc: "Walking with mature Christian mentors, discipleship coaching, spiritual guidance, prayer, and life wisdom.",
+            keywords: "mentorship mentor disciple coaching wisdom counsel advice spiritual leader guide older faith",
+            url: "/mentorship",
+            icon: "🌱",
+            badgeColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+        },
+        {
+            title: "Scripture Memory & Bible Study",
+            category: "teachings",
+            pillar: "Formation",
+            desc: "Hiding God's Word in your heart, memory verse plans, daily Bible study habits, and biblical truth.",
+            keywords: "scripture memory bible verses memorization psalm word of god daily devotional study reading passage",
+            url: "/scripture-memory",
+            icon: "📖",
+            badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+        },
+        {
+            title: "Spiritual Growth & Disciplines",
+            category: "teachings",
+            pillar: "Formation",
+            desc: "Daily prayer, Bible reading, fasting, worship, and walking in the power and presence of the Holy Spirit.",
+            keywords: "growth prayer fasting devotional holy spirit spiritual disciplines transformation walk habits quiet time",
+            url: "/growth",
+            icon: "🌿",
+            badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+        },
+        {
+            title: "Christian Maturity & Character",
+            category: "teachings",
+            pillar: "Formation",
+            desc: "Endurance, producing the Fruit of the Spirit, emotional health, spiritual steadfastness, and integrity.",
+            keywords: "maturity fruit of the spirit patience resilience endurance character holiness steadfast integrity humility",
+            url: "/maturity",
+            icon: "🍇",
+            badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+        },
+        {
+            title: "Availability & Surrender",
+            category: "teachings",
+            pillar: "Formation",
+            desc: "Surrendering your schedule, ambitions, and career to God's calling, will, and kingdom priorities.",
+            keywords: "availability surrender obedience calling career time stewardship commitment yield submission",
+            url: "/availability",
+            icon: "🕊️",
+            badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+        },
+        {
+            title: "Serving & Ministry Teams",
+            category: "teachings",
+            pillar: "Mission",
+            desc: "Discovering spiritual gifts, volunteering on worship, tech, media, ushering, hospitality, and outreach teams.",
+            keywords: "serving ministry volunteers worship team tech audiovisual ushering gifts hospitality volunteer serve",
+            url: "/serving",
+            icon: "🛠️",
+            badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+        },
+        {
+            title: "Generosity, Giving & Tithing",
+            category: "teachings",
+            pillar: "Mission",
+            desc: "Biblical stewardship, joyful tithing, sacrificial giving, and investing in God's eternal kingdom work.",
+            keywords: "giving generosity tithing offering stewardship finances money charity donation tithe wealth",
+            url: "/generosity",
+            icon: "🎁",
+            badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+        },
+
+        // Events & Gatherings
+        {
+            title: "Revive Us Again (Psalm 85:6) • Coming Soon",
+            category: "events",
+            pillar: "Special Event",
+            desc: "Upcoming Maryland & DMV Young Adults Gathering. An encounter of prayer, worship, and spiritual renewal.",
+            keywords: "revive us again conference event psalm 85 awakening prayer night gathering maryland retreat special upcoming encounter revival",
+            url: "/#coming-soon-event",
+            icon: "✨",
+            badgeColor: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20"
+        },
+        {
+            title: "Tuesday Night Young Adult Gathering & Prayer",
+            category: "events",
+            pillar: "Weekly Gathering",
+            desc: "Every Tuesday at 7:00 PM EST (followed by fellowship & prayer) at 914 Silver Spring Ave 204B, Silver Spring, MD 20910.",
+            keywords: "tuesday gathering times worship night prayer service silver spring ave maryland dmv weekly gathering fellowship",
+            url: "/#join",
+            icon: "🔥",
+            badgeColor: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20"
+        },
+
+        // Community & Groups
+        {
+            title: "Community & Fellowship (Small Groups & Circles)",
+            category: "groups",
+            pillar: "Belong",
+            desc: "Authentic biblical community, small groups, and fellowship circles across Maryland and DMV. Life is not meant to be lived alone.",
+            keywords: "community fellowship friendships small groups circles maryland silver spring dmv dinner meals authentic life belong",
+            url: "/community",
+            icon: "👥",
+            badgeColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+        },
+        {
+            title: "Join a Small Group (Intake & Group Matching)",
+            category: "groups",
+            pillar: "Connect",
+            desc: "Connect with a young adult group in Silver Spring, Rockville, Bethesda, College Park, and the DMV area.",
+            keywords: "join group small groups register sign up matching connect college young professionals student circle apply",
+            url: "/join",
+            icon: "📍",
+            badgeColor: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+        },
+        {
+            title: "College & Campus Connect",
+            category: "groups",
+            pillar: "Small Group",
+            desc: "Small groups dedicated to students at UMD College Park, Towson, UMBC, Montgomery College, JHU.",
+            keywords: "college university campus students dorm rides carpools terps umd towson umbc campus fellowship collegiate",
+            url: "/join",
+            icon: "🎓",
+            badgeColor: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+        },
+        {
+            title: "Young Professionals & Career Fellowship",
+            category: "groups",
+            pillar: "Small Group",
+            desc: "Balancing faith, career, work ethics, and navigating adulthood in Washington D.C. and Maryland.",
+            keywords: "young professionals career work workplace consulting tech government federal dc dmv adulting finance job",
+            url: "/join",
+            icon: "💼",
+            badgeColor: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+        },
+
+        // Scriptures & Memory Verses
+        {
+            title: "Psalm 85:6 — \"Will you not revive us again?\"",
+            category: "scriptures",
+            pillar: "Scripture",
+            desc: "\"Will you not revive us again, that your people may rejoice in you? Show us your steadfast love, Lord.\"",
+            keywords: "psalm 85 6 revive us again scripture bible verse revival joy salvation promise revival awaken",
+            url: "/#coming-soon-event",
+            icon: "📜",
+            badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+        },
+        {
+            title: "Matthew 28:19-20 — The Great Commission",
+            category: "scriptures",
+            pillar: "Scripture",
+            desc: "\"Go therefore and make disciples of all nations, baptizing them in the name of the Father, Son, and Holy Spirit.\"",
+            keywords: "matthew 28 great commission discipleship nations baptism command jesus authority",
+            url: "/water-baptism",
+            icon: "📜",
+            badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+        },
+        {
+            title: "Romans 10:9 — Confession & Faith",
+            category: "scriptures",
+            pillar: "Scripture",
+            desc: "\"If you confess with your mouth that Jesus is Lord and believe in your heart that God raised him from the dead, you will be saved.\"",
+            keywords: "romans 10 9 confession salvation believe resurrection gospel lord saved heart mouth",
+            url: "/salvation",
+            icon: "📜",
+            badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+        },
+        {
+            title: "Hebrews 10:24-25 — Gathering Together",
+            category: "scriptures",
+            pillar: "Scripture",
+            desc: "\"Let us consider how to stir up one another to love and good works, not neglecting to meet together.\"",
+            keywords: "hebrews 10 community gather assemble encourage fellowship small group meeting together",
+            url: "/community",
+            icon: "📜",
+            badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+        },
+        {
+            title: "Galatians 5:22-23 — The Fruit of the Spirit",
+            category: "scriptures",
+            pillar: "Scripture",
+            desc: "\"The fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control.\"",
+            keywords: "galatians 5 fruit of the spirit holy spirit character love joy peace patience kindness self control",
+            url: "/maturity",
+            icon: "📜",
+            badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+        },
+
+        // FAQs & Practical Questions
+        {
+            title: "How do I find and join a small group?",
+            category: "faqs",
+            pillar: "FAQ",
+            desc: "Complete our quick 1-minute small group form to be matched with a leader based on your location and schedule.",
+            keywords: "how to join small group find meeting schedule location time sign up register intake",
+            url: "/join",
+            icon: "❓",
+            badgeColor: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20"
+        },
+        {
+            title: "Where and when does EUCMD Young Adults meet? (Gathering Times & Address)",
+            category: "faqs",
+            pillar: "FAQ",
+            desc: "Gathering Times: Every Tuesday at 7:00 PM EST (followed by fellowship & prayer) at 914 Silver Spring Ave 204B, Silver Spring, MD 20910.",
+            keywords: "where when address location time schedule meeting silver spring maryland service silver spring ave 914 gathering times tuesday",
+            url: "/#join",
+            icon: "❓",
+            badgeColor: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20"
+        },
+        {
+            title: "Are there rides or campus carpools available?",
+            category: "faqs",
+            pillar: "FAQ",
+            desc: "Yes! Campus leaders arrange student pickups from College Park (UMD), Towson, Baltimore, and Montgomery County.",
+            keywords: "rides ride carpool pickup transportation bus student campus umd driving ride share",
+            url: "/join",
+            icon: "🚗",
+            badgeColor: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20"
+        },
+        {
+            title: "Can I attend if I am new to faith or church?",
+            category: "faqs",
+            pillar: "FAQ",
+            desc: "Absolutely! EUCMD Young Adults welcomes anyone exploring Christianity, seeking truth, or returning to faith.",
+            keywords: "first time guest new visitor welcome beginner exploring questions doubts first visit",
+            url: "/salvation",
+            icon: "❓",
+            badgeColor: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20"
+        }
+    ];
+
+    let currentSearchFilter = 'all';
+    let currentHighlightedIndex = -1;
+    let filteredSearchResults = [];
+
+    // Global shortcut listener: Cmd+K / Ctrl+K or '/'
+    document.addEventListener('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            toggleSiteSearchModal();
+        } else if (e.key === '/' && !isTypingInInput(document.activeElement)) {
+            e.preventDefault();
+            openSiteSearchModal();
+        } else if (e.key === 'Escape') {
+            const modal = document.getElementById('site-search-modal');
+            if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') {
+                closeSiteSearchModal();
+            }
+        }
+    });
+
+    function isTypingInInput(el) {
+        if (!el) return false;
+        const tag = el.tagName.toLowerCase();
+        return tag === 'input' || tag === 'textarea' || el.isContentEditable;
+    }
+
+    function toggleSiteSearchModal() {
+        const modal = document.getElementById('site-search-modal');
+        if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') {
+            closeSiteSearchModal();
+        } else {
+            openSiteSearchModal();
+        }
+    }
+
+    function openSiteSearchModal() {
+        const modal = document.getElementById('site-search-modal');
+        const input = document.getElementById('site-search-input');
+        if (!modal) return;
+
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        if (input) {
+            input.focus();
+            setTimeout(() => {
+                input.focus();
+                input.select();
+            }, 30);
+        }
+        renderSearchResults();
+    }
+
+    function closeSiteSearchModal() {
+        const modal = document.getElementById('site-search-modal');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function navigateToResult(url) {
+        closeSiteSearchModal();
+        if (!url) return;
+
+        // In-page hash scroll support (e.g. /#coming-soon-event or #resources)
+        if (url.startsWith('#') || (url.startsWith('/#') && window.location.pathname === '/')) {
+            const hash = url.startsWith('/#') ? url.substring(1) : url;
+            const targetEl = document.querySelector(hash);
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                try {
+                    history.pushState(null, '', hash);
+                } catch(e) {}
+                return;
+            }
+        }
+        window.location.href = url;
+    }
+
+    function clearSearchInput() {
+        const input = document.getElementById('site-search-input');
+        if (!input) return;
+        input.value = '';
+        input.focus();
+        document.getElementById('search-clear-btn').classList.add('hidden');
+        renderSearchResults();
+    }
+
+    function setSearchFilter(filter) {
+        currentSearchFilter = filter;
+        document.querySelectorAll('.search-filter-pill').forEach(btn => {
+            const match = btn.getAttribute('data-filter') === filter;
+            if (match) {
+                btn.className = 'search-filter-pill px-3 py-1 rounded-full font-bold transition-all bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shrink-0 cursor-pointer';
+            } else {
+                btn.className = 'search-filter-pill px-3 py-1 rounded-full font-semibold transition-all bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10 shrink-0 cursor-pointer';
+            }
+        });
+        renderSearchResults();
+    }
+
+    function handleSearchQueryChange(val) {
+        const clearBtn = document.getElementById('search-clear-btn');
+        if (val && val.trim().length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+        renderSearchResults();
+    }
+
+    function handleSearchModalSubmit(e) {
+        // If there's an active highlighted item, navigate to it; otherwise let form submit to /search?q=...
+        if (filteredSearchResults && filteredSearchResults.length > 0) {
+            e.preventDefault();
+            const target = filteredSearchResults[currentHighlightedIndex >= 0 ? currentHighlightedIndex : 0];
+            if (target && target.url) {
+                navigateToResult(target.url);
+                return;
+            }
+        }
+    }
+
+    function handleSearchKeyNav(e) {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            moveHighlight(1);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            moveHighlight(-1);
+        } else if (e.key === 'Enter') {
+            if (filteredSearchResults && filteredSearchResults.length > 0) {
+                e.preventDefault();
+                selectHighlightedResult();
+            }
+        }
+    }
+
+    function moveHighlight(delta) {
+        const items = document.querySelectorAll('.search-result-item');
+        if (!items || items.length === 0) return;
+        currentHighlightedIndex += delta;
+        if (currentHighlightedIndex >= items.length) currentHighlightedIndex = 0;
+        if (currentHighlightedIndex < 0) currentHighlightedIndex = items.length - 1;
+        
+        items.forEach((item, idx) => {
+            if (idx === currentHighlightedIndex) {
+                item.classList.add('bg-zinc-100', 'dark:bg-white/10', 'ring-1', 'ring-blue-500/40');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('bg-zinc-100', 'dark:bg-white/10', 'ring-1', 'ring-blue-500/40');
+            }
+        });
+    }
+
+    function selectHighlightedResult() {
+        const items = document.querySelectorAll('.search-result-item');
+        if (items && items[currentHighlightedIndex]) {
+            const url = items[currentHighlightedIndex].getAttribute('data-url');
+            if (url) navigateToResult(url);
+            else items[currentHighlightedIndex].click();
+        } else if (items && items[0]) {
+            const url = items[0].getAttribute('data-url');
+            if (url) navigateToResult(url);
+            else items[0].click();
+        }
+    }
+
+    function highlightMatch(text, query) {
+        if (!text) return '';
+        if (!query || !query.trim()) return text;
+        const clean = query.trim();
+        if (!clean) return text;
+        try {
+            const q = clean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${q})`, 'gi');
+            return text.replace(regex, `<mark class="bg-blue-500/25 text-blue-600 dark:text-blue-400 font-bold rounded px-0.5">$1</mark>`);
+        } catch(e) {
+            return text;
+        }
+    }
+
+    function getStem(w) {
+        if (!w) return '';
+        if (w.length > 4 && w.endsWith('ing')) return w.slice(0, -3);
+        if (w.length > 3 && w.endsWith('es')) return w.slice(0, -2);
+        if (w.length > 3 && w.endsWith('s')) return w.slice(0, -1);
+        return w;
+    }
+
+    function renderSearchResults() {
+        const input = document.getElementById('site-search-input');
+        const container = document.getElementById('search-results-container');
+        const viewAllLink = document.getElementById('search-view-all-link');
+        if (!container) return;
+
+        const rawQuery = (input ? input.value : '').trim();
+        // Safe query cleaning without Unicode regex errors
+        const cleanQuery = rawQuery.toLowerCase().replace(/[\?\!\,\.\:\;\(\)\[\]\{\}\"\']/g, ' ').trim();
+        currentHighlightedIndex = -1;
+
+        if (viewAllLink) {
+            viewAllLink.href = rawQuery ? `/search?q=${encodeURIComponent(rawQuery)}` : '/search';
+            viewAllLink.innerHTML = rawQuery ? `<span>See all results for "${rawQuery}"</span> <span>→</span>` : `<span>Open Full Search Page</span> <span>→</span>`;
+        }
+
+        // Apply Category Filter
+        let dataset = EUCMD_SEARCH_INDEX;
+        if (currentSearchFilter !== 'all') {
+            dataset = dataset.filter(item => item.category === currentSearchFilter);
+        }
+
+        // If query is empty, show popular topics and quick navigation
+        if (!cleanQuery) {
+            filteredSearchResults = dataset.slice(0, 6);
+            container.innerHTML = `
+                <div class="mb-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2.5">
+                        Popular Topics & Fast Links
+                    </p>
+                    <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                        <button onclick="applySearchTerm('Small Groups')" class="px-3 py-1.5 rounded-xl bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span>👥</span> Small Groups
+                        </button>
+                        <button onclick="applySearchTerm('Revive Us Again')" class="px-3 py-1.5 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/30 hover:bg-teal-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span>✨</span> Revive Event
+                        </button>
+                        <button onclick="applySearchTerm('Salvation')" class="px-3 py-1.5 rounded-xl bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span>✝️</span> Salvation
+                        </button>
+                        <button onclick="applySearchTerm('Water Baptism')" class="px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span>💧</span> Baptism
+                        </button>
+                        <button onclick="applySearchTerm('Mentorship')" class="px-3 py-1.5 rounded-xl bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/30 hover:bg-purple-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span>🌱</span> Mentorship
+                        </button>
+                        <button onclick="applySearchTerm('Prayer')" class="px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                            <span>🙏</span> Prayer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">
+                        Browse Core Pillars & Community
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${dataset.slice(0, 6).map((item, idx) => `
+                            <div onclick="navigateToResult('${item.url}')" 
+                                 data-url="${item.url}" 
+                                 class="search-result-item flex items-center gap-3 p-3 rounded-2xl border border-zinc-100 dark:border-white/5 bg-zinc-50/50 dark:bg-studio-950/40 hover:bg-zinc-100 dark:hover:bg-white/5 transition-all text-left group cursor-pointer"
+                                 data-index="${idx}">
+                                <span class="text-xl p-2 rounded-xl bg-white dark:bg-studio-800 border border-zinc-200 dark:border-white/10 shadow-xs shrink-0">${item.icon}</span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-sm font-bold text-zinc-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">${item.title}</h4>
+                                    </div>
+                                    <p class="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-1">${item.desc}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // Search Scoring Engine
+        const stopWords = new Set(['what', 'are', 'the', 'is', 'a', 'to', 'for', 'in', 'how', 'do', 'of', 'and']);
+        const allTerms = cleanQuery.split(/\s+/).filter(Boolean);
+        const keyTerms = allTerms.filter(t => !stopWords.has(t));
+        const termsToMatch = keyTerms.length > 0 ? keyTerms : allTerms;
+
+        filteredSearchResults = dataset.map(item => {
+            let score = 0;
+            const fullText = `${item.title} ${item.desc} ${item.keywords} ${item.pillar}`.toLowerCase();
+            
+            // Exact full query match
+            if (cleanQuery.length > 1 && fullText.includes(cleanQuery)) {
+                score += 100;
+            }
+
+            // Title exact match
+            if (item.title.toLowerCase().includes(cleanQuery)) {
+                score += 80;
+            }
+
+            // Individual terms
+            for (const t of termsToMatch) {
+                const stem = getStem(t);
+                if (item.title.toLowerCase().includes(t)) {
+                    score += 40;
+                } else if (stem && item.title.toLowerCase().includes(stem)) {
+                    score += 25;
+                }
+
+                if (item.keywords.toLowerCase().includes(t)) {
+                    score += 30;
+                } else if (stem && item.keywords.toLowerCase().includes(stem)) {
+                    score += 20;
+                }
+
+                if (item.desc.toLowerCase().includes(t)) {
+                    score += 15;
+                } else if (stem && item.desc.toLowerCase().includes(stem)) {
+                    score += 10;
+                }
+            }
+
+            return { item, score };
+        }).filter(res => res.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .map(res => res.item);
+
+        if (filteredSearchResults.length === 0) {
+            container.innerHTML = `
+                <div class="py-12 text-center">
+                    <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 flex items-center justify-center text-2xl text-zinc-400">
+                        🔍
+                    </div>
+                    <h3 class="text-base font-bold text-zinc-900 dark:text-white mb-1">No direct results for "${rawQuery}"</h3>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto mb-4">
+                        Try searching for "small groups", "community", "discipleship", "salvation", "worship", or "prayer".
+                    </p>
+                    <div class="flex items-center justify-center gap-2">
+                        <button onclick="clearSearchInput()" class="px-4 py-2 rounded-full text-xs font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 active:scale-95 transition-all cursor-pointer">
+                            Clear Search
+                        </button>
+                        <a href="/search?q=${encodeURIComponent(rawQuery)}" class="px-4 py-2 rounded-full text-xs font-bold bg-blue-600 text-white hover:bg-blue-500 active:scale-95 transition-all cursor-pointer">
+                            Search Whole Site
+                        </a>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // Render Results List
+        container.innerHTML = `
+            <div class="flex items-center justify-between mb-2 px-1">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                    Matching Results (${filteredSearchResults.length})
+                </span>
+                <span class="text-[11px] text-zinc-400">Press ↵ or click to open</span>
+            </div>
+            <div class="space-y-2">
+                ${filteredSearchResults.map((item, idx) => `
+                    <div onclick="navigateToResult('${item.url}')" 
+                         data-url="${item.url}" 
+                         class="search-result-item flex items-start gap-3.5 p-3.5 rounded-2xl border border-zinc-200/80 dark:border-white/5 bg-zinc-50/50 dark:bg-studio-950/40 hover:bg-zinc-100 dark:hover:bg-white/10 active:scale-[0.99] transition-all text-left group cursor-pointer" 
+                         data-index="${idx}">
+                        <div class="w-10 h-10 rounded-xl bg-white dark:bg-studio-800 border border-zinc-200 dark:border-white/10 flex items-center justify-center text-lg shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                            ${item.icon}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${item.badgeColor}">
+                                    ${item.pillar}
+                                </span>
+                                <h4 class="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    ${highlightMatch(item.title, cleanQuery)}
+                                </h4>
+                            </div>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                                ${highlightMatch(item.desc, cleanQuery)}
+                            </p>
+                        </div>
+                        <span class="text-zinc-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all text-sm mt-2 shrink-0">
+                            →
+                        </span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function applySearchTerm(term) {
+        const input = document.getElementById('site-search-input');
+        if (!input) return;
+        input.value = term;
+        handleSearchQueryChange(term);
+    }
+
+    function triggerMobileSearch() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.style.display = 'none';
+            mobileMenu.style.opacity = '0';
+            mobileMenu.style.pointerEvents = 'none';
+        }
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        openSiteSearchModal();
+    }
+
+    // Attach click triggers to all elements with class .trigger-site-search
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.trigger-site-search').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openSiteSearchModal();
+            });
+        });
+    });
+
+    // Expose all functions globally on window
+    window.openSiteSearchModal = openSiteSearchModal;
+    window.closeSiteSearchModal = closeSiteSearchModal;
+    window.toggleSiteSearchModal = toggleSiteSearchModal;
+    window.triggerMobileSearch = triggerMobileSearch;
+    window.applySearchTerm = applySearchTerm;
+    window.navigateToResult = navigateToResult;
+    window.setSearchFilter = setSearchFilter;
+    window.clearSearchInput = clearSearchInput;
+    window.handleSearchQueryChange = handleSearchQueryChange;
+    window.handleSearchKeyNav = handleSearchKeyNav;
+    window.handleSearchModalSubmit = handleSearchModalSubmit;
+</script>

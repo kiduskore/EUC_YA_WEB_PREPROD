@@ -47,7 +47,7 @@ export function i18nMiddleware(req: Request, res: Response, next: NextFunction) 
   const queryLang = req.query.lang as string;
   if (queryLang && isSupportedLanguage(queryLang)) {
     lang = queryLang.toLowerCase() as SupportedLanguage;
-    res.cookie('lang', lang, { maxAge: 365 * 24 * 60 * 60 * 1000, path: '/', sameSite: 'lax' });
+    res.cookie('lang', lang, { maxAge: 365 * 24 * 60 * 60 * 1000, path: '/', sameSite: 'lax', secure: process.env.NODE_ENV === 'production' || !!process.env.APPLET_ID || !!process.env.RAILWAY_ENVIRONMENT, httpOnly: true });
     if (req.session) {
       (req.session as any).lang = lang;
     }
@@ -62,7 +62,7 @@ export function i18nMiddleware(req: Request, res: Response, next: NextFunction) 
   // 3. Session
   else if ((req.session as any)?.lang && isSupportedLanguage((req.session as any).lang)) {
     lang = (req.session as any).lang.toLowerCase() as SupportedLanguage;
-    res.cookie('lang', lang, { maxAge: 365 * 24 * 60 * 60 * 1000, path: '/', sameSite: 'lax' });
+    res.cookie('lang', lang, { maxAge: 365 * 24 * 60 * 60 * 1000, path: '/', sameSite: 'lax', secure: process.env.NODE_ENV === 'production' || !!process.env.APPLET_ID || !!process.env.RAILWAY_ENVIRONMENT, httpOnly: true });
   }
   // 4. Accept-Language header matching
   else if (req.headers['accept-language']) {

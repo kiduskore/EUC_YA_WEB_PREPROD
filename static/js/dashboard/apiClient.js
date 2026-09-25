@@ -20,23 +20,23 @@
  */
 export const apiClient = async (url, options = {}) => {
     try {
+        
         options.cache = options.cache || 'no-store'; // Prevent aggressive iOS Safari caching
         
-        if (options.body && typeof options.body === 'object') {
-            options.body = JSON.stringify(options.body);
-            
-            // Extract CSRF token from cookie
-            const csrfCookie = document.cookie.split('; ').find(row => row.startsWith('csrf_token='));
-            const csrfToken = csrfCookie ? csrfCookie.split('=')[1] : '';
-            
-            options.headers = { 
-                'Content-Type': 'application/json', 
-                'X-CSRF-Token': csrfToken,
-                ...(options.headers || {}) 
-            };
+        // Always attach CSRF for non-GET methods if available
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        const csrfToken = meta ? meta.getAttribute('content') : '';
+        
+        options.headers = options.headers || {};
+        if (csrfToken) {
+            options.headers['X-CSRF-Token'] = csrfToken;
         }
 
-        // Hard cache-buster for older iOS Safari versions on GET requests
+        if (options.body && typeof options.body === 'object') {
+            options.body = JSON.stringify(options.body);
+            options.headers['Content-Type'] = 'application/json';
+        }
+// Hard cache-buster for older iOS Safari versions on GET requests
         const isGetRequest = !options.method || options.method === 'GET';
         const finalUrl = isGetRequest 
             ? `${url}${url.includes('?') ? '&' : '?'}_cb=${Date.now()}` 

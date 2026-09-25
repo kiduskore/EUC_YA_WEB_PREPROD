@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta name="description" content="Dashboard and leader tools for EUCMD Young Adults.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https:;">
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="csrf-token" content="<%= typeof csrf_token !== 'undefined' ? csrf_token : '' %>">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>EUC Dashboard</title>
@@ -48,7 +48,7 @@
         window.USER_ROLE = "<%- user_role || "" %>";
     </script>
 <style>
-        [v-cloak] { display: none; }
+        [v-cloak] { display: none !important; }
         html { scroll-behavior: smooth; }
         
         body { 
@@ -183,8 +183,14 @@
                 <button @click="currentView = 'ya_toolkit'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_toolkit' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Toolkit</button>
                 <button @click="currentView = 'ya_reflections'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_reflections' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Reflections</button>
             </div>
+            
             <div class="flex items-center gap-4">
+                <div class="hidden md:flex flex-col items-end mr-2">
+                    <span class="text-sm font-bold text-white">{{ userEmail }}</span>
+                    <span class="text-[10px] uppercase tracking-wider font-semibold text-blue-400">{{ userRole === 'admin' ? 'Site Manager' : 'Basic Manager' }}</span>
+                </div>
                 <div class="relative">
+
                     <button @click="showNotifications = !showNotifications" class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-300 hover:text-white  transition-colors relative">
                         🔔
                         <span v-if="notifications.length > 0" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full shadow-sm"></span>
@@ -402,8 +408,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button @click="currentView = 'training'" class="bg-brandDark hover:bg-white/10 border border-white/10 rounded-2xl p-4 text-left transition-colors group">
                             <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform origin-left">🎓</span>
-                            <span class="font-bold text-sm text-white block">Training Guide</span>
-                            <span class="text-[10px] text-slate-300 block mt-1">CUC Leadership Framework</span>
+                            <span class="font-bold text-sm text-white block">Vision & Strategy</span>
+                            <span class="text-[10px] text-slate-300 block mt-1">Core Leadership Manual</span>
                         </button>
                         <button @click="currentView = 'resources'" class="bg-brandDark hover:bg-white/10 border border-white/10 rounded-2xl p-4 text-left transition-colors group">
                             <span class="text-2xl mb-2 block group-hover:scale-110 transition-transform origin-left">📁</span>
@@ -443,17 +449,25 @@
             </div>
 
         </div>
-        <!-- 2. MEMBERS --><!-- 2. MEMBERS -->
+        <!-- 2. MEMBERS -->
         <div v-show="currentView === 'members' && !loading" class="space-y-6">
-            <div class="flex justify-between items-center">
-                <div class="relative w-96">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="relative w-full sm:w-80">
                     <span class="absolute left-3 top-2.5 text-slate-300">🔍</span>
                     <input type="text" v-model="searchQuery" placeholder="Search members..." class="glass-input rounded-xl w-full py-2.5 pl-10 pr-4 text-sm">
                 </div>
-                <button @click="showAddMember = !showAddMember" class="bg-accent text-white rounded-xl px-5 py-2.5 font-semibold transition-all  flex items-center gap-2 text-sm">
-                    <span v-if="!showAddMember">+ Add Member</span>
-                    <span v-else>Cancel</span>
-                </button>
+                <div class="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+                    <button @click="copyMemberFormLink" class="bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded-xl px-4 py-2.5 font-semibold transition-all flex items-center gap-2 text-sm" title="Copy unlisted link to share with members">
+                        <span>{{ copiedFormLink ? '✓ Link Copied!' : '📋 Copy Member Form Link' }}</span>
+                    </button>
+                    <a href="/member-form" target="_blank" class="bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 rounded-xl px-3.5 py-2.5 font-semibold transition-all flex items-center gap-1.5 text-sm" title="Open member form in new tab">
+                        <span>↗ Open Form</span>
+                    </a>
+                    <button @click="showAddMember = !showAddMember" class="bg-accent text-white rounded-xl px-5 py-2.5 font-semibold transition-all flex items-center gap-2 text-sm">
+                        <span v-if="!showAddMember">+ Add Member</span>
+                        <span v-else>Cancel</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Add Member Form -->
@@ -506,22 +520,25 @@
                 <table class="w-full text-left border-collapse ">
                     <thead>
                         <tr class="border-b border-white/10 text-xs uppercase tracking-wider text-slate-300 bg-white/5">
-                            <th class="p-4 font-semibold">Name</th>
-                            <th class="p-4 font-semibold">Contact</th>
-                            <th class="p-4 font-semibold">Role</th>
-                            <th class="p-4 font-semibold">Stage</th>
-                            <th class="p-4 font-semibold">Pod</th>
-                            <th class="p-4 font-semibold text-right">Actions</th>
+                            <th class="p-3 font-semibold">Name</th>
+                            <th class="p-3 font-semibold">Contact</th>
+                            <th class="p-3 font-semibold">Role</th>
+                            <th class="p-3 font-semibold">Stage</th>
+                            <th class="p-3 font-semibold">Pod</th>
+                            <th class="p-3 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="member in filteredMembers" :key="member.id" class="border-b border-white/10 hover:bg-white/10 transition-colors">
-                            <td class="p-4 font-medium text-white">{{ member.name }}</td>
-                            <td class="p-4 text-sm text-slate-300">
+                            <td class="p-3 font-medium text-white">{{ member.name }}</td>
+                            <td class="p-3 text-sm text-slate-300">
                                 <div>{{ member.email }}</div>
                                 <div class="text-xs text-slate-300">{{ member.phone }}</div>
+                                <div v-if="member.city || member.life_stage" class="text-[11px] text-slate-400 mt-0.5">
+                                    {{ [member.city, member.life_stage].filter(Boolean).join(' • ') }}
+                                </div>
                             </td>
-                            <td class="p-4">
+                            <td class="p-3">
                                 <span class="px-2.5 py-1 rounded-full text-xs font-bold"
                                     :class="{
                                         'bg-purple-900/50 text-purple-300 border border-purple-500/30': member.role === 'admin',
@@ -531,13 +548,13 @@
                                     {{ member.role }}
                                 </span>
                             </td>
-                            <td class="p-4">
+                            <td class="p-3">
                                 <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-white/10 text-slate-300 border border-white/20">
                                     {{ formatStage(member.spiritual_stage) }}
                                 </span>
                             </td>
-                            <td class="p-4 text-sm text-slate-300">{{ member.pod || 'Unassigned' }}</td>
-                            <td class="p-4 text-right space-x-3">
+                            <td class="p-3 text-sm text-slate-300">{{ member.pod || 'Unassigned' }}</td>
+                            <td class="p-3 text-right space-x-3">
                                 <button @click="editMember(member)" class="text-accent hover:text-white text-sm font-medium transition-colors">Edit</button>
                                 <button @click="deleteMember(member.id)" class="text-red-400 hover:text-red-300 text-sm font-medium transition-colors">Delete</button>
                             </td>
@@ -550,8 +567,48 @@
             </div>
         </div>
 
-        <!-- 3. DNA PODS -->
+        <!-- 3. DNA PODS & 12 TRIBES -->
         <div v-show="currentView === 'pods' && !loading" class="space-y-6">
+
+            <!-- What are the 12 Tribes? Pastoral Care & Circle Guide -->
+            <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-amber-500/25 mb-6 relative overflow-hidden">
+                <div class="flex items-center gap-3.5 mb-4">
+                    <span class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-xl border border-amber-500/30">
+                        ⛺
+                    </span>
+                    <div>
+                        <span class="text-amber-400 font-bold uppercase tracking-wider text-xs block">Pastoral Care & Member Integration</span>
+                        <h2 class="text-2xl font-black text-white">What are the 12 Tribes?</h2>
+                    </div>
+                </div>
+                <p class="text-slate-200 text-sm sm:text-base leading-relaxed mb-5">
+                    As new people join, they will be connected to one of the 12 tribes. The tribes are not separate churches or separate Bible studies. They are smaller circles that help us care for people as we grow.
+                </p>
+                <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+                    <h4 class="text-xs font-bold text-amber-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        Each tribe can help with:
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-200 text-sm">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                            <span class="font-medium">Welcoming new members</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+                            <span class="font-medium">Fellowship and encouragement</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="w-2 h-2 rounded-full bg-purple-400 shrink-0"></span>
+                            <span class="font-medium">Prayer and follow-up</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                            <span class="font-medium">Checking on members and helping people connect</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- DNA Pod Strategy Guide -->
             <div class="glass bg-cardDark p-6 rounded-2xl mb-6">
@@ -599,6 +656,11 @@
             </div>
 
             <!-- Pods Grid -->
+            
+            <div v-if="pods.length === 0" class="p-8 text-center text-slate-300 italic glass bg-cardDark">
+                No DNA Pods found. Add one above!
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div v-for="pod in pods" :key="pod.id" class="glass p-6 flex flex-col bg-cardDark">
                     <div class="flex justify-between items-start mb-4">
@@ -685,6 +747,11 @@
                     </div>
                     
                     <div class="flex-1 overflow-y-auto space-y-3 pb-2 pr-1 custom-scrollbar">
+                        
+                        <div v-if="col.items.length === 0" class="p-4 text-center text-slate-400 text-xs italic bg-white/5 rounded-xl border border-white/5 border-dashed">
+                            No contacts in this stage.
+                        </div>
+
                         <div v-for="item in col.items" :key="item.id" class="kanban-card p-4 cursor-grab bg-cardDark">
                             <div class="font-semibold text-white mb-1">{{ item.name }}</div>
                             <div class="text-xs text-slate-300 mb-2">{{ item.phone }} • {{ item.date }}</div>
@@ -745,9 +812,19 @@
 
             <h3 class="font-bold text-xl text-white mt-8 mb-4">Recent Plans</h3>
             <div class="space-y-4">
-                <div v-for="plan in plans" :key="plan.id" class="glass p-6 bg-cardDark">
+                
+            <div v-if="plans.length === 0" class="p-8 text-center text-slate-300 italic glass bg-cardDark">
+                No weekly plans found. Create one above!
+            </div>
+
+                <div v-for="plan in plans" :key="plan.id" class="glass p-6 bg-cardDark relative group">
                     <div class="flex justify-between items-start mb-4">
                         <div>
+                            
+                            <button @click="deletePlan(plan.id)" class="absolute top-4 right-4 text-slate-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Delete Plan">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+
                             <h4 class="font-bold text-lg text-white">{{ plan.pod }}</h4>
                             <p class="text-sm text-slate-300">Week of {{ plan.date }}</p>
                         </div>
@@ -834,14 +911,14 @@
             <div v-if="prayerTab === 'active'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div v-for="req in prayers.active" :key="req.id" class="glass p-5 flex flex-col relative overflow-hidden bg-cardDark" :class="{'border-l-4 border-l-red-500': req.urgent}">
                     <div v-if="req.urgent" class="absolute top-3 right-3 bg-red-900/50 text-red-400 border border-red-500/30 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">Urgent</div>
-                    <div class="flex items-center gap-3 mb-3">
+                    <div class="flex items-center gap-3 mb-3 pr-14">
                         <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-slate-300">{{ req.name.charAt(0) }}</div>
                         <div>
                             <h4 class="font-bold text-white text-sm">{{ req.name }}</h4>
                             <p class="text-xs text-slate-300">{{ req.time }}</p>
                         </div>
                     </div>
-                    <p class="text-sm text-slate-300 mb-6 flex-1">{{ req.text }}</p>
+                    <p class="text-sm text-slate-300 mb-6 flex-1 whitespace-pre-wrap">{{ req.text || 'No description provided.' }}</p>
                     <div class="flex gap-2 mt-auto pt-4 border-t border-white/10">
                         <button @click="supportPrayer(req.id)" class="flex-1 bg-white/5 rounded-lg py-2 text-xs font-bold text-slate-300 hover:bg-accent/20 hover:text-accent transition-colors flex items-center justify-center gap-1 border border-white/10 hover:border-accent/30">
                             🙏 Praying ({{ req.prays }})
@@ -920,7 +997,7 @@
                         </div>
                     </div>
                     
-                    <div class="w-32 flex-shrink-0 text-right">
+                    <div class="w-40 flex-shrink-0 text-right">
                         <select @change="updateStage(member, $event.target.value); $event.target.value = ''" class="glass-input w-full rounded-lg p-2 text-xs font-semibold text-slate-300 outline-none bg-cardDark cursor-pointer">
                             <option value="">Update Stage...</option>
                             <option v-for="s in journeyStages" :key="s" :value="s">{{ formatStage(s) }}</option>
@@ -954,18 +1031,18 @@
                 <table class="w-full text-left border-collapse ">
                     <thead>
                         <tr class="bg-white/5 border-b border-white/10">
-                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase">Code</th>
-                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase">Role</th>
-                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase">Generated On</th>
-                            <th class="p-4 text-xs font-semibold text-slate-300 uppercase text-right">Actions</th>
+                            <th class="p-3 text-xs font-semibold text-slate-300 uppercase">Code</th>
+                            <th class="p-3 text-xs font-semibold text-slate-300 uppercase">Role</th>
+                            <th class="p-3 text-xs font-semibold text-slate-300 uppercase">Generated On</th>
+                            <th class="p-3 text-xs font-semibold text-slate-300 uppercase text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/10">
                         <tr v-for="inv in invitesList" :key="inv.id" class="hover:bg-white/5 transition-colors">
-                            <td class="p-4 font-mono text-blue-500 font-bold tracking-widest">{{ inv.code }}</td>
-                            <td class="p-4"><span class="bg-white/10 px-2 py-1 rounded text-xs font-medium text-slate-300">{{ inv.role_name }}</span></td>
-                            <td class="p-4 text-sm text-slate-300">{{ new Date(inv.created_at).toLocaleDateString() }}</td>
-                            <td class="p-4 text-right">
+                            <td class="p-3 font-mono text-blue-500 font-bold tracking-widest">{{ inv.code }}</td>
+                            <td class="p-3"><span class="bg-white/10 px-2 py-1 rounded text-xs font-medium text-slate-300">{{ inv.role_name }}</span></td>
+                            <td class="p-3 text-sm text-slate-300">{{ new Date(inv.created_at).toLocaleDateString() }}</td>
+                            <td class="p-3 text-right">
                                 <button @click="revokeInvite(inv.id)" class="text-xs font-bold text-red-400 hover:text-red-300 transition-colors bg-red-400/10 hover:bg-red-400/20 px-3 py-1.5 rounded-lg">Revoke</button>
                             </td>
                         </tr>
@@ -1303,77 +1380,601 @@
         </div>
 
         <!-- 9. LEADER TRAINING -->
+        
         <div v-show="currentView === 'training' && !loading" class="space-y-8 pb-10">
+            
             <div class="glass bg-cardDark p-8 rounded-3xl border-t-4 border-t-accent shadow-[0_10px_40px_rgba(0,0,0,0.2)]">
                 <div class="mb-8 border-b border-white/10 pb-6">
-                    <span class="text-accent font-bold tracking-wider uppercase text-xs mb-2 block">Leader Preparation Guide</span>
-                    <h2 class="text-3xl font-black text-white mb-2">Planting a Disciple Making Church</h2>
-                    <p class="text-slate-300">By Bobby Harrington, Point Leader, Discipleship.org</p>
+                    <span class="text-accent font-bold tracking-wider uppercase text-xs mb-2 block">Vision & Strategy 2026-2027</span>
+                    <h2 class="text-3xl font-black text-white mb-2">Growing Together in the Word, Prayer & Fellowship</h2>
+                    <p class="text-slate-300">The Core Leadership Manual</p>
                 </div>
-
-                <div class="space-y-8 text-slate-300 leading-relaxed text-sm md:text-base">
+                
+                <div class="space-y-12 text-slate-300 leading-relaxed text-sm md:text-base">
+                    
                     <section class="space-y-4">
-                        <p><strong>Dear Discipleship-First Friends,</strong></p>
-                        <p>One of the most important questions church planters must answer is this: <strong>What kind of church are we trying to create?</strong></p>
-                        <p>If we want to plant churches that make disciples who make disciples, then we must begin by making disciples who make disciples. The methods we use at the beginning will establish the DNA of the church for years to come.</p>
-                        <p>Too often, church planting begins with a focus on launching a Sunday gathering. Leaders spend months raising money, building teams, and preparing for a public launch. Sunday gatherings matter. Corporate praise matters. But there is a danger.</p>
-                        <div class="bg-red-500/10 border-l-4 border-l-red-500 p-4 rounded-r-xl my-6">
-                            <p class="text-red-300 font-semibold mb-1">The Danger</p>
-                            <p class="text-red-200/80 text-sm">When the primary focus is launching a Sunday service, disciple making often becomes something we hope to add later. It is very difficult to turn that into a culture. The result is that many churches become excellent at gathering crowds but struggle to develop disciples.</p>
+                        <h3 class="text-2xl font-bold text-white text-accent">Our Vision</h3>
+                        <p><strong>We Are Building a Spiritual Family.</strong></p>
+                        <p>Our goal is not simply to create a larger Bible study. Our goal is to create a community where people:</p>
+                        <div class="bg-black/30 p-4 rounded-xl border border-white/10 font-medium text-center text-white">
+                            Know God &rarr; Know His Word &rarr; Grow spiritually &rarr; Build relationships &rarr; Serve &rarr; Make disciples
                         </div>
-                        <p>What if we reversed the process? What if church planting started with disciple making before it started with Sunday gatherings?</p>
+                        <p><strong>Our foundation:</strong> Word &bull; Prayer &bull; Worship &bull; Fellowship &bull; Discipleship</p>
                     </section>
 
-                    <section class="space-y-4 pt-6 border-t border-white/10">
-                        <h3 class="text-xl font-bold text-white text-accent">Be What You Want the Church to Become</h3>
-                        <p>Every church planter (and minister/pastor) reproduces who they are. The church plant will be more effected by the lead planter than by any strategy, program, or ministry model. People will imitate what they see.</p>
-                        <p>Before we gather a crowd, we must personally invest in and disciple people in smaller communities. Before we build systems, we must model obedience. Church planters should never outsource disciple making to a future ministry leader.</p>
-                        <p class="font-bold text-white bg-white/5 p-4 rounded-lg inline-block">The church will become what its leaders consistently practice.</p>
-                    </section>
-
-                    <section class="space-y-4 pt-6 border-t border-white/10">
-                        <h3 class="text-xl font-bold text-white text-accent">Start with Simple and Reproducible Disciple Making Communities</h3>
-                        <p>The first step is not launching a service. It is making disciples. We begin by gathering a simple disciple making group. In these disciple-making communities, people learn to:</p>
-                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Care for and support each other</li>
-                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Follow Jesus together</li>
-                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Obey His teachings</li>
-                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Pray (and fast) together</li>
-                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Share their faith</li>
-                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Reproduce groups</li>
+                    <section class="space-y-4">
+                        <h3 class="text-2xl font-bold text-white text-accent">The 7 Core Members</h3>
+                        <p>The 7 core members are the foundation of our growing community. Our responsibility is not to control everything, but to serve, protect, and strengthen the vision God has given us.</p>
+                        <p><strong>Our Core Responsibilities:</strong></p>
+                        <div class="bg-white/5 p-4 rounded-xl font-medium text-white mb-4">
+                            Pray &rarr; Lead &rarr; Disciple &rarr; Train &rarr; Encourage &rarr; Multiply
+                        </div>
+                        
+                        <p class="font-bold text-white mt-6 border-b border-white/10 pb-2">As a Core Team, We Commit To:</p>
+                        <ul class="space-y-4 mt-4">
+                            <li><strong>🙏 Pray together:</strong> We don't make decisions only through discussion—we seek God together.</li>
+                            <li><strong>❤️ Stay connected:</strong> We intentionally check on one another and make sure no core member becomes disconnected.</li>
+                            <li><strong>🗣️ Have honest conversations:</strong> We create a safe environment where we can respectfully disagree, address concerns, and speak truth in love.</li>
+                            <li><strong>🚫 Avoid gossip:</strong> We don't talk negatively about members, leaders, or one another behind their backs.</li>
+                            <li><strong>👀 Know our surroundings:</strong> We pay attention to who is struggling, who is new, where there may be conflict, and where people need support.</li>
+                            <li><strong>🔒 Protect confidentiality:</strong> What is shared in the core-team meeting stays within the core team. Confidentiality means trust, not hiding things that concern safety.</li>
+                            <li><strong>🤝 Build trust:</strong> We protect one another's reputation and create a culture where people feel safe to speak honestly.</li>
+                            <li><strong>🍽️ Have fellowship outside Bible study:</strong> We should eat together, laugh together, pray together, and build genuine friendship.</li>
                         </ul>
-                        <p class="mt-4">Because simplicity drives multiplication, these groups should be easy to reproduce. The goal is reaching lost people and spiritual reproduction.</p>
                     </section>
 
-                    <section class="space-y-4 pt-6 border-t border-white/10">
-                        <h3 class="text-xl font-bold text-white text-accent">Reproduce Before You Gather</h3>
-                        <p>A critical principle in planting a disciple making church is this: <strong>Reproduce Multiple Disciple Making Communities Before Launching Larger Tuesday Gatherings.</strong></p>
-                        <div class="bg-black/30 p-6 rounded-xl border border-white/10 space-y-4 my-6">
+                    <section class="space-y-4">
+                        <h3 class="text-2xl font-bold text-white text-accent">Our Leadership Philosophy</h3>
+                        <div class="bg-blue-900/20 border-l-4 border-l-blue-500 p-6 rounded-r-xl my-6">
+                            <p class="text-xl font-bold text-white mb-2">WE DON'T BUILD FOLLOWERS OF US.</p>
+                            <p class="text-xl font-bold text-white mb-4">WE BUILD FOLLOWERS OF JESUS.</p>
+                            <p class="text-blue-200">Every leader should ask: <em>Am I helping this person know Jesus better?</em></p>
+                        </div>
+                        <p>Our leadership should be based on:</p>
+                        <ul class="grid grid-cols-2 gap-4 mt-2 mb-6">
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Humility</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Servanthood</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Prayer</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Biblical character</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Accountability</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Love</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Faithfulness</li>
+                        </ul>
+                        
+                        <p><strong>The Role of the 7 Core Members:</strong> We walk spiritually with people. We don't just organize programs. We should learn to recognize:</p>
+                        <ul class="list-disc pl-6 space-y-1 mt-2 mb-4">
+                            <li>Where someone is spiritually</li>
+                            <li>What gifts God has given them</li>
+                            <li>What they are passionate about</li>
+                            <li>Where they need growth</li>
+                            <li>What God may be calling them to</li>
+                        </ul>
+                        <p>Our responsibility is not to decide someone's calling, but to walk with them. We don't need everyone to become a leader. We need everyone to become a disciple.</p>
+                    </section>
+
+                    <section class="space-y-4">
+                        <h3 class="text-2xl font-bold text-white text-accent">How We Grow</h3>
+                        <div class="bg-black/30 p-6 rounded-xl border border-white/10 space-y-6 my-6">
                             <div class="flex items-start gap-4">
                                 <div class="w-8 h-8 rounded-full bg-accent text-black font-bold flex items-center justify-center shrink-0">1</div>
-                                <p>A leader starts two disciple making communities.</p>
+                                <div>
+                                    <p class="font-bold text-white">Someone comes for the first time.</p>
+                                    <p class="text-sm">They experience fellowship. They feel welcomed, seen, and connected.</p>
+                                </div>
                             </div>
                             <div class="flex items-start gap-4">
                                 <div class="w-8 h-8 rounded-full bg-accent text-black font-bold flex items-center justify-center shrink-0">2</div>
-                                <p>New disciples are developed and equipped.</p>
+                                <div>
+                                    <p class="font-bold text-white">They begin studying the Word.</p>
+                                    <p class="text-sm">They grow in their knowledge of Jesus and Scripture.</p>
+                                </div>
                             </div>
                             <div class="flex items-start gap-4">
                                 <div class="w-8 h-8 rounded-full bg-accent text-black font-bold flex items-center justify-center shrink-0">3</div>
-                                <p>Those disciples launch new communities. New leaders emerge.</p>
+                                <div>
+                                    <p class="font-bold text-white">They become connected to one of the 12 tribes.</p>
+                                    <p class="text-sm text-slate-300">Smaller pastoral circles that care for people as we grow: welcoming new members, fellowship & encouragement, prayer & follow-up, and checking on members.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-accent text-black font-bold flex items-center justify-center shrink-0">4</div>
+                                <div>
+                                    <p class="font-bold text-white">They become disciples.</p>
+                                    <p class="text-sm">They grow in prayer, faith, character, obedience, and their relationship with Christ.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-accent text-black font-bold flex items-center justify-center shrink-0">5</div>
+                                <div>
+                                    <p class="font-bold text-white">They serve & multiply.</p>
+                                    <p class="text-sm">They discover their calling, serve according to their gifts, and help someone else grow.</p>
+                                </div>
                             </div>
                         </div>
-                        <p>By the time a larger church gathering begins, the expectation that everyday disciples make disciples is already deeply rooted in the culture.</p>
+                    </section>
+                    
+                    <section class="space-y-4">
+                        <h3 class="text-2xl font-bold text-white text-accent">Our Non-Negotiables</h3>
+                        <p>No matter how big we become, we will never lose:</p>
+                        <ul class="grid grid-cols-2 gap-4 mt-2">
+                            <li>🙏 Prayer</li>
+                            <li>📖 The Word</li>
+                            <li>❤️ Fellowship</li>
+                            <li>🤝 Unity</li>
+                            <li>🔥 Spiritual hunger</li>
+                            <li>🫶 Love for one another</li>
+                            <li>🙌 Worship</li>
+                        </ul>
+                        <p class="mt-6 text-white font-medium bg-red-900/30 p-4 rounded-lg border border-red-500/20 text-center">
+                            Structure can change. Programs can change. Numbers can change. But our foundation cannot change.
+                        </p>
                     </section>
 
-                    <section class="space-y-4 pt-6 border-t border-white/10">
-                        <h3 class="text-xl font-bold text-white text-accent">The End Goal</h3>
-                        <p>The goal is not merely to plant a church. The goal is to plant a disciple making church. We want disciples who make disciples, who make more disciples, who then gather together in larger Sunday gatherings. Then they make more disciple making disciples who plant more churches… and on and on it goes.</p>
-                        <p>When disciple making comes first, Sunday gatherings become stronger. Leadership becomes healthier. Mission becomes clearer. Multiplication becomes normal.</p>
-                    </section>
                 </div>
             </div>
         </div>
-    </main>
+
+        <!-- 10. COMMUNITY EVENTS & CALENDAR VIEW -->
+        <div v-show="currentView === 'events' && !loading" class="space-y-6 pb-12 animate-fade-in">
+            <!-- Header Bar -->
+            <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <h2 class="text-2xl sm:text-3xl font-black text-white">Community Events & Calendar</h2>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                            {{ eventsList.length }} Gatherings
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300">
+                        Manage church gatherings, set attendee capacities, and view real-time community RSVPs.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="/events" target="_blank" class="px-4 py-2.5 rounded-xl border border-white/20 text-white hover:bg-white/10 text-xs font-bold transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        <span>Open Public Page</span>
+                    </a>
+                    <button @click="showAddEvent = true" class="px-5 py-2.5 rounded-xl bg-accent text-white font-bold text-xs hover:bg-blue-600 transition-all shadow-md flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span>Create Event</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div v-for="evt in eventsList" :key="evt.id" class="glass bg-cardDark rounded-3xl border border-white/10 p-6 flex flex-col justify-between hover:border-blue-500/30 transition-all">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                {{ evt.category }}
+                            </span>
+                            <span v-if="evt.is_featured" class="text-amber-400 text-xs flex items-center gap-1 font-semibold">
+                                ★ Featured
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2 leading-snug">{{ evt.title }}</h3>
+                        <p class="text-xs text-slate-300 mb-4 line-clamp-2 leading-relaxed">{{ evt.description }}</p>
+                        
+                        <div class="space-y-1.5 text-xs text-slate-400 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span>📅</span>
+                                <span class="font-medium text-white">{{ evt.date }} &bull; {{ evt.time }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span>📍</span>
+                                <span class="truncate">{{ evt.location }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Capacity & RSVPs Bar -->
+                        <div class="p-3 rounded-2xl bg-white/5 border border-white/5 mb-4">
+                            <div class="flex justify-between text-xs font-semibold mb-1.5">
+                                <span class="text-emerald-400">👥 {{ evt.rsvp_count || 0 }} Registered</span>
+                                <span class="text-slate-400">{{ evt.capacity ? (evt.capacity - (evt.rsvp_count || 0)) + ' spots left' : 'Open capacity' }}</span>
+                            </div>
+                            <div v-if="evt.capacity" class="w-full h-1.5 bg-black/40 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-500 rounded-full transition-all" :style="{ width: Math.min(100, Math.round(((evt.rsvp_count || 0) / evt.capacity) * 100)) + '%' }"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="pt-4 border-t border-white/10 flex items-center justify-between gap-2">
+                        <button @click="viewEventRsvps(evt)" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-colors flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                            <span>Attendee List ({{ evt.rsvp_count || 0 }})</span>
+                        </button>
+                        <button @click="deleteEvent(evt.id)" class="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Delete Event">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-if="eventsList.length === 0" class="p-12 text-center glass bg-cardDark rounded-3xl border border-white/10">
+                <p class="text-slate-400 mb-4">No community events scheduled yet.</p>
+                <button @click="showAddEvent = true" class="px-5 py-2.5 rounded-xl bg-accent text-white font-bold text-xs">
+                    Create First Gathering
+                </button>
+            </div>
+        </div>
+
+        <!-- CREATE EVENT MODAL -->
+        <div v-if="showAddEvent" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+            <div class="glass bg-[#1E293B] border border-white/10 rounded-3xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                    <h3 class="text-xl font-bold text-white">Create Community Event</h3>
+                    <button @click="showAddEvent = false" class="text-slate-400 hover:text-white">&times;</button>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Event Title *</label>
+                        <input v-model="eventForm.title" type="text" placeholder="e.g. Tuesday YA Gathering" class="w-full p-2.5 rounded-xl bg-black/30 border border-white/10 text-white focus:outline-none focus:border-accent">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1">Category</label>
+                            <select v-model="eventForm.category" class="w-full p-2.5 rounded-xl bg-black/30 border border-white/10 text-white focus:outline-none focus:border-accent">
+                                <option value="gathering">Tuesday Gathering</option>
+                                <option value="prayer">Worship & Prayer</option>
+                                <option value="fellowship">Tribal Fellowship</option>
+                                <option value="service">City Outreach</option>
+                                <option value="retreat">Retreat & Vision</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1">Max Capacity (Seats)</label>
+                            <input v-model.number="eventForm.capacity" type="number" placeholder="Leave empty if open" class="w-full p-2.5 rounded-xl bg-black/30 border border-white/10 text-white focus:outline-none focus:border-accent">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1">Date * (YYYY-MM-DD)</label>
+                            <input v-model="eventForm.date" type="date" class="w-full p-2.5 rounded-xl bg-black/30 border border-white/10 text-white focus:outline-none focus:border-accent">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1">Time</label>
+                            <input v-model="eventForm.time" type="text" placeholder="7:00 PM - 9:00 PM" class="w-full p-2.5 rounded-xl bg-black/30 border border-white/10 text-white focus:outline-none focus:border-accent">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Location / Room</label>
+                        <input v-model="eventForm.location" type="text" placeholder="EUC Sanctuary, 12604 New Hampshire Ave" class="w-full p-2.5 rounded-xl bg-black/30 border border-white/10 text-white focus:outline-none focus:border-accent">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Description</label>
+                        <textarea v-model="eventForm.description" rows="3" placeholder="Overview of the gathering, what to expect, or what to bring..." class="w-full p-2.5 rounded-xl bg-black/30 border border-white/10 text-white focus:outline-none focus:border-accent"></textarea>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                        <input v-model="eventForm.is_featured" type="checkbox" id="event-featured-chk" class="rounded">
+                        <label for="event-featured-chk" class="text-slate-300 font-semibold cursor-pointer">Highlight as Featured Event</label>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-3 border-t border-white/10">
+                    <button @click="showAddEvent = false" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white">Cancel</button>
+                    <button @click="createEvent" class="px-5 py-2 rounded-xl bg-accent text-white font-bold hover:bg-blue-600 transition-colors">Publish Event</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEWSLETTER & UPDATES VIEW -->
+        <div v-show="currentView === 'newsletter' && !loading" class="space-y-6">
+            <!-- Header bar -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-white tracking-tight">Newsletter & Member Updates</h3>
+                    <p class="text-slate-400 text-sm mt-1">
+                        Send gathering announcements, devotionals, and updates directly to subscribed members.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button @click="copySubscribersEmails" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        <span>Copy Active Emails</span>
+                    </button>
+                    <button @click="fetchNewsletter" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all" title="Refresh List">
+                        <svg class="w-4 h-4" :class="loadingNewsletter ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="glass bg-cardDark rounded-2xl p-5 border border-white/10">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Subscribers</span>
+                        <span class="p-2 rounded-xl bg-blue-500/10 text-blue-400">📬</span>
+                    </div>
+                    <div class="mt-3 flex items-baseline gap-2">
+                        <span class="text-3xl font-black text-white">{{ newsletterSubscribers.length }}</span>
+                        <span class="text-xs text-slate-400">all time</span>
+                    </div>
+                </div>
+
+                <div class="glass bg-cardDark rounded-2xl p-5 border border-white/10">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Active Subscribed</span>
+                        <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">✓</span>
+                    </div>
+                    <div class="mt-3 flex items-baseline gap-2">
+                        <span class="text-3xl font-black text-emerald-400">{{ activeSubscribersCount }}</span>
+                        <span class="text-xs text-slate-400">ready to receive</span>
+                    </div>
+                </div>
+
+                <div class="glass bg-cardDark rounded-2xl p-5 border border-white/10">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Updates Sent</span>
+                        <span class="p-2 rounded-xl bg-purple-500/10 text-purple-400">🚀</span>
+                    </div>
+                    <div class="mt-3 flex items-baseline gap-2">
+                        <span class="text-3xl font-black text-purple-400">{{ newsletterBroadcasts.length }}</span>
+                        <span class="text-xs text-slate-400">broadcasts</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main 2-Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left: Send Update Form -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="glass bg-cardDark rounded-3xl p-6 sm:p-7 border border-white/10 space-y-5">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                <span>Send Update to Subscribed Users</span>
+                            </h4>
+                        </div>
+
+                        <!-- Quick Templates -->
+                        <div>
+                            <span class="text-xs font-semibold text-slate-400 block mb-2">Quick Templates:</span>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" @click="setNewsletterTemplate('tuesday')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white text-xs transition-colors border border-white/5">
+                                    Tuesday Gathering
+                                </button>
+                                <button type="button" @click="setNewsletterTemplate('events')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white text-xs transition-colors border border-white/5">
+                                    Events & Retreat
+                                </button>
+                                <button type="button" @click="setNewsletterTemplate('devotional')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white text-xs transition-colors border border-white/5">
+                                    Midweek Word
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Form -->
+                        <form @submit.prevent="sendNewsletterUpdate" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    Email Subject Line
+                                </label>
+                                <input type="text" 
+                                       v-model="newsletterForm.subject" 
+                                       required 
+                                       placeholder="e.g. Tuesday Gathering at 7:00 PM & Weekly Update" 
+                                       class="w-full p-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-accent">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    Update Message
+                                </label>
+                                <textarea v-model="newsletterForm.message" 
+                                          rows="6" 
+                                          required 
+                                          placeholder="Write your announcement or reflection for subscribed members here. Paragraph breaks will be formatted cleanly in the email." 
+                                          class="w-full p-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-accent leading-relaxed"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                                    Send Test to Single Email Only (Optional)
+                                </label>
+                                <input type="email" 
+                                       v-model="newsletterForm.testEmailOnly" 
+                                       placeholder="Optional: Enter your email to test before broadcasting" 
+                                       class="w-full p-3 rounded-xl bg-black/30 border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-accent">
+                            </div>
+
+                            <!-- Alert banners -->
+                            <div v-if="newsletterStatusMsg" class="p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                                <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>{{ newsletterStatusMsg }}</span>
+                            </div>
+                            <div v-if="newsletterErrorMsg" class="p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
+                                <svg class="w-4 h-4 shrink-0 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>{{ newsletterErrorMsg }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-2">
+                                <span class="text-xs text-slate-400">
+                                    Audience: <strong class="text-white">{{ newsletterForm.testEmailOnly ? 'Test Recipient' : activeSubscribersCount + ' Active Subscriber(s)' }}</strong>
+                                </span>
+                                <button type="submit" 
+                                        :disabled="sendingNewsletterUpdate || (!newsletterForm.testEmailOnly && activeSubscribersCount === 0)" 
+                                        class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer">
+                                    <svg v-if="sendingNewsletterUpdate" class="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    <span v-if="sendingNewsletterUpdate">Sending Update...</span>
+                                    <span v-else>Send Update Now &rarr;</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Sent Broadcasts History -->
+                    <div class="glass bg-cardDark rounded-3xl p-6 border border-white/10 space-y-4">
+                        <h4 class="text-base font-bold text-white flex items-center gap-2">
+                            <span>📜</span>
+                            <span>Past Updates Broadcast History</span>
+                        </h4>
+                        <div v-if="newsletterBroadcasts.length === 0" class="text-center py-6 text-slate-400 text-xs">
+                            No update broadcasts sent yet.
+                        </div>
+                        <div v-else class="space-y-3 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+                            <div v-for="bc in newsletterBroadcasts" :key="bc.id" class="p-3.5 rounded-2xl bg-white/5 border border-white/5 space-y-1">
+                                <div class="flex items-center justify-between text-xs">
+                                    <strong class="text-white font-semibold">{{ bc.subject }}</strong>
+                                    <span class="text-purple-400 font-bold">{{ bc.recipients_count }} recipient(s)</span>
+                                </div>
+                                <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed">{{ bc.message }}</p>
+                                <span class="text-[10px] text-slate-500 block">Sent: {{ new Date(bc.sent_at).toLocaleString() }} &bull; By {{ bc.sender_email || 'Leader' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Subscribers Management Table -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div class="glass bg-cardDark rounded-3xl p-6 border border-white/10 space-y-4 flex flex-col h-full min-h-[500px]">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <h4 class="text-base font-bold text-white flex items-center gap-2">
+                                <span>👥</span>
+                                <span>Subscribed Members ({{ filteredSubscribers.length }})</span>
+                            </h4>
+                            <input type="text" 
+                                   v-model="newsletterSearch" 
+                                   placeholder="Filter by email or name..." 
+                                   class="p-2 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-accent w-full sm:w-56">
+                        </div>
+
+                        <!-- Table -->
+                        <div class="overflow-y-auto flex-1 border border-white/10 rounded-2xl">
+                            <div v-if="loadingNewsletter" class="p-8 text-center text-slate-400 text-xs">
+                                Loading subscribers...
+                            </div>
+                            <div v-else-if="filteredSubscribers.length === 0" class="p-8 text-center text-slate-400 text-xs">
+                                No subscribers found matching search.
+                            </div>
+                            <table v-else class="w-full text-left text-xs text-slate-300">
+                                <thead class="bg-black/30 text-slate-400 uppercase tracking-wider text-[10px] sticky top-0 border-b border-white/10">
+                                    <tr>
+                                        <th class="p-3">Subscriber</th>
+                                        <th class="p-3">Status</th>
+                                        <th class="p-3">Source</th>
+                                        <th class="p-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5">
+                                    <tr v-for="sub in filteredSubscribers" :key="sub.id" class="hover:bg-white/5 transition-colors">
+                                        <td class="p-3">
+                                            <a :href="'mailto:' + sub.email" class="text-blue-400 hover:underline font-semibold block">{{ sub.email }}</a>
+                                            <span v-if="sub.name" class="text-slate-400 text-[11px] block">{{ sub.name }}</span>
+                                            <span class="text-slate-500 text-[10px] block">Joined: {{ sub.created_at ? sub.created_at.split('T')[0] : '—' }}</span>
+                                        </td>
+                                        <td class="p-3 whitespace-nowrap">
+                                            <span :class="sub.status === 'subscribed' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'" class="px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                                {{ sub.status || 'subscribed' }}
+                                            </span>
+                                        </td>
+                                        <td class="p-3 text-slate-400 text-[11px] whitespace-nowrap">
+                                            {{ sub.source || 'footer_form' }}
+                                        </td>
+                                        <td class="p-3 text-right whitespace-nowrap">
+                                            <button v-if="sub.status === 'subscribed'" @click="removeSubscriber(sub)" class="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Unsubscribe">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATTENDEES RSVP LIST MODAL -->
+        <div v-if="showRsvpsModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+            <div class="glass bg-[#1E293B] border border-white/10 rounded-3xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] flex flex-col">
+                <div class="flex items-start justify-between pb-3 border-b border-white/10">
+                    <div>
+                        <h3 class="text-xl font-bold text-white">{{ activeEventForRsvps?.title }}</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">
+                            {{ activeEventForRsvps?.date }} &bull; {{ activeEventForRsvps?.time }} &bull; {{ activeEventForRsvps?.location }}
+                        </p>
+                    </div>
+                    <button @click="showRsvpsModal = false" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+                </div>
+
+                <!-- Summary Bar -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 text-center text-xs">
+                    <div>
+                        <span class="text-slate-400 block">Registrations</span>
+                        <strong class="text-lg text-white font-black">{{ activeRsvpsList.length }}</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Total People</span>
+                        <strong class="text-lg text-emerald-400 font-black">
+                            {{ activeRsvpsList.reduce((acc, r) => acc + 1 + (r.guests_count || 0), 0) }}
+                        </strong>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <span class="text-slate-400 block">Total Guests</span>
+                        <strong class="text-lg text-blue-400 font-black">
+                            +{{ activeRsvpsList.reduce((acc, r) => acc + (r.guests_count || 0), 0) }}
+                        </strong>
+                    </div>
+                </div>
+
+                <!-- Attendee List Table -->
+                <div class="overflow-y-auto flex-1 border border-white/10 rounded-2xl">
+                    <div v-if="loadingRsvps" class="p-8 text-center text-slate-400 text-xs">
+                        Loading attendee list...
+                    </div>
+                    <div v-else-if="activeRsvpsList.length === 0" class="p-8 text-center text-slate-400 text-xs">
+                        No registrations for this event yet.
+                    </div>
+                    <table v-else class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-black/30 text-slate-400 uppercase tracking-wider text-[10px] sticky top-0 border-b border-white/10">
+                            <tr>
+                                <th class="p-3">Attendee</th>
+                                <th class="p-3">Contact</th>
+                                <th class="p-3 text-center">Party Size</th>
+                                <th class="p-3">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <tr v-for="rsvp in activeRsvpsList" :key="rsvp.id" class="hover:bg-white/5 transition-colors">
+                                <td class="p-3 font-semibold text-white whitespace-nowrap">
+                                    {{ rsvp.name }}
+                                </td>
+                                <td class="p-3 whitespace-nowrap">
+                                    <a :href="'mailto:' + rsvp.email" class="text-blue-400 hover:underline block">{{ rsvp.email }}</a>
+                                    <span v-if="rsvp.phone" class="text-slate-400 text-[11px] block">{{ rsvp.phone }}</span>
+                                </td>
+                                <td class="p-3 text-center whitespace-nowrap">
+                                    <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">
+                                        {{ 1 + (rsvp.guests_count || 0) }}
+                                    </span>
+                                    <span v-if="rsvp.guests_count" class="text-[10px] text-slate-400 block mt-0.5">
+                                        (+{{ rsvp.guests_count }} guest{{ rsvp.guests_count === 1 ? '' : 's' }})
+                                    </span>
+                                </td>
+                                <td class="p-3 text-slate-400 max-w-xs truncate" :title="rsvp.notes">
+                                    {{ rsvp.notes || '—' }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button @click="showRsvpsModal = false" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-colors">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+</main>
 </div>
 
 <script type="module" src="/static/js/dashboard/main.js"></script>

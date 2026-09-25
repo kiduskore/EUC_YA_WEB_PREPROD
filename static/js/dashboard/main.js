@@ -6,9 +6,143 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
         setup() {
             const userPermissions = window.USER_PERMISSIONS || [];
             const hasPermission = (p) => userPermissions.includes(p);
+
+            const customConfirm = (msg) => {
+                return new Promise((resolve) => {
+                    const overlay = document.createElement('div');
+                    overlay.style.position = 'fixed';
+                    overlay.style.inset = '0';
+                    overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                    overlay.style.zIndex = '9999';
+                    overlay.style.display = 'flex';
+                    overlay.style.alignItems = 'center';
+                    overlay.style.justifyContent = 'center';
+                    
+                    const dialog = document.createElement('div');
+                    dialog.style.backgroundColor = '#1E293B';
+                    dialog.style.padding = '24px';
+                    dialog.style.borderRadius = '16px';
+                    dialog.style.border = '1px solid rgba(255,255,255,0.1)';
+                    dialog.style.color = 'white';
+                    dialog.style.maxWidth = '400px';
+                    dialog.style.width = '90%';
+                    dialog.style.textAlign = 'center';
+                    
+                    const text = document.createElement('p');
+                    text.innerText = msg;
+                    text.style.marginBottom = '24px';
+                    
+                    const btnContainer = document.createElement('div');
+                    btnContainer.style.display = 'flex';
+                    btnContainer.style.gap = '12px';
+                    btnContainer.style.justifyContent = 'center';
+                    
+                    const btnCancel = document.createElement('button');
+                    btnCancel.innerText = 'Cancel';
+                    btnCancel.style.padding = '8px 16px';
+                    btnCancel.style.borderRadius = '8px';
+                    btnCancel.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    btnCancel.onclick = () => { document.body.removeChild(overlay); resolve(false); };
+                    
+                    const btnOk = document.createElement('button');
+                    btnOk.innerText = 'Confirm';
+                    btnOk.style.padding = '8px 16px';
+                    btnOk.style.borderRadius = '8px';
+                    btnOk.style.backgroundColor = '#ef4444';
+                    btnOk.onclick = () => { document.body.removeChild(overlay); resolve(true); };
+                    
+                    btnContainer.appendChild(btnCancel);
+                    btnContainer.appendChild(btnOk);
+                    dialog.appendChild(text);
+                    dialog.appendChild(btnContainer);
+                    overlay.appendChild(dialog);
+                    document.body.appendChild(overlay);
+                });
+            };
+            
+            const customPrompt = (msg) => {
+                return new Promise((resolve) => {
+                    const overlay = document.createElement('div');
+                    overlay.style.position = 'fixed';
+                    overlay.style.inset = '0';
+                    overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                    overlay.style.zIndex = '9999';
+                    overlay.style.display = 'flex';
+                    overlay.style.alignItems = 'center';
+                    overlay.style.justifyContent = 'center';
+                    
+                    const dialog = document.createElement('div');
+                    dialog.style.backgroundColor = '#1E293B';
+                    dialog.style.padding = '24px';
+                    dialog.style.borderRadius = '16px';
+                    dialog.style.border = '1px solid rgba(255,255,255,0.1)';
+                    dialog.style.color = 'white';
+                    dialog.style.maxWidth = '400px';
+                    dialog.style.width = '90%';
+                    
+                    const text = document.createElement('p');
+                    text.innerText = msg;
+                    text.style.marginBottom = '16px';
+                    
+                    const input = document.createElement('input');
+                    input.style.width = '100%';
+                    input.style.padding = '8px';
+                    input.style.marginBottom = '24px';
+                    input.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    input.style.border = '1px solid rgba(255,255,255,0.2)';
+                    input.style.borderRadius = '8px';
+                    input.style.color = 'white';
+                    
+                    const btnContainer = document.createElement('div');
+                    btnContainer.style.display = 'flex';
+                    btnContainer.style.gap = '12px';
+                    btnContainer.style.justifyContent = 'flex-end';
+                    
+                    const btnCancel = document.createElement('button');
+                    btnCancel.innerText = 'Cancel';
+                    btnCancel.style.padding = '8px 16px';
+                    btnCancel.style.borderRadius = '8px';
+                    btnCancel.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    btnCancel.onclick = () => { document.body.removeChild(overlay); resolve(null); };
+                    
+                    const btnOk = document.createElement('button');
+                    btnOk.innerText = 'Submit';
+                    btnOk.style.padding = '8px 16px';
+                    btnOk.style.borderRadius = '8px';
+                    btnOk.style.backgroundColor = '#3b82f6';
+                    btnOk.onclick = () => { document.body.removeChild(overlay); resolve(input.value); };
+                    
+                    btnContainer.appendChild(btnCancel);
+                    btnContainer.appendChild(btnOk);
+                    dialog.appendChild(text);
+                    dialog.appendChild(input);
+                    dialog.appendChild(btnContainer);
+                    overlay.appendChild(dialog);
+                    document.body.appendChild(overlay);
+                    input.focus();
+                });
+            };
+
             const userEmail = ref(window.USER_EMAIL || "");
             const userRole = ref(window.USER_ROLE || "");
-            const currentView = ref('overview');
+            
+            const getInitialView = () => {
+                const hash = (window.location.hash || '').replace('#', '').trim();
+                const validViews = ['overview', 'members', 'pods', 'planner', 'journey', 'training', 'invites', 'resources', 'ya_hub', 'ya_groups', 'ya_toolkit', 'ya_reflections'];
+                if (hash && validViews.includes(hash)) {
+                    return hash;
+                }
+                return 'overview';
+            };
+            const currentView = ref(getInitialView());
+            
+            window.addEventListener('hashchange', () => {
+                const hash = (window.location.hash || '').replace('#', '').trim();
+                const validViews = ['overview', 'members', 'pods', 'planner', 'journey', 'training', 'invites', 'resources', 'ya_hub', 'ya_groups', 'ya_toolkit', 'ya_reflections'];
+                if (hash && validViews.includes(hash)) {
+                    currentView.value = hash;
+                }
+            });
             const loading = ref(true);
             const searchQuery = ref('');
             const showAddMember = ref(false);
@@ -27,18 +161,20 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
                 { id: 'members', label: 'Members', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>' },
                 { id: 'pods', label: 'DNA Pods', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>' },
                 { id: 'pipeline', label: 'Pipeline', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>' },
+                { id: 'events', label: 'Events & Calendar', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>' },
                 { id: 'planner', label: 'Planner', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>' },
                 { id: 'prayer', label: 'Prayer Wall', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>' },
                 { id: 'journey', label: 'Journey', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>' },
-                { id: 'training', label: 'Training Guide', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>' },
+                { id: 'training', label: 'Vision & Strategy', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>' },
                 { id: 'resources', label: 'Resources', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>' },
+                { id: 'newsletter', label: 'Newsletter & Updates', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>' },
                 { id: 'invites', label: 'Team Invites', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>' }
             ];
             const navItems = computed(() => {
                 return allNavItems.filter(nav => {
                     if (nav.id === 'members' || nav.id === 'journey') return hasPermission('manage_members');
                     if (nav.id === 'pods' || nav.id === 'planner') return hasPermission('manage_pods');
-                    if (nav.id === 'resources' || nav.id === 'training') return hasPermission('manage_settings');
+                    if (nav.id === 'training') return hasPermission('manage_users'); // Only Site Admin
                     if (nav.id === 'invites') return hasPermission('manage_users');
                     return true;
                 });
@@ -149,6 +285,193 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
                 if (data) resources.value = data;
             };
 
+            // COMMUNITY EVENTS & CALENDAR MANAGEMENT
+            const eventsList = ref([]);
+            const showAddEvent = ref(false);
+            const showRsvpsModal = ref(false);
+            const activeEventForRsvps = ref(null);
+            const activeRsvpsList = ref([]);
+            const loadingRsvps = ref(false);
+            const eventForm = ref({
+                title: '',
+                description: '',
+                date: '',
+                time: '7:00 PM',
+                location: 'EUC Sanctuary',
+                category: 'gathering',
+                capacity: 60,
+                is_featured: false
+            });
+
+            const fetchEvents = async () => {
+                try {
+                    const data = await apiClient('/api/events');
+                    if (data) eventsList.value = data;
+                } catch (e) {
+                    console.error("fetchEvents failed", e);
+                }
+            };
+
+            const createEvent = async () => {
+                if (!eventForm.value.title || !eventForm.value.date) {
+                    alert("Please provide at least a title and date.");
+                    return;
+                }
+                try {
+                    await apiClient('/api/events', { method: 'POST', body: eventForm.value });
+                    showAddEvent.value = false;
+                    eventForm.value = {
+                        title: '',
+                        description: '',
+                        date: '',
+                        time: '7:00 PM',
+                        location: 'EUC Sanctuary',
+                        category: 'gathering',
+                        capacity: 60,
+                        is_featured: false
+                    };
+                    await fetchEvents();
+                } catch (e) {
+                    alert("Failed to create event: " + e.message);
+                }
+            };
+
+            const deleteEvent = async (id) => {
+                if (!(await customConfirm('Are you sure you want to delete this event? This will also remove all associated attendee registrations.'))) return;
+                try {
+                    await apiClient(`/api/events/${id}`, { method: 'DELETE' });
+                    await fetchEvents();
+                } catch (e) {
+                    alert("Failed to delete event: " + e.message);
+                }
+            };
+
+            const viewEventRsvps = async (evt) => {
+                activeEventForRsvps.value = evt;
+                showRsvpsModal.value = true;
+                loadingRsvps.value = true;
+                try {
+                    const data = await apiClient(`/api/events/${evt.id}/rsvps`);
+                    activeRsvpsList.value = data || [];
+                } catch (e) {
+                    activeRsvpsList.value = [];
+                } finally {
+                    loadingRsvps.value = false;
+                }
+            };
+
+            // NEWSLETTER & BROADCAST UPDATES
+            const newsletterSubscribers = ref([]);
+            const newsletterBroadcasts = ref([]);
+            const newsletterForm = ref({ subject: '', message: '', testEmailOnly: '' });
+            const sendingNewsletterUpdate = ref(false);
+            const newsletterStatusMsg = ref('');
+            const newsletterErrorMsg = ref('');
+            const loadingNewsletter = ref(false);
+            const newsletterSearch = ref('');
+
+            const filteredSubscribers = computed(() => {
+                if (!newsletterSearch.value.trim()) return newsletterSubscribers.value;
+                const q = newsletterSearch.value.toLowerCase().trim();
+                return newsletterSubscribers.value.filter(s => 
+                    (s.email && s.email.toLowerCase().includes(q)) || 
+                    (s.name && s.name.toLowerCase().includes(q)) ||
+                    (s.source && s.source.toLowerCase().includes(q))
+                );
+            });
+
+            const activeSubscribersCount = computed(() => {
+                return newsletterSubscribers.value.filter(s => s.status === 'subscribed').length;
+            });
+
+            const fetchNewsletter = async () => {
+                loadingNewsletter.value = true;
+                try {
+                    const data = await apiClient('/api/newsletter/subscribers');
+                    if (data) {
+                        newsletterSubscribers.value = data.subscribers || [];
+                        newsletterBroadcasts.value = data.broadcasts || [];
+                    }
+                } catch(e) {
+                    console.error('Failed to load newsletter subscribers:', e);
+                } finally {
+                    loadingNewsletter.value = false;
+                }
+            };
+
+            const sendNewsletterUpdate = async () => {
+                if (!newsletterForm.value.subject || !newsletterForm.value.subject.trim()) {
+                    newsletterErrorMsg.value = 'Please provide an email subject for your update.';
+                    return;
+                }
+                if (!newsletterForm.value.message || !newsletterForm.value.message.trim()) {
+                    newsletterErrorMsg.value = 'Please write message content to send to subscribers.';
+                    return;
+                }
+
+                sendingNewsletterUpdate.value = true;
+                newsletterStatusMsg.value = '';
+                newsletterErrorMsg.value = '';
+
+                try {
+                    const res = await apiClient('/api/newsletter/send-update', {
+                        method: 'POST',
+                        body: newsletterForm.value
+                    });
+
+                    if (res && res.success) {
+                        newsletterStatusMsg.value = res.message || 'Update successfully sent to subscribers!';
+                        newsletterForm.value = { subject: '', message: '', testEmailOnly: '' };
+                        if (res.broadcast) {
+                            newsletterBroadcasts.value.unshift(res.broadcast);
+                        }
+                    } else {
+                        newsletterErrorMsg.value = (res && res.error) || 'Failed to send update to subscribers.';
+                    }
+                } catch(e) {
+                    newsletterErrorMsg.value = 'Error connecting to server. Please try again.';
+                } finally {
+                    sendingNewsletterUpdate.value = false;
+                }
+            };
+
+            const setNewsletterTemplate = (type) => {
+                if (type === 'tuesday') {
+                    newsletterForm.value.subject = 'Join us this Tuesday for EUCMD Young Adults Worship & Prayer!';
+                    newsletterForm.value.message = 'Hi everyone,\n\nWe hope your week is off to a blessed start!\n\nThis is a quick reminder about our weekly Young Adults Gathering this Tuesday at 7:00 PM EST.\n\n📍 Location: 914 Silver Spring Ave 204B, Silver Spring, MD 20910\n⏰ Time: 7:00 PM EST\n\nCome expectant for worship, prayer, God\'s Word, and fellowship. Feel free to invite a friend—dinner and fellowship will follow right after the service!\n\nLooking forward to seeing you all,\nEUCMD Young Adults Leadership';
+                } else if (type === 'events') {
+                    newsletterForm.value.subject = 'Upcoming Special Events & Fellowship Opportunities!';
+                    newsletterForm.value.message = 'Dear Young Adults Community,\n\nWe have exciting ministry updates and upcoming events on our church calendar! From community praise nights to life group fellowships and campus gatherings across Maryland, God is doing great things in our generation.\n\nVisit our website to check out upcoming dates and RSVP!\n\nBlessings,\nEUCMD Leadership Team';
+                } else if (type === 'devotional') {
+                    newsletterForm.value.subject = 'Midweek Word & Encouragement - EUCMD Young Adults';
+                    newsletterForm.value.message = '"Let no one despise your youth, but set the believers an example in speech, in conduct, in love, in faith, in purity." — 1 Timothy 4:12\n\nTake five minutes today to reflect on God\'s faithfulness this week. Whatever season you are navigating, know that you are not alone.\n\nOur team is interceding for you daily—reach out if you ever need prayer or pastoral support!';
+                }
+            };
+
+            const removeSubscriber = async (sub) => {
+                if (!(await customConfirm(`Are you sure you want to remove ${sub.email} from the newsletter list?`))) return;
+                try {
+                    const res = await apiClient(`/api/newsletter/subscribers/${sub.id}`, { method: 'DELETE' });
+                    if (res && res.success) {
+                        sub.status = 'unsubscribed';
+                    }
+                } catch(e) {
+                    alert('Failed to remove subscriber');
+                }
+            };
+
+            const copySubscribersEmails = () => {
+                const active = newsletterSubscribers.value.filter(s => s.status === 'subscribed');
+                const emails = active.map(s => s.email).join(', ');
+                if (!emails) {
+                    alert('No active subscriber emails to copy.');
+                    return;
+                }
+                navigator.clipboard.writeText(emails).then(() => {
+                    alert(`Copied ${active.length} subscriber email(s) to clipboard!`);
+                });
+            };
+
             const fetchAll = async () => {
                 loading.value = true;
                 try {
@@ -159,7 +482,9 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
                         fetchPipeline().catch(e => console.error("fetchPipeline failed", e)), 
                         fetchPlans().catch(e => console.error("fetchPlans failed", e)), 
                         fetchPrayers().catch(e => console.error("fetchPrayers failed", e)), 
-                        fetchResources().catch(e => console.error("fetchResources failed", e))
+                        fetchResources().catch(e => console.error("fetchResources failed", e)),
+                        fetchEvents().catch(e => console.error("fetchEvents failed", e)),
+                        fetchNewsletter().catch(e => console.error("fetchNewsletter failed", e))
                     ]);
                 } catch (e) {
                     console.error("Dashboard data load error:", e);
@@ -170,6 +495,21 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             };
 
             // MEMBER CRUD
+            const copiedFormLink = ref(false);
+            const copyMemberFormLink = () => {
+                const url = window.location.origin + '/member-form';
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        copiedFormLink.value = true;
+                        setTimeout(() => { copiedFormLink.value = false; }, 3000);
+                    }).catch(() => {
+                        prompt('Copy member form link to share:', url);
+                    });
+                } else {
+                    prompt('Copy member form link to share:', url);
+                }
+            };
+
             const saveMember = async () => {
                 if (editingMemberId.value) {
                     await apiClient(`/api/members/${editingMemberId.value}`, { method: 'PUT', body: memberForm.value });
@@ -189,7 +529,7 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             };
 
             const deleteMember = async (id) => {
-                if (!confirm('Delete this member?')) return;
+                if (!(await customConfirm('Delete this member?'))) return;
                 await apiClient(`/api/members/${id}`, { method: 'DELETE' });
                 await Promise.all([fetchMembers(), fetchStats(), fetchPods()]);
             };
@@ -245,7 +585,7 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             };
 
             const deletePod = async (id) => {
-                if (!confirm("Are you sure you want to delete this pod?")) return;
+                if (!(await customConfirm('Are you sure you want to delete this pod?'))) return;
                 await apiClient(`/api/pods/${id}`, { method: 'DELETE' });
                 await Promise.all([fetchPods(), fetchStats(), fetchMembers()]);
             };
@@ -315,9 +655,11 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
 
             // PLANNER CRUD
             const createPlan = async () => {
+                const targetPod = pods.value.find(p => p.id === parseInt(planForm.value.pod_id));
+                const leaderId = targetPod && targetPod.leader_id ? targetPod.leader_id : null;
                 const body = {
                     pod_id: parseInt(planForm.value.pod_id),
-                    leader_id: 1,
+                    leader_id: leaderId,
                     week_date: planForm.value.week_date,
                     bible_passage: planForm.value.bible_passage,
                     discussion_questions: JSON.stringify(planForm.value.discussion_questions.split('\n').filter(q => q.trim())),
@@ -335,8 +677,13 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
 
             // PRAYER CRUD
             const addPrayer = async () => {
+                const reqText = prayerForm.value.request_text ? prayerForm.value.request_text.trim() : '';
+                if (!reqText) {
+                    alert("Please enter a prayer request.");
+                    return;
+                }
                 const mId = parseInt(prayerForm.value.member_id);
-                await apiClient('/api/prayer', { method: 'POST', body: { member_id: isNaN(mId) ? null : mId, request_text: prayerForm.value.request_text, is_urgent: prayerForm.value.is_urgent } });
+                await apiClient('/api/prayer', { method: 'POST', body: { member_id: isNaN(mId) ? null : mId, request_text: reqText, is_urgent: prayerForm.value.is_urgent } });
                 prayerForm.value = { member_id: '', request_text: '', is_urgent: false };
                 showAddPrayer.value = false;
                 await Promise.all([fetchPrayers(), fetchStats()]);
@@ -352,8 +699,8 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
                 await Promise.all([fetchPrayers(), fetchStats()]);
             };
 
-            const promptAndMarkAnswered = (reqId) => {
-                const t = prompt('Enter a short testimony (optional):');
+            const promptAndMarkAnswered = async (reqId) => {
+                const t = await customPrompt('Enter a short testimony (optional):');
                 if (t !== null) {
                     markAnswered(reqId, t);
                 }
@@ -375,8 +722,17 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             // COMPUTED
             const filteredMembers = computed(() => {
                 if (!searchQuery.value) return allMembers.value;
-                const q = searchQuery.value.toLowerCase();
-                return allMembers.value.filter(m => (m.name || '').toLowerCase().includes(q) || (m.email || '').toLowerCase().includes(q));
+                const q = searchQuery.value.toLowerCase().trim();
+                return allMembers.value.filter(m => {
+                    return (m.name || '').toLowerCase().includes(q) || 
+                           (m.email || '').toLowerCase().includes(q) ||
+                           (m.phone || '').toLowerCase().includes(q) ||
+                           (m.role || '').toLowerCase().includes(q) ||
+                           (m.pod || '').toLowerCase().includes(q) ||
+                           (m.spiritual_stage || '').toLowerCase().includes(q) ||
+                           (m.city || '').toLowerCase().includes(q) ||
+                           (m.life_stage || '').toLowerCase().includes(q);
+                });
             });
 
             const leaders = computed(() => allMembers.value.filter(m => m.role === 'leader' || m.role === 'admin'));
@@ -512,7 +868,7 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             };
 
             const revokeInvite = async (id) => {
-                if (!confirm("Are you sure you want to revoke and delete this invite code?")) return;
+                if (!(await customConfirm('Are you sure you want to revoke and delete this invite code?'))) return;
                 
                 // Optimistic UI update to remove it immediately
                 invitesList.value = invitesList.value.filter(inv => inv.id !== id);
@@ -546,13 +902,16 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
                 currentView, loading, navItems, currentViewTitle,
                 stats, stageDistribution, recentPrayers,
                 allMembers, filteredMembers, searchQuery, showAddMember, memberForm, saveMember, editMember, deleteMember, editingMemberId,
+                copiedFormLink, copyMemberFormLink,
                 formatStage, getStageClass, getStageBg, leaders, unassignedMembers,
                 editingPodId, pods, podForm, createPod, editPod, cancelEditPod, deletePod, addToPod, removeFromPod,
                 pipelineCols, addNewcomer, moveNewcomer, moveNewcomerBack, convertToMember, newcomerForm, showAddNewcomer,
                 plans, planForm, createPlan, submitReport,
                 prayerTab, prayers, prayerForm, addPrayer, supportPrayer, markAnswered, promptAndMarkAnswered, showAddPrayer,
                 journeyStages, stageCounts, isStageCompleted, getJourneyProgress, updateStage,
-                resources, filteredResources, resourceCategory, getResourceCatClass, resourceForm, addResource, deleteResource, showAddResource, showNotifications, notifications, handleNotificationClick
+                resources, filteredResources, resourceCategory, getResourceCatClass, resourceForm, addResource, deleteResource, showAddResource, showNotifications, notifications, handleNotificationClick,
+                eventsList, showAddEvent, showRsvpsModal, activeEventForRsvps, activeRsvpsList, loadingRsvps, eventForm, fetchEvents, createEvent, deleteEvent, viewEventRsvps,
+                newsletterSubscribers, newsletterBroadcasts, newsletterForm, sendingNewsletterUpdate, newsletterStatusMsg, newsletterErrorMsg, loadingNewsletter, newsletterSearch, filteredSubscribers, activeSubscribersCount, fetchNewsletter, sendNewsletterUpdate, setNewsletterTemplate, removeSubscriber, copySubscribersEmails
             };
         }
     }).mount('#app');

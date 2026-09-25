@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="100%" height="100%">
+  <defs>
+    <!-- Paper Texture & Glow Gradients -->
+    <radialGradient id="paperGlow" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#faf7f2"/>
+      <stop offset="100%" stop-color="#f0ebe1"/>
+    </radialGradient>
+
+    <!-- Warm Gold Foil Gradient -->
+    <linearGradient id="goldFoil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b47d2b"/>
+      <stop offset="25%" stop-color="#e9c374"/>
+      <stop offset="45%" stop-color="#fdf3cd"/>
+      <stop offset="65%" stop-color="#cf993f"/>
+      <stop offset="85%" stop-color="#aa7222"/>
+      <stop offset="100%" stop-color="#e2bc68"/>
+    </linearGradient>
+
+    <linearGradient id="goldFoilDark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#241e15"/>
+      <stop offset="35%" stop-color="#4a3821"/>
+      <stop offset="60%" stop-color="#c69542"/>
+      <stop offset="85%" stop-color="#f4dc90"/>
+      <stop offset="100%" stop-color="#73521d"/>
+    </linearGradient>
+
+    <linearGradient id="crossGold" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#b8832e"/>
+      <stop offset="20%" stop-color="#f5e096"/>
+      <stop offset="45%" stop-color="#d39f42"/>
+      <stop offset="70%" stop-color="#8c5813"/>
+      <stop offset="90%" stop-color="#f8e7ab"/>
+      <stop offset="100%" stop-color="#a67123"/>
+    </linearGradient>
+
+    <linearGradient id="mountainGold" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#181510"/>
+      <stop offset="35%" stop-color="#2c2214"/>
+      <stop offset="55%" stop-color="#d6a34b"/>
+      <stop offset="75%" stop-color="#fae7a5"/>
+      <stop offset="90%" stop-color="#c9943d"/>
+      <stop offset="100%" stop-color="#14110b"/>
+    </linearGradient>
+
+    <!-- Subtle texture pattern -->
+    <filter id="goldShine" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#805b1b" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1000" height="1000" fill="url(#paperGlow)"/>
+
+  <!-- Subtle Parchment Border Frame -->
+  <rect x="25" y="25" width="950" height="950" fill="none" stroke="#e4dbcc" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Top "COMING SOON" -->
+  <text x="500" y="85" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="28" font-weight="700" letter-spacing="12" fill="#26221c">
+    COMING SOON
+  </text>
+
+  <!-- "YOUNG ADULT" -->
+  <text x="500" y="275" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="110" font-weight="900" letter-spacing="4" fill="url(#goldFoilDark)" filter="url(#goldShine)">
+    YOUNG ADULT
+  </text>
+
+  <!-- "CONFERENCE" -->
+  <text x="500" y="345" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="52" font-weight="800" letter-spacing="22" fill="url(#goldFoil)">
+    CONFERENCE
+  </text>
+
+  <!-- Golden Cross -->
+  <g transform="translate(500, 480)" filter="url(#goldShine)">
+    <!-- Vertical beam -->
+    <rect x="-24" y="-105" width="48" height="210" rx="3" fill="url(#crossGold)"/>
+    <!-- Horizontal beam -->
+    <rect x="-85" y="-55" width="170" height="46" rx="3" fill="url(#crossGold)"/>
+  </g>
+
+  <!-- Left Column: Pillars of Revival -->
+  <g transform="translate(135, 480)" font-family="'Plus Jakarta Sans', system-ui, sans-serif" text-anchor="middle">
+    <!-- Item 1: SEEK HIS FACE -->
+    <text x="0" y="5" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">SEEK</text>
+    <text x="0" y="30" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">HIS FACE</text>
+    <line x1="-65" y1="52" x2="65" y2="52" stroke="#cf993f" stroke-width="1.8" opacity="0.8"/>
+
+    <!-- Item 2: STIR THE FIRE -->
+    <text x="0" y="85" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">STIR THE</text>
+    <text x="0" y="110" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">FIRE</text>
+    <line x1="-65" y1="132" x2="65" y2="132" stroke="#cf993f" stroke-width="1.8" opacity="0.8"/>
+
+    <!-- Item 3: AWAKEN THE SOUL -->
+    <text x="0" y="165" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">AWAKEN</text>
+    <text x="0" y="190" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">THE SOUL</text>
+  </g>
+
+  <!-- Right Column: Works of God -->
+  <g transform="translate(865, 480)" font-family="'Plus Jakarta Sans', system-ui, sans-serif" text-anchor="middle">
+    <!-- Item 1: HE RESTORES -->
+    <text x="0" y="5" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">HE</text>
+    <text x="0" y="30" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">RESTORES</text>
+    <line x1="-65" y1="52" x2="65" y2="52" stroke="#cf993f" stroke-width="1.8" opacity="0.8"/>
+
+    <!-- Item 2: HE REKINDLES -->
+    <text x="0" y="85" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">HE</text>
+    <text x="0" y="110" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">REKINDLES</text>
+    <line x1="-65" y1="132" x2="65" y2="132" stroke="#cf993f" stroke-width="1.8" opacity="0.8"/>
+
+    <!-- Item 3: HE REVIVES -->
+    <text x="0" y="165" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">HE</text>
+    <text x="0" y="190" font-size="22" font-weight="800" letter-spacing="2" fill="#1f1a14">REVIVES</text>
+  </g>
+
+  <!-- Center Text Stack -->
+  <!-- "WILL YOU NOT" -->
+  <text x="500" y="565" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="52" font-style="italic" font-weight="700" letter-spacing="2" fill="#1c1813">
+    WILL YOU NOT
+  </text>
+
+  <!-- "REVIVE" in grand calligraphic script -->
+  <text x="500" y="675" text-anchor="middle" font-family="'Kaushan Script', cursive" font-size="125" font-weight="700" fill="url(#goldFoil)" filter="url(#goldShine)">
+    Revive
+  </text>
+
+  <!-- "US AGAIN?" -->
+  <text x="500" y="765" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="78" font-weight="900" letter-spacing="4" fill="#1c1813">
+    US AGAIN?
+  </text>
+
+  <!-- "PSALM 85:6" -->
+  <text x="500" y="815" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="26" font-weight="700" letter-spacing="6" fill="#4a3e2e">
+    PSALM 85:6
+  </text>
+
+  <!-- Bottom Dynamic Brushstroke Mountain / Highway of Gold -->
+  <g transform="translate(500, 930)">
+    <!-- Dark Charcoal Base Brushstroke -->
+    <path d="M-420,70 Q-280,-40 -120,-10 Q0,-70 120,-15 Q280,-45 420,70 L420,70 L-420,70 Z" fill="#14110c"/>
+    <!-- Gold Leaf Pathway Crest -->
+    <path d="M-360,70 Q-240,-25 -80,5 Q0,-55 80,0 Q240,-30 360,70 L280,70 Q180,-15 50,-20 Q-50,-20 -180,-10 L-280,70 Z" fill="url(#mountainGold)" opacity="0.95"/>
+    <path d="M-150,70 Q0,-35 150,70 Q60,10 0,0 Q-60,10 -150,70 Z" fill="#fae7a5"/>
+  </g>
+</svg>

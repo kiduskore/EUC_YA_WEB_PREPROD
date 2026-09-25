@@ -1,0 +1,340 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<main class="min-h-screen pt-28 pb-20 bg-zinc-50 dark:bg-studio-950 text-zinc-900 dark:text-zinc-100 transition-colors">
+    <!-- Header Hero Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-900 via-zinc-900 to-black text-white p-8 sm:p-12 border border-white/10 shadow-2xl">
+            <!-- Background glow accents -->
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold text-blue-300 mb-4 backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                    Community Calendar & Gatherings
+                </div>
+                <h1 class="text-3xl sm:text-5xl font-black tracking-tight mb-4 text-white">
+                    Upcoming Community Events
+                </h1>
+                <p class="text-base sm:text-lg text-zinc-300 leading-relaxed mb-6 font-normal">
+                    Experience authentic fellowship, passionate worship, intentional discipleship, and city impact. Find your next gathering and RSVP to reserve your spot.
+                </p>
+                
+                <!-- Quick Stats Bar -->
+                <div class="flex flex-wrap gap-4 sm:gap-6 pt-4 border-t border-white/10 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        <span class="text-zinc-300"><strong class="text-white" id="stat-total-events"><%= (events || []).length %></strong> Upcoming Events</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
+                        <span class="text-zinc-300"><strong class="text-white" id="stat-total-rsvps"><%= (events || []).reduce((acc, e) => acc + (e.rsvp_count || 0), 0) %></strong> Confirmed RSVPs</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+                        <span class="text-zinc-300">Open to All Young Adults (18–35)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calendar Controls & Filters Bar -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <div class="bg-white dark:bg-studio-900 rounded-2xl p-4 sm:p-5 border border-zinc-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            <!-- Category Chips -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none" id="category-filters">
+                <button type="button" data-category="all" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm">
+                    All Events
+                </button>
+                <button type="button" data-category="gathering" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-studio-800">
+                    Tuesday Gathering
+                </button>
+                <button type="button" data-category="prayer" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-studio-800">
+                    Worship & Prayer
+                </button>
+                <button type="button" data-category="fellowship" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-studio-800">
+                    Tribal Fellowship
+                </button>
+                <button type="button" data-category="service" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-studio-800">
+                    City Outreach
+                </button>
+                <button type="button" data-category="retreat" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-studio-800">
+                    Retreats
+                </button>
+            </div>
+
+            <!-- View Switcher & Search -->
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="relative w-full sm:w-60">
+                    <input type="text" id="search-input" placeholder="Search events..." class="w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <svg class="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+
+                <!-- View Switch Toggle (Calendar Grid vs Agenda List) -->
+                <div class="flex items-center p-1 bg-zinc-100 dark:bg-studio-800 rounded-xl border border-zinc-200 dark:border-white/10 shrink-0">
+                    <button type="button" id="toggle-calendar-view" title="Calendar View" class="p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all bg-white dark:bg-studio-700 text-zinc-900 dark:text-white shadow-xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span class="hidden sm:inline">Calendar</span>
+                    </button>
+                    <button type="button" id="toggle-cards-view" title="List View" class="p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        <span class="hidden sm:inline">List</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container: Calendar Grid & Agenda List -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Interactive Monthly Calendar View Component -->
+        <div id="calendar-section" class="bg-white dark:bg-studio-900 rounded-3xl border border-zinc-200 dark:border-white/10 shadow-sm p-4 sm:p-6 mb-10 transition-all">
+            <!-- Calendar Navigation Header -->
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-zinc-100 dark:border-white/5">
+                <div class="flex items-center gap-3">
+                    <h2 id="calendar-month-year" class="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white">
+                        <!-- e.g. September 2026 -->
+                    </h2>
+                    <span id="calendar-active-filter-badge" class="hidden px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"></span>
+                </div>
+                
+                <div class="flex items-center gap-1.5">
+                    <button type="button" id="cal-prev-btn" class="p-2 rounded-xl border border-zinc-200 dark:border-white/10 hover:bg-zinc-100 dark:hover:bg-studio-800 transition-colors" title="Previous Month">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <button type="button" id="cal-today-btn" class="px-3 py-1.5 text-xs font-bold rounded-xl border border-zinc-200 dark:border-white/10 hover:bg-zinc-100 dark:hover:bg-studio-800 transition-colors">
+                        Today
+                    </button>
+                    <button type="button" id="cal-next-btn" class="p-2 rounded-xl border border-zinc-200 dark:border-white/10 hover:bg-zinc-100 dark:hover:bg-studio-800 transition-colors" title="Next Month">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Days of Week Header -->
+            <div class="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center text-xs font-bold uppercase tracking-wider text-zinc-400">
+                <span class="py-2">Sun</span>
+                <span class="py-2">Mon</span>
+                <span class="py-2">Tue</span>
+                <span class="py-2">Wed</span>
+                <span class="py-2">Thu</span>
+                <span class="py-2">Fri</span>
+                <span class="py-2">Sat</span>
+            </div>
+
+            <!-- Calendar Days Grid -->
+            <div id="calendar-days-grid" class="grid grid-cols-7 gap-1 sm:gap-2">
+                <!-- Dynamically populated by JS -->
+            </div>
+
+            <!-- Selected Date Filter Banner (If user clicks a specific day) -->
+            <div id="date-filter-banner" class="hidden mt-4 p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 flex items-center justify-between text-xs sm:text-sm text-blue-900 dark:text-blue-200">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>Showing events for: <strong id="filter-date-text"></strong></span>
+                </div>
+                <button type="button" id="clear-date-filter" class="font-bold underline hover:text-blue-600 transition-colors">
+                    Show All Dates
+                </button>
+            </div>
+        </div>
+
+        <!-- Section Title for Upcoming Cards -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white">
+                    Event Schedule & Registration
+                </h2>
+                <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                    Click "RSVP Now" on any event to register yourself and your guests.
+                </p>
+            </div>
+            <span id="events-count-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-zinc-200 dark:bg-studio-800 text-zinc-700 dark:text-zinc-300">
+                <%= (events || []).length %> events
+            </span>
+        </div>
+
+        <!-- Events Cards Grid -->
+        <div id="events-list-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Populated dynamically via JS from events data -->
+        </div>
+
+        <!-- Empty State (When search/filter has no results) -->
+        <div id="empty-state" class="hidden py-16 text-center">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-zinc-100 dark:bg-studio-800 flex items-center justify-center text-zinc-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-1">No Events Found</h3>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto mb-4">
+                We couldn't find any gatherings matching your current filters.
+            </p>
+            <button type="button" id="reset-filters-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">
+                Reset All Filters
+            </button>
+        </div>
+    </div>
+</main>
+
+<!-- RSVP Modal Dialog -->
+<div id="rsvp-modal" class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg bg-white dark:bg-studio-900 rounded-3xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden transition-all my-8">
+        
+        <!-- Modal Header -->
+        <div class="p-6 bg-gradient-to-r from-blue-900/40 via-zinc-900/40 to-transparent border-b border-zinc-200 dark:border-white/10 relative">
+            <button type="button" id="close-rsvp-modal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-zinc-100 dark:bg-studio-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center justify-center transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div id="modal-category-badge" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2"></div>
+            <h3 id="modal-event-title" class="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white leading-tight"></h3>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                <span id="modal-event-date" class="flex items-center gap-1 font-semibold text-blue-600 dark:text-blue-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span></span>
+                </span>
+                <span id="modal-event-time" class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span></span>
+                </span>
+            </div>
+            <div id="modal-event-location" class="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                <svg class="w-4 h-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="truncate"></span>
+            </div>
+        </div>
+
+        <!-- Modal Body: Form View -->
+        <div id="rsvp-form-container" class="p-6">
+            <form id="rsvp-form" class="space-y-4">
+                <input type="hidden" id="rsvp-event-id" value="">
+                
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 mb-1.5" for="rsvp-name">
+                        Your Full Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="rsvp-name" required placeholder="e.g. Kidus Teshome" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 mb-1.5" for="rsvp-email">
+                        Email Address <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" id="rsvp-email" required placeholder="you@example.com" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-[11px] text-zinc-400 mt-1">We'll send your event confirmation and calendar invite here.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 mb-1.5" for="rsvp-phone">
+                            Phone Number <span class="text-zinc-400 text-[10px] font-normal">(Optional)</span>
+                        </label>
+                        <input type="tel" id="rsvp-phone" placeholder="(301) 555-0199" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 mb-1.5" for="rsvp-guests">
+                            Additional Guests
+                        </label>
+                        <select id="rsvp-guests" class="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="0">Just me (1 spot)</option>
+                            <option value="1">+1 Guest (2 spots)</option>
+                            <option value="2">+2 Guests (3 spots)</option>
+                            <option value="3">+3 Guests (4 spots)</option>
+                            <option value="4">+4 Guests (5 spots)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 mb-1.5" for="rsvp-notes">
+                        Notes or Questions <span class="text-zinc-400 text-[10px] font-normal">(Optional)</span>
+                    </label>
+                    <textarea id="rsvp-notes" rows="2" placeholder="Dietary restrictions, prayer request, or note for the host..." class="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                </div>
+
+                <div id="rsvp-error-msg" class="hidden p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 text-xs font-semibold"></div>
+
+                <div class="pt-2 flex items-center justify-end gap-3">
+                    <button type="button" id="cancel-modal-btn" class="px-5 py-3 rounded-xl text-sm font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-studio-800 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" id="submit-rsvp-btn" class="px-6 py-3 rounded-xl text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all shadow-md flex items-center gap-2">
+                        <span>Confirm RSVP</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Success State -->
+        <div id="rsvp-success-container" class="hidden p-8 text-center">
+            <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            
+            <h4 class="text-2xl font-black text-zinc-900 dark:text-white mb-2">You're on the list!</h4>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto mb-6">
+                Your spot is confirmed. A reminder has been prepared for you. We look forward to gathering with you!
+            </p>
+
+            <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800/80 border border-zinc-200 dark:border-white/10 text-left mb-6 text-sm">
+                <div id="success-event-title" class="font-bold text-zinc-900 dark:text-white mb-1"></div>
+                <div id="success-event-datetime" class="text-xs text-blue-600 dark:text-blue-400 font-semibold mb-1"></div>
+                <div id="success-event-location" class="text-xs text-zinc-500 dark:text-zinc-400"></div>
+            </div>
+
+            <!-- Instant Calendar Add Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+                <a id="btn-add-gcal" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/></svg>
+                    <span>Add to Google Calendar</span>
+                </a>
+                <button type="button" id="btn-download-ics" class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-white/10 hover:bg-zinc-100 dark:hover:bg-studio-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <span>Download .ics file</span>
+                </button>
+            </div>
+
+            <button type="button" id="success-done-btn" class="w-full py-3 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-bold text-sm hover:opacity-90 transition-opacity">
+                Done
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel RSVP Modal -->
+<div id="cancel-rsvp-modal" class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-white dark:bg-studio-900 rounded-3xl border border-zinc-200 dark:border-white/10 shadow-2xl p-6 text-zinc-900 dark:text-white">
+        <h4 class="text-xl font-bold mb-2">Cancel Your RSVP</h4>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+            Enter the email address you used when registering to cancel your reservation and open your spot for another young adult.
+        </p>
+        <form id="cancel-rsvp-form" class="space-y-4">
+            <input type="hidden" id="cancel-event-id" value="">
+            <div>
+                <label class="block text-xs font-semibold mb-1" for="cancel-email">Email Address</label>
+                <input type="email" id="cancel-email" required placeholder="you@example.com" class="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+            <div id="cancel-error-msg" class="hidden text-xs text-red-500 font-semibold"></div>
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" id="close-cancel-modal" class="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-studio-800">
+                    Keep RSVP
+                </button>
+                <button type="submit" id="submit-cancel-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white hover:bg-red-700">
+                    Confirm Cancellation
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Calendar Script -->
+<script>
+window.EVENTS_DATA = <%- JSON.stringify(events || []) %>;
+</script>
+<script src="/static/js/events-calendar.js"></script>
+
+<%- include('partials/footer') %>

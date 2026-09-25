@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="csrf-token" content="<%= typeof csrf_token !== 'undefined' ? csrf_token : '' %>">
+    <title>Member Information Form | EUC Young Adults</title>
+    
+    <!-- Modern Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="/static/js/vendor/tailwindcss.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: '#0075ff',
+                        navy: {
+                            950: '#060b26',
+                            900: '#0b1437',
+                            800: '#111c44',
+                            700: '#1b2559'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(17, 28, 68, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .form-input {
+            background: rgba(11, 20, 55, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #0075ff;
+            box-shadow: 0 0 0 3px rgba(0, 117, 255, 0.25);
+            background: rgba(17, 28, 68, 0.95);
+        }
+        .stage-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(11, 20, 55, 0.6);
+        }
+        .stage-card:hover {
+            border-color: rgba(0, 117, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .stage-card.selected {
+            border-color: #0075ff;
+            background: rgba(0, 117, 255, 0.15);
+            box-shadow: 0 0 0 2px rgba(0, 117, 255, 0.4);
+        }
+        .checkbox-pill {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(11, 20, 55, 0.6);
+        }
+        .checkbox-pill:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .checkbox-pill.active {
+            border-color: #0075ff;
+            background: rgba(0, 117, 255, 0.2);
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-navy-950 text-slate-100 min-h-screen py-10 px-4 sm:px-6 relative overflow-x-hidden">
+
+    <!-- Ambient background glows -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-blue-600/15 rounded-full filter blur-[120px] pointer-events-none"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-purple-600/15 rounded-full filter blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-3xl mx-auto relative z-10">
+        
+        <!-- Header & Branding -->
+        <header class="text-center mb-8">
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold tracking-wider uppercase text-blue-400 mb-4">
+                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                EUCMD Young Adults Community
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+                Member Information Form
+            </h1>
+            <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+                Welcome to the family! Please complete this form so our leadership team can stay connected with you and support your spiritual journey.
+            </p>
+        </header>
+
+        <!-- Form Container -->
+        <div id="formCard" class="glass-card rounded-2xl p-6 sm:p-10 shadow-2xl">
+
+            <!-- Error Banner -->
+            <div id="errorBanner" class="hidden mb-6 p-4 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-sm flex items-start gap-3">
+                <span class="text-lg">⚠️</span>
+                <div id="errorMessage">Please check the required fields.</div>
+            </div>
+
+            <form id="memberIntakeForm" class="space-y-8" novalidate>
+
+                <!-- SECTION 1: Personal Contact Details -->
+                <div>
+                    <div class="flex items-center gap-2.5 pb-3 mb-5 border-b border-white/10">
+                        <span class="flex items-center justify-center w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 font-bold text-xs">1</span>
+                        <h2 class="text-lg font-bold text-white tracking-wide">Personal Details</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <!-- Full Name -->
+                        <div class="sm:col-span-2">
+                            <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Full Name <span class="text-red-400">*</span>
+                            </label>
+                            <input type="text" id="name" name="name" required placeholder="e.g. Dawit Bekele"
+                                class="form-input w-full rounded-xl px-4 py-3 text-sm placeholder-slate-500">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Email Address <span class="text-red-400">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" required placeholder="name@example.com"
+                                class="form-input w-full rounded-xl px-4 py-3 text-sm placeholder-slate-500">
+                        </div>
+
+                        <!-- Phone -->
+                        <div>
+                            <label for="phone" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Phone Number <span class="text-red-400">*</span>
+                            </label>
+                            <input type="tel" id="phone" name="phone" required placeholder="(240) 555-0123"
+                                class="form-input w-full rounded-xl px-4 py-3 text-sm placeholder-slate-500">
+                        </div>
+
+                        <!-- City / Location -->
+                        <div>
+                            <label for="city" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                City / Area of Residence
+                            </label>
+                            <input type="text" id="city" name="city" placeholder="e.g. Silver Spring, Rockville, DC"
+                                class="form-input w-full rounded-xl px-4 py-3 text-sm placeholder-slate-500">
+                        </div>
+
+                        <!-- Birthday -->
+                        <div>
+                            <label for="birthday" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Birthday (Month & Day)
+                            </label>
+                            <input type="text" id="birthday" name="birthday" placeholder="e.g. March 14"
+                                class="form-input w-full rounded-xl px-4 py-3 text-sm placeholder-slate-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Discipleship & Church Life -->
+                <div>
+                    <div class="flex items-center gap-2.5 pb-3 mb-5 border-b border-white/10">
+                        <span class="flex items-center justify-center w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs">2</span>
+                        <h2 class="text-lg font-bold text-white tracking-wide">Discipleship & Church Life</h2>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Current Life Stage & Join Date -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label for="life_stage" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                    Current Life Stage
+                                </label>
+                                <select id="life_stage" name="life_stage" class="form-input w-full rounded-xl px-4 py-3 text-sm bg-navy-900">
+                                    <option value="">-- Select life stage --</option>
+                                    <option value="Undergraduate Student">College / Undergraduate Student</option>
+                                    <option value="Graduate Student">Graduate / Postgrad Student</option>
+                                    <option value="Young Professional">Young Professional</option>
+                                    <option value="Career / Working">Career / Working</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Approximate Join Date -->
+                            <div>
+                                <label for="join_date" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                    Approx. Date You Started Attending
+                                </label>
+                                <input type="date" id="join_date" name="join_date" class="form-input w-full rounded-xl px-4 py-3 text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Spiritual Journey Stage -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Spiritual Growth Stage <span class="text-red-400">*</span>
+                            </label>
+                            <p class="text-xs text-slate-400 mb-3">
+                                Select where you currently feel you are on your walk of faith so we can walk alongside you.
+                            </p>
+
+                            <input type="hidden" id="spiritual_stage" name="spiritual_stage" value="new">
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="stageCards">
+                                <div class="stage-card selected rounded-xl p-4" data-stage="new">
+                                    <div class="font-bold text-sm text-white flex items-center justify-between">
+                                        <span>🌱 New</span>
+                                        <span class="text-blue-400 text-xs checkmark">✓</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 mt-1">Exploring faith, seeking answers, or newly joined.</p>
+                                </div>
+
+                                <div class="stage-card rounded-xl p-4" data-stage="saved">
+                                    <div class="font-bold text-sm text-white flex items-center justify-between">
+                                        <span>✝️ Saved</span>
+                                        <span class="text-blue-400 text-xs checkmark hidden">✓</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 mt-1">Accepted Christ as personal Lord and Savior.</p>
+                                </div>
+
+                                <div class="stage-card rounded-xl p-4" data-stage="baptized">
+                                    <div class="font-bold text-sm text-white flex items-center justify-between">
+                                        <span>💧 Baptized</span>
+                                        <span class="text-blue-400 text-xs checkmark hidden">✓</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 mt-1">Took the step of water baptism by faith.</p>
+                                </div>
+
+                                <div class="stage-card rounded-xl p-4" data-stage="foundations">
+                                    <div class="font-bold text-sm text-white flex items-center justify-between">
+                                        <span>📖 Foundations</span>
+                                        <span class="text-blue-400 text-xs checkmark hidden">✓</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 mt-1">Completed / attending discipleship classes.</p>
+                                </div>
+
+                                <div class="stage-card rounded-xl p-4" data-stage="ready_to_lead">
+                                    <div class="font-bold text-sm text-white flex items-center justify-between">
+                                        <span>🔥 Ready to Lead</span>
+                                        <span class="text-blue-400 text-xs checkmark hidden">✓</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 mt-1">Equipped and preparing to facilitate or lead.</p>
+                                </div>
+
+                                <div class="stage-card rounded-xl p-4" data-stage="leading">
+                                    <div class="font-bold text-sm text-white flex items-center justify-between">
+                                        <span>👑 Leading</span>
+                                        <span class="text-blue-400 text-xs checkmark hidden">✓</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 mt-1">Currently serving as a pod or ministry leader.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: Serving Interests & Prayer Request -->
+                <div>
+                    <div class="flex items-center gap-2.5 pb-3 mb-5 border-b border-white/10">
+                        <span class="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs">3</span>
+                        <h2 class="text-lg font-bold text-white tracking-wide">Serving Gifts & Prayer</h2>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Ministry Serving Interests -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Ministry & Serving Interests (Select any that apply)
+                            </label>
+                            <div class="flex flex-wrap gap-2" id="interestsContainer">
+                                <label class="checkbox-pill rounded-lg px-3 py-2 text-xs text-slate-300 flex items-center gap-2">
+                                    <input type="checkbox" name="interests" value="Worship & Music" class="hidden">
+                                    <span>🎵 Worship & Music</span>
+                                </label>
+                                <label class="checkbox-pill rounded-lg px-3 py-2 text-xs text-slate-300 flex items-center gap-2">
+                                    <input type="checkbox" name="interests" value="Welcoming & Hospitality" class="hidden">
+                                    <span>🤝 Welcoming & Hospitality</span>
+                                </label>
+                                <label class="checkbox-pill rounded-lg px-3 py-2 text-xs text-slate-300 flex items-center gap-2">
+                                    <input type="checkbox" name="interests" value="Media, Sound & Tech" class="hidden">
+                                    <span>💻 Media, Sound & Tech</span>
+                                </label>
+                                <label class="checkbox-pill rounded-lg px-3 py-2 text-xs text-slate-300 flex items-center gap-2">
+                                    <input type="checkbox" name="interests" value="Prayer & Intercession Team" class="hidden">
+                                    <span>🙏 Prayer & Intercession</span>
+                                </label>
+                                <label class="checkbox-pill rounded-lg px-3 py-2 text-xs text-slate-300 flex items-center gap-2">
+                                    <input type="checkbox" name="interests" value="Small Group Facilitation" class="hidden">
+                                    <span>👥 Small Group / Bible Study Facilitation</span>
+                                </label>
+                                <label class="checkbox-pill rounded-lg px-3 py-2 text-xs text-slate-300 flex items-center gap-2">
+                                    <input type="checkbox" name="interests" value="Community Outreach & Events" class="hidden">
+                                    <span>🌍 Outreach & Missions</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Prayer Request -->
+                        <div>
+                            <label for="prayer_request" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Prayer Request (Optional)
+                            </label>
+                            <textarea id="prayer_request" name="prayer_request" rows="3"
+                                placeholder="How can the young adults leadership team pray for you this season?"
+                                class="form-input w-full rounded-xl px-4 py-3 text-sm placeholder-slate-500 resize-y"></textarea>
+                            <p class="text-xs text-slate-400 mt-1">
+                                Requests will be held in prayer by our leadership and prayer team.
+                            </p>
+                        </div>
+
+                        <!-- Additional Notes -->
+                        <div>
+                            <label for="notes" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                                Anything Else You'd Like Leaders to Know? (Optional)
+                            </label>
+                            <textarea id="notes" name="notes" rows="2"
+                                placeholder="Questions, comments, testimony, or ideas..."
+                                class="form-input w-full rounded-xl px-4 py-3 text-sm placeholder-slate-500 resize-y"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4 border-t border-white/10">
+                    <button type="submit" id="submitBtn"
+                        class="w-full py-4 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-base transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+                        <span>Submit Member Information</span>
+                        <span>→</span>
+                    </button>
+                    <p class="text-center text-xs text-slate-400 mt-3">
+                        🔒 Your information is confidential and used exclusively for EUCMD Young Adults discipleship and pastoral care.
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Confirmation State (Hidden initially) -->
+        <div id="successCard" class="hidden glass-card rounded-2xl p-8 sm:p-12 text-center shadow-2xl animate-fade-in">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto mb-6">
+                ✓
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">
+                Thank You, <span id="successName">Beloved</span>!
+            </h2>
+            <p class="text-slate-300 text-base max-w-md mx-auto mb-8 leading-relaxed">
+                Your member information has been received and safely updated in our EUCMD Young Adults records. We are thrilled to have you as part of our community.
+            </p>
+
+            <div class="bg-navy-900/80 rounded-xl p-5 border border-white/10 max-w-md mx-auto text-left mb-8 space-y-2.5 text-sm">
+                <div class="flex justify-between text-slate-300">
+                    <span class="text-slate-400">Name:</span>
+                    <span id="summaryName" class="font-semibold text-white"></span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                    <span class="text-slate-400">Email:</span>
+                    <span id="summaryEmail" class="font-semibold text-white"></span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                    <span class="text-slate-400">Stage:</span>
+                    <span id="summaryStage" class="font-semibold text-emerald-400"></span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button type="button" id="submitAnotherBtn"
+                    class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition-colors border border-white/10">
+                    Submit Another Response
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <footer class="text-center mt-8 text-xs text-slate-400 space-y-1">
+            <p>Emmanuel United Church of Maryland &bull; Young Adults Ministry</p>
+            <p>Gathering Times: Every Tuesday at 7:00 PM EST &bull; 914 Silver Spring Ave 204B, Silver Spring, MD 20910</p>
+        </footer>
+
+    </div>
+
+    <!-- Client Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('memberIntakeForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorBanner = document.getElementById('errorBanner');
+            const errorMessage = document.getElementById('errorMessage');
+            const formCard = document.getElementById('formCard');
+            const successCard = document.getElementById('successCard');
+            const stageCards = document.querySelectorAll('#stageCards .stage-card');
+            const stageInput = document.getElementById('spiritual_stage');
+            const interestPills = document.querySelectorAll('#interestsContainer .checkbox-pill');
+
+            // Default today's date for join date if empty
+            const joinDateInput = document.getElementById('join_date');
+            if (joinDateInput && !joinDateInput.value) {
+                joinDateInput.value = new Date().toISOString().split('T')[0];
+            }
+
+            // Spiritual Stage selection handling
+            stageCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    stageCards.forEach(c => {
+                        c.classList.remove('selected');
+                        const cm = c.querySelector('.checkmark');
+                        if (cm) cm.classList.add('hidden');
+                    });
+                    card.classList.add('selected');
+                    const checkmark = card.querySelector('.checkmark');
+                    if (checkmark) checkmark.classList.remove('hidden');
+                    stageInput.value = card.getAttribute('data-stage') || 'new';
+                });
+            });
+
+            // Interest Pill toggles
+            interestPills.forEach(pill => {
+                const checkbox = pill.querySelector('input[type="checkbox"]');
+                pill.addEventListener('click', (e) => {
+                    // prevent double trigger
+                    if (e.target !== checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                    }
+                    if (checkbox.checked) {
+                        pill.classList.add('active');
+                    } else {
+                        pill.classList.remove('active');
+                    }
+                });
+            });
+
+            // Form Submit Handler
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorBanner.classList.add('hidden');
+
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+
+                if (!name) {
+                    showError('Please enter your full name.');
+                    document.getElementById('name').focus();
+                    return;
+                }
+                if (!email) {
+                    showError('Please enter a valid email address.');
+                    document.getElementById('email').focus();
+                    return;
+                }
+                if (!phone) {
+                    showError('Please enter your phone number.');
+                    document.getElementById('phone').focus();
+                    return;
+                }
+
+                // Gather selected interests
+                const selectedInterests = [];
+                document.querySelectorAll('#interestsContainer input[type="checkbox"]:checked').forEach(cb => {
+                    selectedInterests.push(cb.value);
+                });
+
+                const payload = {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    city: document.getElementById('city').value.trim(),
+                    birthday: document.getElementById('birthday').value.trim(),
+                    life_stage: document.getElementById('life_stage').value,
+                    join_date: document.getElementById('join_date').value,
+                    spiritual_stage: stageInput.value,
+                    interests: selectedInterests,
+                    prayer_request: document.getElementById('prayer_request').value.trim(),
+                    notes: document.getElementById('notes').value.trim()
+                };
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Submitting your details...';
+                submitBtn.classList.add('opacity-75');
+
+                try {
+                    const response = await fetch('/api/member-form', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Failed to submit form.');
+                    }
+
+                    // Success state
+                    document.getElementById('successName').textContent = name;
+                    document.getElementById('summaryName').textContent = name;
+                    document.getElementById('summaryEmail').textContent = email;
+                    
+                    const stageMap = {
+                        'new': 'New to Faith',
+                        'saved': 'Saved',
+                        'baptized': 'Water Baptized',
+                        'foundations': 'Foundations Class',
+                        'ready_to_lead': 'Ready to Lead',
+                        'leading': 'Active Leader'
+                    };
+                    document.getElementById('summaryStage').textContent = stageMap[payload.spiritual_stage] || payload.spiritual_stage;
+
+                    formCard.classList.add('hidden');
+                    successCard.classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                } catch (err) {
+                    showError(err.message || 'An unexpected error occurred. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Submit Member Information</span> <span>→</span>';
+                    submitBtn.classList.remove('opacity-75');
+                }
+            });
+
+            function showError(msg) {
+                errorMessage.textContent = msg;
+                errorBanner.classList.remove('hidden');
+                errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Submit another response
+            document.getElementById('submitAnotherBtn').addEventListener('click', () => {
+                form.reset();
+                interestPills.forEach(p => {
+                    p.classList.remove('active');
+                    const cb = p.querySelector('input[type="checkbox"]');
+                    if (cb) cb.checked = false;
+                });
+                stageCards.forEach(c => {
+                    c.classList.remove('selected');
+                    const cm = c.querySelector('.checkmark');
+                    if (cm) cm.classList.add('hidden');
+                });
+                const firstCard = stageCards[0];
+                if (firstCard) {
+                    firstCard.classList.add('selected');
+                    const cm = firstCard.querySelector('.checkmark');
+                    if (cm) cm.classList.remove('hidden');
+                }
+                stageInput.value = 'new';
+                if (joinDateInput) joinDateInput.value = new Date().toISOString().split('T')[0];
+
+                successCard.classList.add('hidden');
+                formCard.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Submit Member Information</span> <span>→</span>';
+                submitBtn.classList.remove('opacity-75');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -92,8 +92,27 @@
         </div>
 
         <!-- Right Controls: Modular Language Switcher, Dark/Light Mode Toggle, Dashboard Button -->
-        <div class="flex items-center gap-1.5 sm:gap-3 ml-auto">
+        <div class="flex items-center gap-1.5 sm:gap-2.5 ml-auto">
             
+            <!-- Site Search Engine Trigger Button (Desktop, Tablet & Mobile) -->
+            <button onclick="openSiteSearchModal()" type="button" 
+                    class="trigger-site-search inline-flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-semibold text-zinc-700 dark:text-zinc-200 bg-zinc-100 hover:bg-zinc-200 dark:bg-studio-800 dark:hover:bg-studio-700 border border-zinc-200 dark:border-white/10 transition-all min-h-[40px] min-w-[40px] justify-center touch-manipulation group active:scale-95 cursor-pointer shadow-xs"
+                    aria-label="Search teachings, events, scriptures, small groups (Press ⌘K or /)">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <span class="hidden sm:inline text-zinc-500 dark:text-zinc-400 font-medium">Search</span>
+                <kbd class="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-bold text-zinc-500 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded shadow-xs">
+                    <span>⌘</span>K
+                </kbd>
+            </button>
+
+            <!-- Event Link (Coming Soon) -->
+            <a href="/#coming-soon-event" class="hidden xl:inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors px-2 py-1">
+                <span>Revive Us Again</span>
+                <span class="text-[11px] opacity-70">· Spring '26</span>
+            </a>
+
             <!-- Modular 4-Language Switcher Component -->
             <%- include('language-switcher', { variant: 'dropdown' }) %>
 
@@ -117,10 +136,45 @@
 <div id="mobile-menu" class="fixed inset-0 top-20 bg-white/98 dark:bg-studio-900/98 backdrop-blur-xl z-50 lg:hidden overflow-y-auto border-t border-zinc-200 dark:border-white/10 transition-all duration-300 overscroll-contain" style="display: none; opacity: 0; pointer-events: none; -webkit-overflow-scrolling: touch;">
     <div class="max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8" style="padding-bottom: calc(6rem + env(safe-area-inset-bottom));">
         
+        <!-- Mobile Search Engine Quick Trigger -->
+        <button onclick="triggerMobileSearch()" type="button" class="w-full p-4 rounded-2xl bg-zinc-100/90 dark:bg-studio-800/90 border border-zinc-200 dark:border-white/10 flex items-center justify-between text-left group active:scale-[0.98] transition-all shadow-xs">
+            <div class="flex items-center gap-3.5">
+                <span class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </span>
+                <div>
+                    <h4 class="text-sm font-bold text-zinc-900 dark:text-white">Search Everything</h4>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400">Teachings, scriptures, events, small groups</p>
+                </div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-white dark:bg-studio-700 text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-white/10">
+                ⌘K
+            </span>
+        </button>
+        
         <!-- Mobile 4-Language Picker Grid Component -->
         <div class="p-4 sm:p-5 rounded-2xl bg-zinc-100/80 dark:bg-studio-900 border border-zinc-200 dark:border-white/10">
             <%- include('language-switcher', { variant: 'grid' }) %>
         </div>
+
+        <!-- Featured Coming Soon Event in Mobile Drawer -->
+        <a href="/#coming-soon-event" onclick="closeMobileMenu()" class="block p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-teal-950/80 via-studio-900 to-zinc-900 border border-teal-500/40 text-white relative overflow-hidden group shadow-lg active:scale-[0.98] transition-all">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-black text-lg border border-teal-500/30">
+                        ✨
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-teal-300 block">Upcoming Event • Psalm 85:6</span>
+                        <h4 class="text-base font-black text-white">Revive Us Again!</h4>
+                        <p class="text-xs text-zinc-400">Young Adults Gathering • Coming Soon</p>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 font-bold text-sm">
+                    →
+                </div>
+            </div>
+        </a>
 
         <!-- Pillar Navigation Links in Touch-Optimized Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">

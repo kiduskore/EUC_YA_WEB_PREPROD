@@ -1,0 +1,136 @@
+<%- include('partials/header') %>
+
+<main class="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto flex-1 w-full">
+    <!-- Header & Search Input -->
+    <div class="mb-8 sm:mb-12 text-center sm:text-left">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider mb-3">
+            <span>🔍</span>
+            <span>Site Search Engine</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mb-4">
+            Search EUCMD Young Adults
+        </h1>
+        <p class="text-zinc-600 dark:text-zinc-400 text-sm sm:text-base max-w-2xl leading-relaxed mb-6">
+            Find discipleship teachings, scripture verses, upcoming gatherings, small groups, campus carpools, and ministry info.
+        </p>
+
+        <!-- Search Bar Form -->
+        <form action="/search" method="GET" class="relative w-full max-w-3xl">
+            <div class="relative flex items-center bg-white dark:bg-studio-900 border-2 border-zinc-200 dark:border-white/10 rounded-2xl shadow-xl hover:border-blue-500/50 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all p-1.5 sm:p-2">
+                <span class="text-blue-500 pl-3 pr-2">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </span>
+                <input type="text" 
+                       name="q" 
+                       id="page-search-input"
+                       value="<%= typeof q !== 'undefined' ? q : '' %>" 
+                       placeholder="Search salvation, small groups, worship, prayer, scriptures..." 
+                       class="w-full bg-transparent text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 text-base sm:text-lg font-medium focus:outline-none border-none py-2 px-1"
+                       autocomplete="off"
+                       autofocus>
+                
+                <% if (typeof q !== 'undefined' && q) { %>
+                    <a href="/search" class="p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 mr-1" title="Clear search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </a>
+                <% } %>
+
+                <button type="submit" class="px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all shadow-md active:scale-95 shrink-0 cursor-pointer">
+                    Search
+                </button>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex items-center gap-1.5 sm:gap-2 mt-4 overflow-x-auto no-scrollbar py-1 text-xs">
+                <span class="text-zinc-400 font-semibold shrink-0 mr-1">Filter:</span>
+                <a href="/search?q=<%= encodeURIComponent(typeof q !== 'undefined' ? q : '') %>&category=all" 
+                   class="px-3.5 py-1.5 rounded-full font-bold transition-all shrink-0 <%= (typeof category === 'undefined' || category === 'all' || !category) ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10' %>">
+                    All Results
+                </a>
+                <a href="/search?q=<%= encodeURIComponent(typeof q !== 'undefined' ? q : '') %>&category=teachings" 
+                   class="px-3.5 py-1.5 rounded-full font-bold transition-all shrink-0 <%= (typeof category !== 'undefined' && category === 'teachings') ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10' %>">
+                    Teachings
+                </a>
+                <a href="/search?q=<%= encodeURIComponent(typeof q !== 'undefined' ? q : '') %>&category=events" 
+                   class="px-3.5 py-1.5 rounded-full font-bold transition-all shrink-0 <%= (typeof category !== 'undefined' && category === 'events') ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10' %>">
+                    Events
+                </a>
+                <a href="/search?q=<%= encodeURIComponent(typeof q !== 'undefined' ? q : '') %>&category=groups" 
+                   class="px-3.5 py-1.5 rounded-full font-bold transition-all shrink-0 <%= (typeof category !== 'undefined' && category === 'groups') ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10' %>">
+                    Small Groups
+                </a>
+                <a href="/search?q=<%= encodeURIComponent(typeof q !== 'undefined' ? q : '') %>&category=scriptures" 
+                   class="px-3.5 py-1.5 rounded-full font-bold transition-all shrink-0 <%= (typeof category !== 'undefined' && category === 'scriptures') ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10' %>">
+                    Scriptures
+                </a>
+                <a href="/search?q=<%= encodeURIComponent(typeof q !== 'undefined' ? q : '') %>&category=faqs" 
+                   class="px-3.5 py-1.5 rounded-full font-bold transition-all shrink-0 <%= (typeof category !== 'undefined' && category === 'faqs') ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-white/10' %>">
+                    FAQs
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="mt-8">
+        <div class="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-white/10 mb-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                <% if (typeof q !== 'undefined' && q) { %>
+                    Found <%= typeof results !== 'undefined' ? results.length : 0 %> results for "<%= q %>"
+                <% } else { %>
+                    Featured Discoveries (<%= typeof results !== 'undefined' ? results.length : 0 %>)
+                <% } %>
+            </span>
+            <span class="text-xs text-zinc-400">Click any card to open</span>
+        </div>
+
+        <% if (typeof results !== 'undefined' && results.length > 0) { %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <% results.forEach(item => { %>
+                    <a href="<%= item.url %>" class="group flex items-start gap-4 p-5 rounded-3xl bg-white dark:bg-studio-900 border border-zinc-200/80 dark:border-white/10 hover:border-blue-500/50 hover:shadow-xl dark:hover:border-blue-500/30 transition-all text-left relative overflow-hidden active:scale-[0.99]">
+                        <div class="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200/60 dark:border-white/10 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-xs">
+                            <%= item.icon || '📄' %>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                                    <%= item.pillar %>
+                                </span>
+                            </div>
+                            <h3 class="text-base font-bold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug mb-1">
+                                <%= item.title %>
+                            </h3>
+                            <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
+                                <%= item.desc %>
+                            </p>
+                        </div>
+                        <span class="text-zinc-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all text-lg mt-2 shrink-0">
+                            →
+                        </span>
+                    </a>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="py-16 text-center bg-white dark:bg-studio-900 rounded-3xl border border-zinc-200 dark:border-white/10 p-8 shadow-sm">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-3xl">
+                    🔍
+                </div>
+                <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">No matching results found</h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto mb-6">
+                    We couldn't find anything matching your search. Try searching with different keywords like salvation, small groups, prayer, or worship.
+                </p>
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                    <a href="/search?q=salvation" class="px-3.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors">Salvation</a>
+                    <a href="/search?q=small+groups" class="px-3.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors">Small Groups</a>
+                    <a href="/search?q=revive" class="px-3.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors">Revive Event</a>
+                    <a href="/search?q=prayer" class="px-3.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors">Prayer</a>
+                    <a href="/search?q=baptism" class="px-3.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 text-xs font-bold text-zinc-700 dark:text-zinc-300 transition-colors">Baptism</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

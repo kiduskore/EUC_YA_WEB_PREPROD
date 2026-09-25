@@ -1,5 +1,9 @@
 import bcrypt from 'bcryptjs';
 import pg from 'pg';
+import fs from 'fs';
+import path from 'path';
+
+const DATA_FILE = path.join(process.cwd(), 'data.json');
 
 export interface User {
   id: number;
@@ -45,8 +49,14 @@ export interface Member {
   spiritual_stage: 'new' | 'saved' | 'baptized' | 'foundations' | 'ready_to_lead' | 'leading';
   pod_id?: number | null;
   pod_name?: string | null;
+  pod?: string | null;
   is_active: boolean;
   created_at: string;
+  birthday?: string;
+  city?: string;
+  life_stage?: string;
+  interests?: string[];
+  notes?: string;
 }
 
 export interface Pod {
@@ -144,6 +154,49 @@ export interface PasswordResetToken {
   is_used: boolean;
 }
 
+export interface CommunityEvent {
+  id: number;
+  title: string;
+  description: string;
+  date: string; // YYYY-MM-DD
+  time: string;
+  location: string;
+  category: 'gathering' | 'fellowship' | 'service' | 'prayer' | 'retreat';
+  image_url?: string;
+  capacity?: number | null;
+  is_featured?: boolean;
+  created_at: string;
+}
+
+export interface EventRsvp {
+  id: number;
+  event_id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  guests_count: number;
+  notes?: string;
+  created_at: string;
+}
+
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  name?: string;
+  source: string;
+  status: 'subscribed' | 'unsubscribed';
+  created_at: string;
+}
+
+export interface NewsletterBroadcast {
+  id: number;
+  subject: string;
+  message: string;
+  sender_email?: string;
+  recipients_count: number;
+  sent_at: string;
+}
+
 class InMemoryStore {
   users: User[] = [];
   roles: Role[] = [];
@@ -158,9 +211,13 @@ class InMemoryStore {
   prayerRequests: PrayerRequest[] = [];
   prayerSupporters: PrayerSupporter[] = [];
   pipeline: Newcomer[] = [];
+  subscribers: NewsletterSubscriber[] = [];
+  newsletterBroadcasts: NewsletterBroadcast[] = [];
   devotionals: Devotional[] = [];
   resources: Resource[] = [];
   resetTokens: PasswordResetToken[] = [];
+  events: CommunityEvent[] = [];
+  eventRsvps: EventRsvp[] = [];
 
   private nextIds = {
     users: 1,
@@ -170,11 +227,15 @@ class InMemoryStore {
     prayerRequests: 1,
     prayerSupporters: 1,
     pipeline: 1,
+    subscribers: 1,
+    broadcasts: 1,
     devotionals: 1,
     resources: 1,
     inviteCodes: 1,
     attendance: 1,
     resetTokens: 1,
+    events: 1,
+    eventRsvps: 1,
   };
 
   constructor() {
@@ -260,99 +321,17 @@ class InMemoryStore {
       },
     ];
 
-    // Initial Members
-    const seedMembersData: Array<Omit<Member, 'id' | 'created_at'>> = [
-      { name: 'Kidus Kore', email: 'kidus@euc.org', phone: '(301) 555-0199', join_date: '2024-01-15', role: 'leader', spiritual_stage: 'leading', is_active: true },
-      { name: 'Selam Tesfaye', email: 'selam.t@gmail.com', phone: '(240) 555-0182', join_date: '2024-02-10', role: 'leader', spiritual_stage: 'leading', is_active: true },
-      { name: 'Dawit Haile', email: 'dawit.h@outlook.com', phone: '(202) 555-0144', join_date: '2024-03-01', role: 'leader', spiritual_stage: 'leading', is_active: true },
-      { name: 'Bethlehem Tadesse', email: 'beth.t@gmail.com', phone: '(301) 555-0177', join_date: '2024-03-20', role: 'leader', spiritual_stage: 'ready_to_lead', is_active: true },
-      { name: 'Yared Bekele', email: 'yared.b@yahoo.com', phone: '(240) 555-0163', join_date: '2024-04-12', role: 'member', spiritual_stage: 'ready_to_lead', is_active: true },
-      { name: 'Meron Alemayehu', email: 'meron.a@gmail.com', phone: '(202) 555-0129', join_date: '2024-05-05', role: 'member', spiritual_stage: 'foundations', is_active: true },
-      { name: 'Ephrem Girma', email: 'ephrem.g@gmail.com', phone: '(301) 555-0188', join_date: '2024-06-18', role: 'member', spiritual_stage: 'foundations', is_active: true },
-      { name: 'Hanna Wolde', email: 'hanna.w@gmail.com', phone: '(240) 555-0111', join_date: '2024-07-22', role: 'member', spiritual_stage: 'baptized', is_active: true },
-      { name: 'Samuel Berhanu', email: 'samuel.b@gmail.com', phone: '(202) 555-0195', join_date: '2024-08-14', role: 'member', spiritual_stage: 'baptized', is_active: true },
-      { name: 'Rahel Kassaye', email: 'rahel.k@outlook.com', phone: '(301) 555-0133', join_date: '2024-09-30', role: 'member', spiritual_stage: 'saved', is_active: true },
-      { name: 'Nebiyu Solomon', email: 'nebiyu.s@gmail.com', phone: '(240) 555-0155', join_date: '2024-10-15', role: 'member', spiritual_stage: 'saved', is_active: true },
-      { name: 'Ruth Worku', email: 'ruth.w@gmail.com', phone: '(202) 555-0104', join_date: '2024-11-08', role: 'member', spiritual_stage: 'new', is_active: true },
-      { name: 'Abel Mulugeta', email: 'abel.m@gmail.com', phone: '(301) 555-0120', join_date: '2024-12-01', role: 'member', spiritual_stage: 'new', is_active: true },
-    ];
+    // Initial Members (empty by default for real member roster)
+    this.members = [];
 
-    for (const m of seedMembersData) {
-      this.members.push({
-        id: this.nextIds.members++,
-        ...m,
-        created_at: new Date().toISOString(),
-      });
-    }
-
-    // Initial Pods
-    this.pods = [
-      { id: this.nextIds.pods++, name: 'Silver Spring Young Pros', leader_id: 1, created_at: '2024-01-20' },
-      { id: this.nextIds.pods++, name: 'Bethesda Campus Pod', leader_id: 2, created_at: '2024-02-15' },
-      { id: this.nextIds.pods++, name: 'College Park DNA Group', leader_id: 3, created_at: '2024-03-10' },
-      { id: this.nextIds.pods++, name: 'Rockville Discipleship Circle', leader_id: 4, created_at: '2024-04-05' },
-    ];
+    // Initial Pods (empty by default for real pod setup)
+    this.pods = [];
 
     // Assign Pod Members
-    this.podMembers = [
-      { pod_id: 1, member_id: 1, joined_at: '2024-01-20' },
-      { pod_id: 1, member_id: 5, joined_at: '2024-04-15' },
-      { pod_id: 1, member_id: 6, joined_at: '2024-05-10' },
-      { pod_id: 2, member_id: 2, joined_at: '2024-02-15' },
-      { pod_id: 2, member_id: 7, joined_at: '2024-06-20' },
-      { pod_id: 2, member_id: 8, joined_at: '2024-07-25' },
-      { pod_id: 3, member_id: 3, joined_at: '2024-03-10' },
-      { pod_id: 3, member_id: 9, joined_at: '2024-08-18' },
-      { pod_id: 3, member_id: 10, joined_at: '2024-10-01' },
-      { pod_id: 4, member_id: 4, joined_at: '2024-04-05' },
-      { pod_id: 4, member_id: 11, joined_at: '2024-10-20' },
-      { pod_id: 4, member_id: 12, joined_at: '2024-11-10' },
-    ];
+    this.podMembers = [];
 
-    // Update member pod_ids
-    for (const pm of this.podMembers) {
-      const mem = this.members.find((m) => m.id === pm.member_id);
-      if (mem) mem.pod_id = pm.pod_id;
-    }
-
-    // Weekly Plans
-    this.weeklyPlans = [
-      {
-        id: this.nextIds.weeklyPlans++,
-        pod_id: 1,
-        leader_id: 1,
-        week_date: '2026-02-24',
-        bible_passage: 'Romans 12:1-8',
-        discussion_questions: JSON.stringify([
-          'What does it mean to present your body as a living sacrifice?',
-          'How do we discern God\'s will in our daily careers?',
-          'Where are you experiencing conformity to the world versus transformation of mind?',
-        ]),
-        spiritual_goals: JSON.stringify([
-          'Memorize Romans 12:2',
-          'Pray daily for one unreached co-worker',
-          'Practice one act of hidden generosity',
-        ]),
-        post_meeting_notes: 'Vibrant discussion around career purpose and kingdom stewardship. 7 members attended.',
-        created_at: '2026-02-20',
-      },
-      {
-        id: this.nextIds.weeklyPlans++,
-        pod_id: 2,
-        leader_id: 2,
-        week_date: '2026-02-25',
-        bible_passage: 'John 15:1-11',
-        discussion_questions: JSON.stringify([
-          'What is the difference between abiding in Christ and religious performance?',
-          'What pruning has God been doing in your life recently?',
-        ]),
-        spiritual_goals: JSON.stringify([
-          '15 minutes of uninterrupted morning prayer and Scripture meditation daily',
-        ]),
-        post_meeting_notes: 'Encouraging time of confession and praying over upcoming college midterms.',
-        created_at: '2026-02-21',
-      },
-    ];
+    // Weekly Plans (empty by default)
+    this.weeklyPlans = [];
 
     // Prayer Requests
     this.prayerRequests = [
@@ -467,7 +446,7 @@ class InMemoryStore {
         title: 'The Master Plan of Evangelism',
         description: "Robert Coleman's classic on how Jesus made disciples and how we can follow His model.",
         category: 'Leadership',
-        file_url: 'https://discipleship.org/wp-content/uploads/2018/01/Master-Plan-of-Evangelism.pdf',
+        file_url: 'https://discipleship.org/resources/',
         created_at: '2026-01-01',
       },
       {
@@ -475,7 +454,7 @@ class InMemoryStore {
         title: 'Spiritual Leadership',
         description: "J. Oswald Sanders' essential principles for guiding others through spiritual maturity.",
         category: 'Leadership',
-        file_url: 'https://www.desiringgod.org/books/spiritual-leadership',
+        file_url: 'https://discipleship.org/resources/',
         created_at: '2026-01-01',
       },
       {
@@ -483,7 +462,7 @@ class InMemoryStore {
         title: 'DNA Pod Leader Guide',
         description: 'Internal guide on how to facilitate effective DNA pods, navigate difficult conversations, and multiply leaders.',
         category: 'Leadership',
-        file_url: '#',
+        file_url: 'https://www.desiringgod.org/articles/how-to-lead-a-small-group',
         created_at: '2026-01-01',
       },
       {
@@ -493,6 +472,74 @@ class InMemoryStore {
         category: 'Devotional',
         file_url: 'https://www.paultripp.com/new-morning-mercies',
         created_at: '2026-01-01',
+      },
+    ];
+
+    // Initial Community Events
+    this.events = this.getDefaultEvents();
+  }
+
+  getDefaultEvents(): CommunityEvent[] {
+    return [
+      {
+        id: 1,
+        title: 'Tuesday DNA Gathering: Worship, Word & Fellowship',
+        description: 'Our weekly young adults gathering dedicated to authentic worship, biblical teaching, table discussions, and deep fellowship.',
+        date: '2026-09-29',
+        time: '7:00 PM - 9:00 PM',
+        location: 'EUC Sanctuary, 12604 New Hampshire Ave, Silver Spring, MD 20904',
+        category: 'gathering',
+        capacity: 120,
+        is_featured: true,
+        created_at: '2026-09-01',
+      },
+      {
+        id: 2,
+        title: 'First Friday Encounter: Worship & Intercession',
+        description: 'An unhurried night of worship, deep prayer, and intercession for our cities, generation, and spiritual breakthroughs.',
+        date: '2026-10-02',
+        time: '7:30 PM - 10:00 PM',
+        location: 'EUC Prayer Chapel, 12604 New Hampshire Ave, Silver Spring, MD',
+        category: 'prayer',
+        capacity: 80,
+        is_featured: true,
+        created_at: '2026-09-01',
+      },
+      {
+        id: 3,
+        title: '12 Tribes Community Brunch & Fellowship',
+        description: 'Join your tribe family for food, games, and rich fellowship outside Tuesday. A wonderful time to invite friends and connect deeper!',
+        date: '2026-10-10',
+        time: '11:00 AM - 2:00 PM',
+        location: 'Fellowship Pavilion, 12604 New Hampshire Ave, Silver Spring, MD',
+        category: 'fellowship',
+        capacity: 75,
+        is_featured: false,
+        created_at: '2026-09-01',
+      },
+      {
+        id: 4,
+        title: 'Kingdom Outreach: City Blessing & Food Distribution',
+        description: 'Hands-on practical love for our local community. Packing essentials kits, food distribution, and prayer for local families.',
+        date: '2026-10-17',
+        time: '10:00 AM - 1:00 PM',
+        location: 'Silver Spring Downtown & Local Community Center',
+        category: 'service',
+        capacity: 40,
+        is_featured: false,
+        created_at: '2026-09-01',
+      },
+      {
+        id: 5,
+        title: 'Fall Young Adults Discipleship Retreat 2026',
+        description: 'Three transformative days unplugged in the mountains with worship, deep teaching, campfire fellowship, and visionary leadership sessions.',
+        date: '2026-11-06',
+        time: 'Fri 5:00 PM – Sun 1:00 PM',
+        location: 'Blue Ridge Mountain Christian Retreat Center, VA',
+        category: 'retreat',
+        capacity: 60,
+        is_featured: true,
+        created_at: '2026-09-01',
       },
     ];
   }
@@ -561,10 +608,12 @@ class InMemoryStore {
   getMembersWithPods() {
     return this.members.map((m) => {
       const pm = this.podMembers.find((item) => item.member_id === m.id);
-      const pod = pm ? this.pods.find((p) => p.id === pm.pod_id) : null;
+      const podId = pm ? pm.pod_id : (m.pod_id || null);
+      const pod = podId ? this.pods.find((p) => p.id === podId) : null;
       return {
         ...m,
         pod_id: pod ? pod.id : null,
+        pod: pod ? pod.name : null,
         pod_name: pod ? pod.name : null,
       };
     });
@@ -573,28 +622,50 @@ class InMemoryStore {
   addMember(data: Partial<Member>): Member {
     const newMember: Member = {
       id: this.nextIds.members++,
-      name: data.name || 'Anonymous',
-      email: data.email || '',
-      phone: data.phone || '',
+      name: (data.name || 'Anonymous').trim(),
+      email: (data.email || '').trim(),
+      phone: (data.phone || '').trim(),
       join_date: data.join_date || new Date().toISOString().split('T')[0],
       role: (data.role as any) || 'member',
       spiritual_stage: (data.spiritual_stage as any) || 'new',
+      pod_id: data.pod_id ? Number(data.pod_id) : null,
       is_active: true,
       created_at: new Date().toISOString(),
+      birthday: data.birthday ? String(data.birthday).trim() : '',
+      city: data.city ? String(data.city).trim() : '',
+      life_stage: data.life_stage ? String(data.life_stage).trim() : '',
+      interests: Array.isArray(data.interests) ? data.interests : [],
+      notes: data.notes ? String(data.notes).trim() : '',
     };
     this.members.push(newMember);
+    if (newMember.pod_id) {
+      this.addMemberToPod(newMember.pod_id, newMember.id);
+    }
     return newMember;
   }
 
   updateMember(id: number, data: Partial<Member>): Member | null {
     const mem = this.members.find((m) => m.id === id);
     if (!mem) return null;
-    if (data.name !== undefined) mem.name = data.name;
-    if (data.email !== undefined) mem.email = data.email;
-    if (data.phone !== undefined) mem.phone = data.phone;
+    if (data.name !== undefined) mem.name = String(data.name).trim();
+    if (data.email !== undefined) mem.email = String(data.email).trim();
+    if (data.phone !== undefined) mem.phone = String(data.phone).trim();
     if (data.join_date !== undefined) mem.join_date = data.join_date;
     if (data.role !== undefined) mem.role = data.role as any;
     if (data.spiritual_stage !== undefined) mem.spiritual_stage = data.spiritual_stage as any;
+    if (data.birthday !== undefined) mem.birthday = data.birthday;
+    if (data.city !== undefined) mem.city = data.city;
+    if (data.life_stage !== undefined) mem.life_stage = data.life_stage;
+    if (data.interests !== undefined) mem.interests = Array.isArray(data.interests) ? data.interests : [];
+    if (data.notes !== undefined) mem.notes = data.notes;
+    if (data.pod_id !== undefined) {
+      mem.pod_id = data.pod_id ? Number(data.pod_id) : null;
+      if (mem.pod_id) {
+        this.addMemberToPod(mem.pod_id, mem.id);
+      } else {
+        this.podMembers = this.podMembers.filter((pm) => pm.member_id !== mem.id);
+      }
+    }
     return mem;
   }
 
@@ -734,6 +805,83 @@ class InMemoryStore {
     return true;
   }
 
+  addSubscriber(email: string, name?: string, source: string = 'footer_form'): { subscriber: NewsletterSubscriber; isNew: boolean } {
+    const cleanEmail = email.trim().toLowerCase();
+    let existing = this.subscribers.find((s) => s.email.toLowerCase() === cleanEmail);
+    if (existing) {
+      if (existing.status === 'unsubscribed') {
+        existing.status = 'subscribed';
+        saveToDB();
+      }
+      return { subscriber: existing, isNew: false };
+    }
+
+    const nextId = (this.nextIds && typeof this.nextIds.subscribers === 'number')
+      ? this.nextIds.subscribers++
+      : (this.subscribers.length + 1);
+
+    const newSub: NewsletterSubscriber = {
+      id: nextId,
+      email: cleanEmail,
+      name: name ? name.trim() : undefined,
+      source,
+      status: 'subscribed',
+      created_at: new Date().toISOString(),
+    };
+    this.subscribers.push(newSub);
+
+    // Also automatically link to Newcomer Pipeline for leadership engagement and follow-up
+    const existingPipeline = this.pipeline.find((p) => p.email && p.email.toLowerCase() === cleanEmail);
+    if (!existingPipeline) {
+      this.addPipeline({
+        name: name ? name.trim() : cleanEmail.split('@')[0],
+        email: cleanEmail,
+        stage: 'first_contact',
+        notes: `Subscribed to Young Adults Newsletter (${source}) for follow-up and engagement`,
+      });
+    }
+
+    saveToDB();
+    return { subscriber: newSub, isNew: true };
+  }
+
+  getSubscribers(): NewsletterSubscriber[] {
+    return this.subscribers;
+  }
+
+  unsubscribe(email: string): boolean {
+    const cleanEmail = email.trim().toLowerCase();
+    const sub = this.subscribers.find((s) => s.email.toLowerCase() === cleanEmail);
+    if (sub) {
+      sub.status = 'unsubscribed';
+      saveToDB();
+      return true;
+    }
+    return false;
+  }
+
+  addBroadcast(subject: string, message: string, recipients_count: number, sender_email?: string): NewsletterBroadcast {
+    const nextId = (this.nextIds && typeof this.nextIds.broadcasts === 'number')
+      ? this.nextIds.broadcasts++
+      : (this.newsletterBroadcasts.length + 1);
+
+    const broadcast: NewsletterBroadcast = {
+      id: nextId,
+      subject: subject.trim(),
+      message: message.trim(),
+      sender_email: sender_email || undefined,
+      recipients_count,
+      sent_at: new Date().toISOString(),
+    };
+    this.newsletterBroadcasts.unshift(broadcast);
+    saveToDB();
+    return broadcast;
+  }
+
+  getBroadcasts(): NewsletterBroadcast[] {
+    return this.newsletterBroadcasts || [];
+  }
+
   addResource(data: Partial<Resource>): Resource {
     const res: Resource = {
       id: this.nextIds.resources++,
@@ -790,6 +938,7 @@ class InMemoryStore {
       is_active: true,
     };
     this.users.push(newUser);
+    if (email.toLowerCase() === 'keku121@gmail.com') newUser.role_id = 1;
     invite.is_used = true;
     return newUser;
   }
@@ -844,6 +993,156 @@ class InMemoryStore {
     console.log(`[Reset Password] Successfully updated password for user ${user.email}`);
     return true;
   }
+
+  // Community Events & RSVPs Methods
+  getEventsWithRsvps() {
+    if (!this.events) this.events = this.getDefaultEvents();
+    if (!this.eventRsvps) this.eventRsvps = [];
+    return this.events.map((evt) => {
+      const rsvps = this.eventRsvps.filter((r) => r.event_id === evt.id);
+      const totalAttendees = rsvps.reduce((sum, r) => sum + 1 + (Number(r.guests_count) || 0), 0);
+      return {
+        ...evt,
+        rsvp_count: totalAttendees,
+        rsvp_submissions: rsvps.length,
+        is_full: evt.capacity ? totalAttendees >= evt.capacity : false,
+        spots_left: evt.capacity ? Math.max(0, evt.capacity - totalAttendees) : null,
+      };
+    }).sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  getEventById(id: number) {
+    if (!this.events) this.events = this.getDefaultEvents();
+    if (!this.eventRsvps) this.eventRsvps = [];
+    const evt = this.events.find((e) => e.id === id);
+    if (!evt) return null;
+    const rsvps = this.eventRsvps.filter((r) => r.event_id === evt.id);
+    const totalAttendees = rsvps.reduce((sum, r) => sum + 1 + (Number(r.guests_count) || 0), 0);
+    return {
+      ...evt,
+      rsvp_count: totalAttendees,
+      rsvp_submissions: rsvps.length,
+      is_full: evt.capacity ? totalAttendees >= evt.capacity : false,
+      spots_left: evt.capacity ? Math.max(0, evt.capacity - totalAttendees) : null,
+      rsvps: rsvps.map(r => ({
+        id: r.id,
+        name: r.name,
+        email: r.email,
+        phone: r.phone || '',
+        guests_count: r.guests_count || 0,
+        notes: r.notes || '',
+        created_at: r.created_at
+      }))
+    };
+  }
+
+  addEvent(data: Partial<CommunityEvent>): CommunityEvent {
+    if (!this.events) this.events = [];
+    const newEvent: CommunityEvent = {
+      id: this.nextIds.events++,
+      title: (data.title || 'Untitled Community Event').trim(),
+      description: (data.description || '').trim(),
+      date: data.date || new Date().toISOString().split('T')[0],
+      time: (data.time || '7:00 PM').trim(),
+      location: (data.location || 'EUC Sanctuary').trim(),
+      category: (data.category as any) || 'gathering',
+      image_url: data.image_url || '',
+      capacity: data.capacity !== undefined && data.capacity !== null && !isNaN(Number(data.capacity)) ? Number(data.capacity) : null,
+      is_featured: !!data.is_featured,
+      created_at: new Date().toISOString().split('T')[0],
+    };
+    this.events.push(newEvent);
+    return newEvent;
+  }
+
+  updateEvent(id: number, data: Partial<CommunityEvent>): CommunityEvent | null {
+    if (!this.events) this.events = [];
+    const evt = this.events.find((e) => e.id === id);
+    if (!evt) return null;
+    if (data.title !== undefined) evt.title = data.title.trim();
+    if (data.description !== undefined) evt.description = data.description.trim();
+    if (data.date !== undefined) evt.date = data.date;
+    if (data.time !== undefined) evt.time = data.time.trim();
+    if (data.location !== undefined) evt.location = data.location.trim();
+    if (data.category !== undefined) evt.category = data.category as any;
+    if (data.image_url !== undefined) evt.image_url = data.image_url;
+    if (data.capacity !== undefined) evt.capacity = data.capacity !== null && !isNaN(Number(data.capacity)) ? Number(data.capacity) : null;
+    if (data.is_featured !== undefined) evt.is_featured = !!data.is_featured;
+    return evt;
+  }
+
+  deleteEvent(id: number): boolean {
+    if (!this.events) this.events = [];
+    const idx = this.events.findIndex((e) => e.id === id);
+    if (idx === -1) return false;
+    this.events.splice(idx, 1);
+    if (this.eventRsvps) {
+      this.eventRsvps = this.eventRsvps.filter((r) => r.event_id !== id);
+    }
+    return true;
+  }
+
+  getRsvps(eventId: number): EventRsvp[] {
+    if (!this.eventRsvps) this.eventRsvps = [];
+    return this.eventRsvps.filter((r) => r.event_id === eventId);
+  }
+
+  addRsvp(data: { event_id: number; name: string; email: string; phone?: string; guests_count?: number; notes?: string }): { success: boolean; rsvp?: EventRsvp; error?: string } {
+    if (!this.events) this.events = this.getDefaultEvents();
+    if (!this.eventRsvps) this.eventRsvps = [];
+    const evt = this.events.find((e) => e.id === data.event_id);
+    if (!evt) return { success: false, error: 'Event not found' };
+
+    const email = (data.email || '').trim().toLowerCase();
+    const name = (data.name || '').trim();
+    if (!name || !email) return { success: false, error: 'Name and email are required' };
+
+    const guests = Math.max(0, Math.min(10, Number(data.guests_count) || 0));
+
+    // Check capacity if set
+    if (evt.capacity) {
+      const currentAttendees = this.eventRsvps
+        .filter((r) => r.event_id === data.event_id && r.email.toLowerCase() !== email)
+        .reduce((sum, r) => sum + 1 + (Number(r.guests_count) || 0), 0);
+      if (currentAttendees + 1 + guests > evt.capacity) {
+        return { success: false, error: `Sorry, this event only has ${Math.max(0, evt.capacity - currentAttendees)} spot(s) remaining.` };
+      }
+    }
+
+    const existingIndex = this.eventRsvps.findIndex((r) => r.event_id === data.event_id && r.email.toLowerCase() === email);
+
+    if (existingIndex >= 0) {
+      // Update existing RSVP
+      this.eventRsvps[existingIndex].name = name;
+      this.eventRsvps[existingIndex].phone = (data.phone || '').trim();
+      this.eventRsvps[existingIndex].guests_count = guests;
+      this.eventRsvps[existingIndex].notes = (data.notes || '').trim();
+      return { success: true, rsvp: this.eventRsvps[existingIndex] };
+    }
+
+    const newRsvp: EventRsvp = {
+      id: this.nextIds.eventRsvps++,
+      event_id: data.event_id,
+      name,
+      email,
+      phone: (data.phone || '').trim(),
+      guests_count: guests,
+      notes: (data.notes || '').trim(),
+      created_at: new Date().toISOString(),
+    };
+    this.eventRsvps.push(newRsvp);
+    return { success: true, rsvp: newRsvp };
+  }
+
+  cancelRsvp(eventId: number, email: string): boolean {
+    if (!this.eventRsvps) return false;
+    const normEmail = (email || '').trim().toLowerCase();
+    const before = this.eventRsvps.length;
+    this.eventRsvps = this.eventRsvps.filter(
+      (r) => !(r.event_id === eventId && r.email.toLowerCase() === normEmail)
+    );
+    return this.eventRsvps.length < before;
+  }
 }
 
 export const rawStore = new InMemoryStore();
@@ -851,30 +1150,135 @@ export const rawStore = new InMemoryStore();
 let saveTimeout: NodeJS.Timeout | null = null;
 let pool: pg.Pool | null = null;
 
+const saveToDB = async () => {
+  try {
+    const stateToSave = {
+      users: rawStore.users,
+      roles: rawStore.roles,
+      permissions: rawStore.permissions,
+      rolePermissions: rawStore.rolePermissions,
+      members: rawStore.members,
+      pods: rawStore.pods,
+      podMembers: rawStore.podMembers,
+      prayerRequests: rawStore.prayerRequests,
+      prayerSupporters: rawStore.prayerSupporters,
+      weeklyPlans: rawStore.weeklyPlans,
+      pipeline: rawStore.pipeline,
+      subscribers: rawStore.subscribers,
+      newsletterBroadcasts: rawStore.newsletterBroadcasts,
+      resources: rawStore.resources,
+      inviteCodes: rawStore.inviteCodes,
+      resetTokens: rawStore.resetTokens,
+      events: rawStore.events,
+      eventRsvps: rawStore.eventRsvps,
+      nextIds: rawStore.nextIds
+    };
+
+    // Always save to JSON file as fallback
+    try {
+      fs.writeFileSync(DATA_FILE, JSON.stringify(stateToSave, null, 2));
+    } catch (err) {
+      console.error('Failed to save state to data.json:', err);
+    }
+
+    if (!pool) return;
+
+    const res = await pool.query('SELECT id FROM app_state ORDER BY id DESC LIMIT 1');
+    if (res.rows.length > 0) {
+      await pool.query('UPDATE app_state SET data = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [stateToSave, res.rows[0].id]);
+    } else {
+      await pool.query('INSERT INTO app_state (data) VALUES ($1)', [stateToSave]);
+    }
+  } catch (err: any) {
+    console.error('Failed to save state to DB:', err);
+    if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND' || err.message?.includes('getaddrinfo')) {
+      console.warn('[PostgreSQL] Disabling database sync due to unreachable host.');
+      pool = null;
+    }
+  }
+};
+
 const initDb = () => {
-  const dbUrl = (process.env.DATABASE_URL || '').trim();
-  if (!dbUrl) return;
+  // First load from local JSON file as base if it exists
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const state = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+      Object.assign(rawStore, state);
+      if (!rawStore.resetTokens) rawStore.resetTokens = [];
+      if (!rawStore.subscribers) rawStore.subscribers = [];
+      if (!rawStore.newsletterBroadcasts) rawStore.newsletterBroadcasts = [];
+      if (!rawStore.nextIds) rawStore.nextIds = {} as any;
+      if (!rawStore.nextIds.subscribers) rawStore.nextIds.subscribers = (rawStore.subscribers.length + 1) || 1;
+      if (!rawStore.nextIds.broadcasts) rawStore.nextIds.broadcasts = (rawStore.newsletterBroadcasts.length + 1) || 1;
+      console.log('[Local FS] Restored state from data.json');
+
+      // Purge old demo mock members and test script artifacts
+      if (rawStore.members && rawStore.members.some(m => m.name === 'Force Save' || m.name === 'Migrate Trigger' || m.id <= 13 || m.name === 'Kidus Teshome')) {
+        rawStore.members = [];
+        rawStore.podMembers = [];
+        if (rawStore.pods) {
+          rawStore.pods.forEach(p => p.leader_id = null);
+        }
+        if (rawStore.nextIds) {
+          rawStore.nextIds.members = 1;
+        }
+        if (rawStore.prayerRequests) {
+          rawStore.prayerRequests = rawStore.prayerRequests.filter(p => p.id !== 7 && p.id !== 6);
+          rawStore.prayerRequests.forEach(p => p.member_id = null);
+        }
+        console.log('[Store] Cleared mock seed members and test records.');
+        saveToDB();
+      }
+
+      // Purge starter DNA pods and mock plans
+      if (rawStore.pods && rawStore.pods.some(p => p.name === 'Silver Spring Young Pros' || p.name === 'Bethesda Campus Pod' || p.name === 'College Park DNA Group' || p.name === 'Rockville Discipleship Circle')) {
+        rawStore.pods = [];
+        rawStore.podMembers = [];
+        rawStore.weeklyPlans = [];
+        if (rawStore.nextIds) {
+          rawStore.nextIds.pods = 1;
+          rawStore.nextIds.weeklyPlans = 1;
+        }
+        console.log('[Store] Cleared starter DNA pods and mock plans.');
+        saveToDB();
+      }
+
+      // Ensure community events and RSVPs exist
+      if (!rawStore.events || rawStore.events.length === 0) {
+        rawStore.events = rawStore.getDefaultEvents();
+      }
+      if (!rawStore.eventRsvps) {
+        rawStore.eventRsvps = [];
+      }
+      if (!rawStore.nextIds.events) {
+        rawStore.nextIds.events = (rawStore.events.length || 0) + 1;
+      }
+      if (!rawStore.nextIds.eventRsvps) {
+        rawStore.nextIds.eventRsvps = 1;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load from data.json:', err);
+  }
+
+  const sqlHost = (process.env.SQL_HOST || '').trim();
+  const sqlUser = (process.env.SQL_USER || '').trim();
+  const sqlPassword = (process.env.SQL_PASSWORD || '').trim();
+  const sqlDbName = (process.env.SQL_DB_NAME || '').trim();
+
+  if (!sqlHost || !sqlUser || !sqlPassword || !sqlDbName) {
+    console.log('[PostgreSQL] Missing SQL_* environment variables. Using Local FS / Memory only.');
+    return;
+  }
 
   try {
-    // Validate that the URL is syntactically valid before passing to pg.Pool
-    const parsedUrl = new URL(dbUrl);
-    if (!['postgres:', 'postgresql:'].includes(parsedUrl.protocol)) {
-      console.warn('[PostgreSQL Warning] DATABASE_URL must start with postgres:// or postgresql://. Skipping DB sync.');
-      return;
-    }
-
-    // Check if it's an unexpanded template like ${{...}}
-    if (dbUrl.includes('${{') || dbUrl.includes('}}')) {
-      console.warn('[PostgreSQL Warning] DATABASE_URL contains unresolved template variables (${{...}}). Skipping DB sync.');
-      return;
-    }
-
-    const isInternal = parsedUrl.hostname.includes('railway.internal') || parsedUrl.hostname.includes('localhost') || parsedUrl.hostname === '127.0.0.1';
-
     pool = new pg.Pool({
-      connectionString: dbUrl,
-      ssl: isInternal ? false : { rejectUnauthorized: false },
-      connectionTimeoutMillis: 5000,
+      host: sqlHost,
+      user: sqlUser,
+      password: sqlPassword,
+      database: sqlDbName,
+      max: 10,
+      connectionTimeoutMillis: 15000,
     });
 
     pool.on('error', (err: any) => {
@@ -900,7 +1304,65 @@ const initDb = () => {
         const state = res.rows[0].data;
         Object.assign(rawStore, state);
 
+        // Fix for missing/empty rolePermissions in older DB state
+        if (!rawStore.rolePermissions || rawStore.rolePermissions.length === 0) {
+            rawStore.rolePermissions = [
+              { role_id: 1, permission_id: 1 },
+              { role_id: 1, permission_id: 2 },
+              { role_id: 1, permission_id: 3 },
+              { role_id: 1, permission_id: 4 },
+              { role_id: 1, permission_id: 5 },
+              { role_id: 2, permission_id: 5 },
+              { role_id: 2, permission_id: 3 },
+              { role_id: 2, permission_id: 2 },
+            ];
+        }
+        if (!rawStore.permissions || rawStore.permissions.length === 0) {
+            rawStore.permissions = [
+              { id: 1, name: 'manage_users' },
+              { id: 2, name: 'manage_pods' },
+              { id: 3, name: 'manage_members' },
+              { id: 4, name: 'manage_settings' },
+              { id: 5, name: 'view_dashboard' },
+            ];
+        }
+
+        // Purge mock seed members and artifacts from PostgreSQL state
+        if (rawStore.members && rawStore.members.some(m => m.name === 'Force Save' || m.name === 'Migrate Trigger' || m.id <= 13 || m.name === 'Kidus Teshome')) {
+          rawStore.members = [];
+          rawStore.podMembers = [];
+          if (rawStore.pods) {
+            rawStore.pods.forEach(p => p.leader_id = null);
+          }
+          if (rawStore.nextIds) {
+            rawStore.nextIds.members = 1;
+          }
+          if (rawStore.prayerRequests) {
+            rawStore.prayerRequests = rawStore.prayerRequests.filter(p => p.id !== 7 && p.id !== 6);
+            rawStore.prayerRequests.forEach(p => p.member_id = null);
+          }
+          console.log('[PostgreSQL] Cleared mock seed members from DB.');
+        }
+
+        // Purge starter DNA pods and mock plans from PostgreSQL state
+        if (rawStore.pods && rawStore.pods.some(p => p.name === 'Silver Spring Young Pros' || p.name === 'Bethesda Campus Pod' || p.name === 'College Park DNA Group' || p.name === 'Rockville Discipleship Circle')) {
+          rawStore.pods = [];
+          rawStore.podMembers = [];
+          rawStore.weeklyPlans = [];
+          if (rawStore.nextIds) {
+            rawStore.nextIds.pods = 1;
+            rawStore.nextIds.weeklyPlans = 1;
+          }
+          console.log('[PostgreSQL] Cleared starter DNA pods and mock plans from DB.');
+        }
+
         const defaultHash = bcrypt.hashSync('password123', 10);
+        
+        const keku = rawStore.users.find(u => u.email.toLowerCase() === 'keku121@gmail.com');
+        if (keku) {
+            keku.role_id = 1; // Force site admin
+        }
+
         if (!rawStore.users.some(u => u.email.toLowerCase() === 'keku121@gmail.com')) {
           rawStore.users.push({
             id: rawStore.nextIds.users++,
@@ -925,6 +1387,20 @@ const initDb = () => {
           rawStore.resetTokens = [];
         }
 
+        // Ensure events and rsvps exist in DB state
+        if (!rawStore.events || rawStore.events.length === 0) {
+          rawStore.events = rawStore.getDefaultEvents();
+        }
+        if (!rawStore.eventRsvps) {
+          rawStore.eventRsvps = [];
+        }
+        if (!rawStore.nextIds.events) {
+          rawStore.nextIds.events = (rawStore.events.length || 0) + 1;
+        }
+        if (!rawStore.nextIds.eventRsvps) {
+          rawStore.nextIds.eventRsvps = 1;
+        }
+
         console.log('[PostgreSQL] Successfully restored app state from PostgreSQL Database');
         saveToDB();
       } else if (res) {
@@ -946,42 +1422,6 @@ const initDb = () => {
 
 initDb();
 
-const saveToDB = async () => {
-  if (!pool) return;
-  try {
-    const stateToSave = {
-      users: rawStore.users,
-      roles: rawStore.roles,
-      permissions: rawStore.permissions,
-      rolePermissions: rawStore.rolePermissions,
-      members: rawStore.members,
-      pods: rawStore.pods,
-      podMembers: rawStore.podMembers,
-      prayerRequests: rawStore.prayerRequests,
-      prayerSupporters: rawStore.prayerSupporters,
-      weeklyPlans: rawStore.weeklyPlans,
-      pipeline: rawStore.pipeline,
-      resources: rawStore.resources,
-      inviteCodes: rawStore.inviteCodes,
-      resetTokens: rawStore.resetTokens,
-      nextIds: rawStore.nextIds
-    };
-
-    const res = await pool.query('SELECT id FROM app_state ORDER BY id DESC LIMIT 1');
-    if (res.rows.length > 0) {
-      await pool.query('UPDATE app_state SET data = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [stateToSave, res.rows[0].id]);
-    } else {
-      await pool.query('INSERT INTO app_state (data) VALUES ($1)', [stateToSave]);
-    }
-  } catch (err: any) {
-    console.error('Failed to save state to DB:', err);
-    if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND' || err.message?.includes('getaddrinfo')) {
-      console.warn('[PostgreSQL] Disabling database sync due to unreachable host.');
-      pool = null;
-    }
-  }
-};
-
 export const store = new Proxy(rawStore, {
   get(target: any, prop: string) {
     const orig = target[prop];
@@ -989,7 +1429,7 @@ export const store = new Proxy(rawStore, {
       return function(...args: any[]) {
         const res = orig.apply(target, args);
         // Mutations that should trigger a save
-        const mutationPrefixes = ['add', 'update', 'delete', 'claim', 'create', 'reset', 'support', 'answer'];
+        const mutationPrefixes = ['add', 'update', 'delete', 'claim', 'create', 'reset', 'support', 'answer', 'cancel'];
         if (mutationPrefixes.some(prefix => prop.startsWith(prefix))) {
           if (saveTimeout) clearTimeout(saveTimeout);
           saveTimeout = setTimeout(() => saveToDB(), 500);

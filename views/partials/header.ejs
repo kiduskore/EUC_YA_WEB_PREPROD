@@ -1,19 +1,125 @@
 <!DOCTYPE html>
 <html lang="<%= typeof lang !== 'undefined' ? lang : 'en' %>" dir="ltr">
 <head>
-    <meta name="description" content="Emmanuel United Church of Maryland Young Adults community. Growing together in faith, leadership, and discipleship.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https:;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    
+    <!-- Primary SEO Metadata -->
+    <title><%= typeof metaTitle !== 'undefined' ? metaTitle : 'EUCMD Young Adults | Christian Church Community in Maryland' %></title>
+    <meta name="description" content="<%= typeof metaDesc !== 'undefined' ? metaDesc : 'Emmanuel United Church of Maryland Young Adults community. Growing deep in faith, leadership, weekly small groups, discipleship, and spiritual renewal across the DMV.' %>">
+    <meta name="keywords" content="young adult church maryland, dmv christian young adults, christian small groups maryland, revive us again conference, silver spring church young adults, eucmd young adults">
+    <meta name="author" content="Emmanuel United Church of Maryland">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://ya.eucmaryland.org<%= typeof currentPath !== 'undefined' ? currentPath : '' %>">
+    
+    <!-- Open Graph Social Share Cards -->
+    <meta property="og:site_name" content="EUCMD Young Adults">
+    <meta property="og:title" content="<%= typeof metaTitle !== 'undefined' ? metaTitle : 'EUCMD Young Adults | Christian Church Community in Maryland' %>">
+    <meta property="og:description" content="<%= typeof metaDesc !== 'undefined' ? metaDesc : 'Emmanuel United Church of Maryland Young Adults community. Growing deep in faith, leadership, weekly small groups, discipleship, and spiritual renewal across the DMV.' %>">
+    <meta property="og:url" content="https://ya.eucmaryland.org<%= typeof currentPath !== 'undefined' ? currentPath : '' %>">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://ya.eucmaryland.org/static/hero_images/worship_crowd.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="EUCMD Young Adults worship and prayer gathering in Maryland">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Social Share Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= typeof metaTitle !== 'undefined' ? metaTitle : 'EUCMD Young Adults | Christian Church Community in Maryland' %>">
+    <meta name="twitter:description" content="<%= typeof metaDesc !== 'undefined' ? metaDesc : 'Emmanuel United Church of Maryland Young Adults community. Growing deep in faith, leadership, weekly small groups, discipleship, and spiritual renewal across the DMV.' %>">
+    <meta name="twitter:image" content="https://ya.eucmaryland.org/static/hero_images/worship_crowd.jpg">
+    <meta name="twitter:image:alt" content="EUCMD Young Adults worship gathering">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["Church", "Organization"],
+          "@id": "https://ya.eucmaryland.org/#organization",
+          "name": "EUCMD Young Adults",
+          "legalName": "Emmanuel United Church of Maryland Young Adults Ministry",
+          "url": "https://ya.eucmaryland.org",
+          "logo": "https://ya.eucmaryland.org/static/hero_images/new_hero.jpg",
+          "image": "https://ya.eucmaryland.org/static/hero_images/worship_crowd.jpg",
+          "description": "A vibrant Christian community of young adults in Maryland passionate about encountering Jesus, equipping believers, and empowering disciples.",
+          "parentOrganization": {
+            "@type": "Church",
+            "name": "Emmanuel United Church of Maryland",
+            "url": "https://eucmaryland.org"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Silver Spring",
+            "addressRegion": "MD",
+            "addressCountry": "US"
+          },
+          "areaServed": [
+            "Maryland",
+            "Washington D.C.",
+            "Montgomery County",
+            "Prince George's County",
+            "Northern Virginia"
+          ],
+          "sameAs": [
+            "https://www.instagram.com/euc.ya"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://ya.eucmaryland.org/#website",
+          "url": "https://ya.eucmaryland.org",
+          "name": "EUCMD Young Adults",
+          "publisher": {
+            "@id": "https://ya.eucmaryland.org/#organization"
+          },
+          "inLanguage": ["en", "am", "ti"]
+        },
+        {
+          "@type": "Event",
+          "@id": "https://ya.eucmaryland.org/#event-revive-us-again",
+          "name": "Revive Us Again — EUCMD Young Adults Regional Gathering",
+          "description": "A holy gathering for young adults across Maryland seeking spiritual renewal, deep worship, and an encounter with the living God based on Psalm 85:6.",
+          "eventStatus": "https://schema.org/EventScheduled",
+          "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+          "location": {
+            "@type": "Place",
+            "name": "Emmanuel United Church of Maryland",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Silver Spring",
+              "addressRegion": "MD",
+              "addressCountry": "US"
+            }
+          },
+          "organizer": {
+            "@id": "https://ya.eucmaryland.org/#organization"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://ya.eucmaryland.org/#coming-soon-event"
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <meta name="csrf-token" content="<%= typeof csrf_token !== 'undefined' ? csrf_token : '' %>">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="format-detection" content="telephone=no">
-    <title><%= typeof t !== 'undefined' ? t('hero.tag') : 'EUCMD Young Adults' %></title>
     
-    <!-- Modern Web Fonts: Noto Sans Ethiopic (for Amharic & Tigrinya) + Plus Jakarta Sans (for English & Afaan Oromoo) -->
+    <!-- Modern Web Fonts: Noto Sans Ethiopic + Plus Jakarta Sans + Playfair Display + Cormorant Garamond + Cinzel -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Noto+Sans+Ethiopic:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- GSAP for Smooth Scroll & Animations (with graceful fallback for iOS Safari) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
@@ -27,7 +133,10 @@
                 extend: {
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', '"Noto Sans Ethiopic"', 'system-ui', '-apple-system', 'sans-serif'],
-                        ethiopic: ['"Noto Sans Ethiopic"', '"Plus Jakarta Sans"', 'sans-serif']
+                        ethiopic: ['"Noto Sans Ethiopic"', '"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Cinzel"', '"Playfair Display"', 'Georgia', 'serif'],
+                        serif: ['"Cormorant Garamond"', '"Playfair Display"', 'Georgia', 'serif'],
+                        brush: ['"Playfair Display"', 'Georgia', 'serif']
                     },
                     colors: {
                         brandDark: '#F4F4F5', // zinc-100
@@ -231,6 +340,9 @@
 
     <!-- Modular Navigation Header (Includes 4-Language Switcher & Theme Toggle) -->
     <%- include('navbar') %>
+
+    <!-- Global Site Search Engine (Command Palette Ctrl+K / Cmd+K) -->
+    <%- include('search-engine') %>
 
     <!-- Global i18n Synchronization Engine -->
     <script src="/static/js/i18n-client.js"></script>
