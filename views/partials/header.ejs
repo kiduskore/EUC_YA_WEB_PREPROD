@@ -11,6 +11,12 @@
     <meta name="author" content="Emmanuel United Church of Maryland">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     
+    <!-- Favicon & Mobile Web App Manifest -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/favicon.svg">
+    <link rel="manifest" href="/static/site.webmanifest">
+    <meta name="theme-color" content="#0075ff">
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://ya.eucmaryland.org<%= typeof currentPath !== 'undefined' ? currentPath : '' %>">
     
@@ -336,6 +342,11 @@
     </style>
 </head>
 <body class="bg-studio-50 dark:bg-studio-900 text-zinc-900 dark:text-zinc-100 overflow-x-hidden min-h-screen flex flex-col">
+    <!-- Accessible Skip to Main Content Link (WCAG 2.1 AA) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2.5 focus:bg-blue-600 focus:text-white focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white font-bold text-xs">
+        Skip to main content
+    </a>
+
     <div id="progress-bar"></div>
 
     <!-- Modular Navigation Header (Includes 4-Language Switcher & Theme Toggle) -->

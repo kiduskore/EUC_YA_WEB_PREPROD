@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch server.ts",
     "build": "echo 'Build completed'",
-    "start": "tsx server.ts"
+    "start": "node server.ts"
   },
   "dependencies": {
     "@google/genai": "^2.22.0",

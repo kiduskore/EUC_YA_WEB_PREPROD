@@ -1,5 +1,6 @@
 import { adminAuth, adminDb } from './src/lib/firebase-admin.ts';
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'path';
@@ -8,14 +9,12 @@ import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
 import helmet from 'helmet';
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
-import { store } from './src/data/store';
-import { i18nMiddleware, isSupportedLanguage, SupportedLanguage, getLanguageInfo, SUPPORTED_LANGUAGES, translations } from './src/i18n';
+import { store } from './src/data/store.ts';
+import { i18nMiddleware, isSupportedLanguage, getLanguageInfo, SUPPORTED_LANGUAGES, translations } from './src/i18n/index.ts';
+import type { SupportedLanguage } from './src/i18n/index.ts';
 
 const app = express();
 app.disable('x-powered-by');
-// In AI Studio container, reverse proxy targets port 3000. On Railway / external hosts, respect process.env.PORT.
-const PORT = process.env.APPLET_ID ? 3000 : (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000);
-
 app.set('trust proxy', true);
 
 // Configure Nodemailer transporter
@@ -231,6 +230,10 @@ app.get('/sitemap.xml', (req: Request, res: Response) => {
     { loc: '/availability', changefreq: 'monthly', priority: '0.7' },
     { loc: '/serving', changefreq: 'monthly', priority: '0.7' },
     { loc: '/generosity', changefreq: 'monthly', priority: '0.7' },
+    { loc: '/privacy', changefreq: 'monthly', priority: '0.5' },
+    { loc: '/terms', changefreq: 'monthly', priority: '0.5' },
+    { loc: '/refund-policy', changefreq: 'monthly', priority: '0.5' },
+    { loc: '/cookie-policy', changefreq: 'monthly', priority: '0.5' },
   ];
   const today = new Date().toISOString().split('T')[0];
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
@@ -527,55 +530,207 @@ app.get('/', (req: Request, res: Response) => {
 
 
 app.get('/join', (req: Request, res: Response) => {
-  res.render('join');
+  res.render('join', {
+    metaTitle: 'Join EUCMD Young Adults | Small Groups & Gatherings in Maryland',
+    metaDesc: 'Find your community, join a weekly discipleship life group, and connect with young adults at Emmanuel United Church of MD.',
+    currentPath: '/join'
+  });
 });
 
 app.get('/salvation', (req: Request, res: Response) => {
-  res.render('salvation');
+  res.render('salvation', {
+    metaTitle: 'The Gospel of Jesus Christ | Salvation & New Life | EUCMD',
+    metaDesc: 'Learn what it means to be saved by grace through faith in Jesus Christ, forgiveness of sins, and starting a new life in Christ.',
+    currentPath: '/salvation'
+  });
 });
 
 app.get('/water-baptism', (req: Request, res: Response) => {
-  res.render('water-baptism');
+  res.render('water-baptism', {
+    metaTitle: 'Water Baptism Guide | Public Declaration of Faith | EUCMD',
+    metaDesc: 'Biblical foundation of water baptism, public confession of faith, and how to register for baptism classes in Silver Spring, Maryland.',
+    currentPath: '/water-baptism'
+  });
 });
 
 app.get('/kingdom', (req: Request, res: Response) => {
-  res.render('kingdom');
+  res.render('kingdom', {
+    metaTitle: 'Seeking the Kingdom of God | Christian Calling & Purpose | EUCMD',
+    metaDesc: 'Discover what it means to seek first the Kingdom of God in your career, relationships, and everyday decision-making.',
+    currentPath: '/kingdom'
+  });
 });
 
 app.get('/membership', (req: Request, res: Response) => {
-  res.render('membership');
+  res.render('membership', {
+    metaTitle: 'Church Membership & Covenant | Emmanuel United Church of MD',
+    metaDesc: 'Committing to a local spiritual family: biblical accountability, community covenant, and active church membership.',
+    currentPath: '/membership'
+  });
 });
 
 app.get('/community', (req: Request, res: Response) => {
-  res.render('community');
+  res.render('community', {
+    metaTitle: 'Authentic Christian Community | Life Groups & Gatherings in MD',
+    metaDesc: 'Experience Christ-centered fellowship, prayer partners, and weekly life groups for college students and young professionals.',
+    currentPath: '/community'
+  });
 });
 
 app.get('/mentorship', (req: Request, res: Response) => {
-  res.render('mentorship');
+  res.render('mentorship', {
+    metaTitle: 'Discipleship Mentorship Program | Walking Together in Faith | EUCMD',
+    metaDesc: 'Connect with seasoned mentors for spiritual direction, career guidance, and Christ-centered discipleship.',
+    currentPath: '/mentorship'
+  });
 });
 
 app.get('/scripture-memory', (req: Request, res: Response) => {
-  res.render('scripture-memory');
+  res.render('scripture-memory', {
+    metaTitle: 'Scripture Memory System | Hiding God\'s Word in Your Heart | EUCMD',
+    metaDesc: 'Practical tools and verse collections to memorize, meditate upon, and live out God\'s Word every week.',
+    currentPath: '/scripture-memory'
+  });
 });
 
 app.get('/growth', (req: Request, res: Response) => {
-  res.render('growth');
+  res.render('growth', {
+    metaTitle: 'Spiritual Growth & Disciplines | Daily Walk with God | EUCMD',
+    metaDesc: 'Cultivating spiritual habits of prayer, fasting, scripture study, and obedience for lifelong Christian transformation.',
+    currentPath: '/growth'
+  });
 });
 
 app.get('/maturity', (req: Request, res: Response) => {
-  res.render('maturity');
+  res.render('maturity', {
+    metaTitle: 'Spiritual Maturity & Discernment | Walking in Truth | EUCMD',
+    metaDesc: 'Growing from spiritual infancy to biblical maturity: discerning God\'s will and standing firm in Christian doctrine.',
+    currentPath: '/maturity'
+  });
 });
 
 app.get('/availability', (req: Request, res: Response) => {
-  res.render('availability');
+  res.render('availability', {
+    metaTitle: 'Living Available to God | Surrendered Discipleship | EUCMD',
+    metaDesc: 'Surrendering your calendar, talents, and career to the Holy Spirit: living available for God\'s sovereign purpose.',
+    currentPath: '/availability'
+  });
 });
 
 app.get('/serving', (req: Request, res: Response) => {
-  res.render('serving');
+  res.render('serving', {
+    metaTitle: 'Serving Others | Spiritual Gifts & Ministry Teams | EUCMD',
+    metaDesc: 'Put your spiritual gifts into action across worship, hospitality, media, prayer ministry, and community outreach in Maryland.',
+    currentPath: '/serving'
+  });
 });
 
 app.get('/generosity', (req: Request, res: Response) => {
-  res.render('generosity');
+  res.render('generosity', {
+    metaTitle: 'Biblical Generosity & Stewardship | Living with Open Hands | EUCMD',
+    metaDesc: 'Understanding biblical stewardship, sacrificial giving, and honoring God with our finances and resources.',
+    currentPath: '/generosity'
+  });
+});
+
+// ==========================================
+// LEGAL, PRIVACY, COMPLIANCE & ERASURE ROUTES
+// ==========================================
+app.get('/privacy', (req: Request, res: Response) => {
+  res.render('privacy', {
+    metaTitle: 'Privacy Policy | EUCMD Young Adults Ministry',
+    metaDesc: 'Learn how Emmanuel United Church of Maryland protects your privacy, personal information, and rights under GDPR, CCPA, and COPPA.',
+    currentPath: '/privacy'
+  });
+});
+
+app.get('/terms', (req: Request, res: Response) => {
+  res.render('terms', {
+    metaTitle: 'Terms of Service | EUCMD Young Adults Ministry',
+    metaDesc: 'Terms of Service, community standards, ministerial disclaimers, and governing law for EUCMD Young Adults.',
+    currentPath: '/terms'
+  });
+});
+
+app.get('/refund-policy', (req: Request, res: Response) => {
+  res.render('refund-policy', {
+    metaTitle: 'Refund & Donation Policy | EUCMD Young Adults Ministry',
+    metaDesc: 'Transparent refund policy for church events, retreats, charitable offerings, and zero hidden fees disclosure.',
+    currentPath: '/refund-policy'
+  });
+});
+
+app.get('/cookie-policy', (req: Request, res: Response) => {
+  res.render('cookie-policy', {
+    metaTitle: 'Cookie Policy | EUCMD Young Adults Ministry',
+    metaDesc: 'Audit and inventory of strictly necessary and functional cookies used on EUCMD Young Adults platform.',
+    currentPath: '/cookie-policy'
+  });
+});
+
+app.get('/privacy/data-deletion', (req: Request, res: Response) => {
+  res.render('data-deletion', {
+    metaTitle: 'Data Deletion Request | Right to Erasure | EUCMD Young Adults',
+    metaDesc: 'Exercise your right to erasure under GDPR and CCPA. Request permanent removal of your personal data.',
+    currentPath: '/privacy/data-deletion'
+  });
+});
+
+// API: Process Data Erasure Request (Right to be Forgotten)
+app.post('/api/privacy/delete-request', (req: Request, res: Response) => {
+  const email = (req.body?.email || '').trim().toLowerCase();
+  const scope = (req.body?.scope || 'all').trim();
+
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ error: 'Please provide a valid email address.' });
+  }
+
+  try {
+    const result = store.deletePersonalData(email, scope);
+    return res.json({
+      success: true,
+      message: 'All personal data associated with your email has been permanently erased.',
+      receiptId: result.receiptId,
+      deletedCount: result.deletedCount
+    });
+  } catch (err: any) {
+    console.error('Data erasure error:', err);
+    return res.status(500).json({ error: 'Failed to process data deletion request. Please contact privacy@eucmaryland.org' });
+  }
+});
+
+// 1-Click CAN-SPAM Unsubscribe Routes
+app.get('/unsubscribe', (req: Request, res: Response) => {
+  const email = String(req.query.email || '').trim();
+  res.render('unsubscribe', {
+    email,
+    success: false,
+    error: null,
+    metaTitle: 'Unsubscribe | EUCMD Young Adults',
+    currentPath: '/unsubscribe'
+  });
+});
+
+app.post('/unsubscribe', (req: Request, res: Response) => {
+  const email = (req.body?.email || '').trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    return res.render('unsubscribe', {
+      email,
+      success: false,
+      error: 'Please enter a valid email address.',
+      metaTitle: 'Unsubscribe | EUCMD Young Adults',
+      currentPath: '/unsubscribe'
+    });
+  }
+
+  store.unsubscribe(email);
+  return res.render('unsubscribe', {
+    email,
+    success: true,
+    error: null,
+    metaTitle: 'Unsubscribed | EUCMD Young Adults',
+    currentPath: '/unsubscribe'
+  });
 });
 
 // Dedicated Unlisted Member Information Form (Shared directly via link, not on public navigation)
@@ -1129,10 +1284,11 @@ app.post(['/api/newsletter/subscribe', '/api/members/subscribe', '/api/subscribe
               </div>
             </div>
 
-            <div style="background-color: #f8fafc; padding: 20px 30px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b;">
-              <p style="margin: 0 0 4px; font-weight: 600;">Emmanuel United Church of Maryland &bull; Young Adults Ministry</p>
-              <p style="margin: 0 0 6px;">Main Sanctuary Sunday Service: 10:30 AM at 12604 New Hampshire Ave, Silver Spring, MD 20904</p>
-              <p style="margin: 0;">You received this email because you subscribed on our website. Unsubscribe anytime by replying to this email.</p>
+            <div style="background-color: #f8fafc; padding: 20px 30px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b; line-height: 1.5;">
+              <p style="margin: 0 0 4px; font-weight: 700; color: #334155;">Emmanuel United Church of Maryland &bull; Young Adults Ministry</p>
+              <p style="margin: 0 0 4px;">914 Silver Spring Ave, Silver Spring, MD 20910 &bull; Phone: (301) 588-4422</p>
+              <p style="margin: 0 0 8px;">Sunday Service: 10:30 AM at 12604 New Hampshire Ave, Silver Spring, MD 20904</p>
+              <p style="margin: 0; font-size: 11px;">You received this email because you subscribed on our website. <a href="${baseUrl}/unsubscribe?email=${encodeURIComponent(cleanEmail)}" style="color: #0075ff; text-decoration: underline;">Click here to unsubscribe with 1-click</a> or reply to this email.</p>
             </div>
           </div>
         `;
@@ -1142,7 +1298,7 @@ app.post(['/api/newsletter/subscribe', '/api/members/subscribe', '/api/subscribe
             from: senderFrom,
             to: cleanEmail,
             subject: 'Welcome to EUCMD Young Adults! Weekly Gatherings & Community',
-            text: `Welcome to EUCMD Young Adults!\n\nThank you for subscribing to our newsletter.\n\nWeekly Gathering Times:\nEvery Tuesday at 7:00 PM EST (Followed by fellowship & prayer)\nAddress: 914 Silver Spring Ave 204B, Silver Spring, MD 20910\n\nVisit our website to explore discipleship resources, upcoming events, and life groups: ${baseUrl}/\n\nSunday Church Service: 10:30 AM at 12604 New Hampshire Ave, Silver Spring, MD 20904`,
+            text: `Welcome to EUCMD Young Adults!\n\nThank you for subscribing to our newsletter.\n\nWeekly Gathering Times:\nEvery Tuesday at 7:00 PM EST (Followed by fellowship & prayer)\nAddress: 914 Silver Spring Ave 204B, Silver Spring, MD 20910\n\nVisit our website to explore discipleship resources, upcoming events, and life groups: ${baseUrl}/\n\nSunday Church Service: 10:30 AM at 12604 New Hampshire Ave, Silver Spring, MD 20904\n\nTo unsubscribe instantly, visit: ${baseUrl}/unsubscribe?email=${encodeURIComponent(cleanEmail)}\n\nEmmanuel United Church of Maryland\n914 Silver Spring Ave, Silver Spring, MD 20910`,
             html: welcomeHtml
           });
           console.log(`[Newsletter] Welcome email successfully sent to ${cleanEmail}`);
@@ -1235,9 +1391,10 @@ app.post('/api/newsletter/send-update', requireAuth, async (req: Request, res: R
           </div>
         </div>
 
-        <div style="background-color: #f8fafc; padding: 16px 28px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 11px; color: #64748b;">
-          <p style="margin: 0 0 4px;">Emmanuel United Church of Maryland &bull; Young Adults Ministry</p>
-          <p style="margin: 0;">You received this update because you are subscribed to the EUCMD Young Adults newsletter.</p>
+        <div style="background-color: #f8fafc; padding: 18px 28px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 11px; color: #64748b; line-height: 1.5;">
+          <p style="margin: 0 0 4px; font-weight: 700; color: #334155;">Emmanuel United Church of Maryland &bull; Young Adults Ministry</p>
+          <p style="margin: 0 0 4px;">914 Silver Spring Ave, Silver Spring, MD 20910 &bull; Phone: (301) 588-4422</p>
+          <p style="margin: 0;">You received this update because you are subscribed to the EUCMD Young Adults newsletter. <a href="${baseUrl}/unsubscribe" style="color: #0075ff; text-decoration: underline;">Unsubscribe with 1-click</a></p>
         </div>
       </div>
     `;
@@ -1251,7 +1408,7 @@ app.post('/api/newsletter/send-update', requireAuth, async (req: Request, res: R
           to: process.env.SMTP_USER,
           bcc: recipientEmails,
           subject: `${cleanSubject} - EUCMD Young Adults`,
-          text: `${cleanSubject}\n\n${cleanMessage}\n\nWeekly Gathering: Every Tuesday at 7:00 PM EST at 914 Silver Spring Ave 204B, Silver Spring, MD 20910.\nWebsite: ${baseUrl}/`,
+          text: `${cleanSubject}\n\n${cleanMessage}\n\nWeekly Gathering: Every Tuesday at 7:00 PM EST at 914 Silver Spring Ave 204B, Silver Spring, MD 20910.\nWebsite: ${baseUrl}/\n\nTo unsubscribe: ${baseUrl}/unsubscribe\nEmmanuel United Church of Maryland, 914 Silver Spring Ave, Silver Spring, MD 20910`,
           html: updateEmailHtml
         });
         emailSentSuccessfully = true;
@@ -1635,13 +1792,33 @@ app.get('/debug-smtp', async (req: Request, res: Response) => {
 
 // Fallback 404 handler
 app.use((req: Request, res: Response) => {
+  res.status(404);
   if (req.accepts('html')) {
-    res.redirect('/');
+    res.render('404', {
+      metaTitle: '404 - Page Not Found | EUCMD Young Adults',
+      metaDesc: 'The page you requested could not be found. Explore EUCMD Young Adults discipleship resources, weekly gatherings, and community events.',
+      currentPath: req.path
+    });
   } else {
-    res.status(404).json({ error: 'Endpoint not found' });
+    res.json({ error: 'Endpoint not found', statusCode: 404 });
   }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+const PORT = 3000;
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`EUC Young Adults Management Server running on port ${PORT}`);
 });
+
+const ENV_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : null;
+if (ENV_PORT && ENV_PORT !== PORT) {
+  try {
+    const altServer = app.listen(ENV_PORT, '0.0.0.0', () => {
+      console.log(`EUC Young Adults Management Server also listening on port ${ENV_PORT}`);
+    });
+    altServer.on('error', (err: any) => {
+      console.log(`Notice: Port ${ENV_PORT} is handled by proxy (${err.code || err.message})`);
+    });
+  } catch (err: any) {
+    console.log(`Notice: Port ${ENV_PORT} bind notice (${err.message})`);
+  }
+}

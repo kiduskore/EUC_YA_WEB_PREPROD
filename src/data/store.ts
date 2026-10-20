@@ -860,6 +860,51 @@ class InMemoryStore {
     return false;
   }
 
+  deletePersonalData(email: string, scope: string = 'all'): { success: boolean; receiptId: string; deletedCount: number } {
+    const cleanEmail = email.trim().toLowerCase();
+    const receiptId = 'DEL-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+    let deletedCount = 0;
+
+    // 1. Remove from newsletter
+    const initialSubCount = this.subscribers.length;
+    this.subscribers = this.subscribers.filter(s => s.email.toLowerCase() !== cleanEmail);
+    if (this.subscribers.length < initialSubCount) deletedCount++;
+
+    if (scope === 'all') {
+      // 2. Remove from newcomers if present
+      if (Array.isArray(this.newcomers)) {
+        const initialNewcomers = this.newcomers.length;
+        this.newcomers = this.newcomers.filter(n => (n.email || '').toLowerCase() !== cleanEmail);
+        if (this.newcomers.length < initialNewcomers) deletedCount++;
+      }
+
+      // 3. Remove from members list if present
+      if (Array.isArray(this.members)) {
+        const initialMembers = this.members.length;
+        this.members = this.members.filter(m => (m.email || '').toLowerCase() !== cleanEmail);
+        if (this.members.length < initialMembers) deletedCount++;
+      }
+
+      // 4. Remove from event RSVPs
+      if (Array.isArray((this as any).rsvps)) {
+        const initialRsvps = (this as any).rsvps.length;
+        (this as any).rsvps = (this as any).rsvps.filter((r: any) => (r.email || '').toLowerCase() !== cleanEmail);
+        if ((this as any).rsvps.length < initialRsvps) deletedCount++;
+      }
+
+      // 5. Remove prayer requests
+      if (Array.isArray(this.prayers)) {
+        const initialPrayers = this.prayers.length;
+        this.prayers = this.prayers.filter(p => (p.email || '').toLowerCase() !== cleanEmail);
+        if (this.prayers.length < initialPrayers) deletedCount++;
+      }
+    }
+
+    saveToDB();
+    console.log(`[Privacy] Data erasure completed for ${cleanEmail}. Receipt: ${receiptId}, records affected: ${deletedCount}`);
+    return { success: true, receiptId, deletedCount };
+  }
+
   addBroadcast(subject: string, message: string, recipients_count: number, sender_email?: string): NewsletterBroadcast {
     const nextId = (this.nextIds && typeof this.nextIds.broadcasts === 'number')
       ? this.nextIds.broadcasts++

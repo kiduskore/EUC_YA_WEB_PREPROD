@@ -1,0 +1,147 @@
+<%- include('partials/header') %>
+
+<main id="main-content" class="flex-grow pt-28 pb-20 px-6 lg:px-12 max-w-3xl mx-auto text-left">
+    <!-- Header Badge -->
+    <div class="mb-8">
+        <a href="/privacy" class="inline-flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mb-4">
+            &larr; Back to Privacy Policy
+        </a>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-xs font-bold uppercase tracking-wider mb-3">
+            Right to Erasure (GDPR & CCPA)
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-black text-studio-900 dark:text-white tracking-tight mb-3">
+            Personal Data Deletion Request
+        </h1>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400">
+            Submit your email address below to permanently remove all personal information (newsletter subscriptions, event RSVPs, contact notes, and prayer requests) from our databases.
+        </p>
+    </div>
+
+    <!-- Request Form Card -->
+    <div class="p-6 sm:p-10 rounded-3xl bg-white dark:bg-studio-800 border border-zinc-200 dark:border-white/10 shadow-xl space-y-6">
+        
+        <form id="data-deletion-form" onsubmit="submitDataDeletion(event)" class="space-y-6">
+            <input type="hidden" name="csrf_token" value="<%= typeof csrf_token !== 'undefined' ? csrf_token : '' %>">
+            
+            <div>
+                <label for="delete-email" class="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-2">
+                    Your Email Address <span class="text-rose-500">*</span>
+                </label>
+                <input type="email" 
+                       id="delete-email" 
+                       required 
+                       placeholder="name@example.com" 
+                       autocomplete="email"
+                       class="w-full px-4 py-3.5 rounded-2xl bg-zinc-50 dark:bg-studio-900/60 border border-zinc-300 dark:border-white/10 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500">
+                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1.5">
+                    We will search all database records associated with this email address.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-2">
+                    Scope of Deletion
+                </label>
+                <div class="space-y-2.5 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
+                    <label class="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-studio-900/40 border border-zinc-200 dark:border-white/5 cursor-pointer">
+                        <input type="radio" name="scope" value="all" checked class="text-rose-600 focus:ring-rose-500">
+                        <div>
+                            <span class="font-bold text-zinc-900 dark:text-white">Delete All Personal Data (Recommended)</span>
+                            <p class="text-xs text-zinc-500">Permanently removes your email from newsletter, event registrations, and community logs.</p>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-studio-900/40 border border-zinc-200 dark:border-white/5 cursor-pointer">
+                        <input type="radio" name="scope" value="newsletter_only" class="text-rose-600 focus:ring-rose-500">
+                        <div>
+                            <span class="font-bold text-zinc-900 dark:text-white">Newsletter Only</span>
+                            <p class="text-xs text-zinc-500">Unsubscribe from weekly emails while preserving existing event RSVPs.</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Confirmation Checkbox -->
+            <div class="pt-2">
+                <label class="flex items-start gap-3 cursor-pointer text-left select-none">
+                    <input type="checkbox" id="delete-confirm" required class="mt-1 w-4 h-4 rounded border-zinc-300 text-rose-600 focus:ring-rose-500">
+                    <span class="text-xs text-zinc-600 dark:text-zinc-400 leading-normal">
+                        I confirm that I am the authorized owner of this email address and request the permanent erasure of my data under applicable data privacy regulations.
+                    </span>
+                </label>
+            </div>
+
+            <div id="deletion-error" class="hidden p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-semibold"></div>
+
+            <button type="submit" 
+                    id="deletion-submit-btn" 
+                    class="w-full py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-sm shadow-md transition-all active:scale-[0.98]">
+                Submit Erasure Request
+            </button>
+        </form>
+
+        <!-- Success Confirmation State -->
+        <div id="deletion-success" class="hidden text-center space-y-4 p-4">
+            <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center font-black text-2xl">
+                ✓
+            </div>
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Data Erasure Confirmed</h2>
+            <p class="text-sm text-zinc-600 dark:text-zinc-300 max-w-md mx-auto leading-relaxed" id="deletion-success-msg">
+                Your request has been processed. All records linked to your email address have been permanently purged from our active databases.
+            </p>
+            <div class="p-4 rounded-xl bg-zinc-50 dark:bg-studio-900 border border-zinc-200 dark:border-white/10 text-xs text-zinc-500 font-mono">
+                Receipt Code: <span id="deletion-receipt-id" class="font-bold text-zinc-900 dark:text-white"></span>
+            </div>
+            <div class="pt-4">
+                <a href="/" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs">
+                    Return to Homepage
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+async function submitDataDeletion(e) {
+    e.preventDefault();
+    const btn = document.getElementById('deletion-submit-btn');
+    const email = document.getElementById('delete-email').value.trim();
+    const scope = document.querySelector('input[name="scope"]:checked')?.value || 'all';
+    const errorBox = document.getElementById('deletion-error');
+    const form = document.getElementById('data-deletion-form');
+    const successBox = document.getElementById('deletion-success');
+    const receiptEl = document.getElementById('deletion-receipt-id');
+
+    if (!email) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Processing request...';
+    errorBox.classList.add('hidden');
+
+    try {
+        const res = await fetch('/api/privacy/delete-request', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, scope })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            form.classList.add('hidden');
+            successBox.classList.remove('hidden');
+            receiptEl.textContent = data.receiptId || ('ERASURE-' + Math.random().toString(36).substring(2, 9).toUpperCase());
+        } else {
+            errorBox.textContent = data.error || 'Failed to submit request. Please try again or email privacy@eucmaryland.org';
+            errorBox.classList.remove('hidden');
+            btn.disabled = false;
+            btn.textContent = 'Submit Erasure Request';
+        }
+    } catch (err) {
+        errorBox.textContent = 'Network error. Please try again later.';
+        errorBox.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Submit Erasure Request';
+    }
+}
+</script>
+
+<%- include('partials/footer') %>

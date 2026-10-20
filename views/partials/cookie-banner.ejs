@@ -1,0 +1,217 @@
+<!-- Cookie Consent Banner (GDPR, CCPA & Privacy Directive Compliant) -->
+<div id="cookie-consent-banner" 
+     role="region" 
+     aria-label="Cookie consent management" 
+     class="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6 transition-all duration-300 transform translate-y-full opacity-0 pointer-events-none"
+     style="display: none;">
+    <div class="max-w-4xl mx-auto rounded-3xl bg-white/95 dark:bg-studio-900/95 backdrop-blur-xl border border-zinc-200 dark:border-white/10 p-6 sm:p-8 shadow-2xl relative text-left">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex-1 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm">
+                        🍪
+                    </span>
+                    <h3 class="text-base font-bold text-zinc-900 dark:text-white">
+                        Your Privacy Choices
+                    </h3>
+                </div>
+                <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                    We use strictly necessary cookies to keep your session secure and functional cookies to remember your language preference (English, አማርኛ, ትግርኛ, Afaan Oromoo). We do <strong>not</strong> sell your data or use third-party advertising trackers. Review our 
+                    <a href="/cookie-policy" class="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300 font-semibold focus-visible:ring-2 focus-visible:ring-blue-500 rounded">Cookie Policy</a> and 
+                    <a href="/privacy" class="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300 font-semibold focus-visible:ring-2 focus-visible:ring-blue-500 rounded">Privacy Policy</a>.
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2.5 shrink-0 w-full md:w-auto">
+                <button type="button" 
+                        id="cookie-accept-all" 
+                        class="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none">
+                    Accept All
+                </button>
+                <button type="button" 
+                        id="cookie-reject-optional" 
+                        class="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-studio-800 dark:hover:bg-studio-700 text-zinc-800 dark:text-zinc-200 font-bold text-xs sm:text-sm transition-all active:scale-95 border border-zinc-200 dark:border-white/10 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none">
+                    Essential Only
+                </button>
+                <button type="button" 
+                        id="cookie-open-settings" 
+                        class="px-4 py-2.5 rounded-xl bg-transparent hover:bg-zinc-100 dark:hover:bg-studio-800 text-zinc-600 dark:text-zinc-400 font-semibold text-xs transition-all focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none">
+                    Preferences
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cookie Preferences Modal -->
+<div id="cookie-settings-modal" 
+     role="dialog" 
+     aria-modal="true" 
+     aria-labelledby="cookie-modal-title" 
+     class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white dark:bg-studio-900 rounded-3xl border border-zinc-200 dark:border-white/10 p-6 sm:p-8 shadow-2xl text-left space-y-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-zinc-200 dark:border-white/10 pb-4">
+            <h4 id="cookie-modal-title" class="text-lg font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                <span>Cookie Settings</span>
+            </h4>
+            <button type="button" 
+                    id="cookie-modal-close" 
+                    aria-label="Close cookie settings"
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-studio-800 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500">
+                ✕
+            </button>
+        </div>
+
+        <div class="space-y-4 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">
+            <!-- Strictly Necessary -->
+            <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800/60 border border-zinc-200/80 dark:border-white/5 space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-zinc-900 dark:text-white">Strictly Necessary Cookies</span>
+                    <span class="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold text-[10px] uppercase">Always Active</span>
+                </div>
+                <p class="text-zinc-500 dark:text-zinc-400 text-xs">
+                    Required for security, CSRF protection, and user sign-in authentication (<code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">connect.sid</code>, <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">csrf_token</code>).
+                </p>
+            </div>
+
+            <!-- Functional -->
+            <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800/60 border border-zinc-200/80 dark:border-white/5 space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-zinc-900 dark:text-white">Functional Cookies</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="cookie-toggle-functional" checked class="sr-only peer">
+                        <div class="w-9 h-5 bg-zinc-300 peer-focus:outline-none rounded-full peer dark:bg-studio-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+                <p class="text-zinc-500 dark:text-zinc-400 text-xs">
+                    Stores your chosen UI language preference and dark/light theme setting (<code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">lang</code>, <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">theme</code>).
+                </p>
+            </div>
+
+            <!-- Marketing / Analytics (Disabled) -->
+            <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800/60 border border-zinc-200/80 dark:border-white/5 space-y-1.5 opacity-75">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-zinc-900 dark:text-white">Targeting & Marketing Trackers</span>
+                    <span class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] uppercase">None Used</span>
+                </div>
+                <p class="text-zinc-500 dark:text-zinc-400 text-xs">
+                    Our platform does not use behavioral tracking, third-party analytics pixels, or commercial advertising cookies.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 border-t border-zinc-200 dark:border-white/10 pt-4">
+            <button type="button" 
+                    id="cookie-save-preferences" 
+                    class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none">
+                Save Preferences
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const CONSENT_KEY = 'euc_cookie_consent_v1';
+    const banner = document.getElementById('cookie-consent-banner');
+    const modal = document.getElementById('cookie-settings-modal');
+    const acceptAllBtn = document.getElementById('cookie-accept-all');
+    const rejectOptionalBtn = document.getElementById('cookie-reject-optional');
+    const openSettingsBtn = document.getElementById('cookie-open-settings');
+    const savePrefBtn = document.getElementById('cookie-save-preferences');
+    const closeModalBtn = document.getElementById('cookie-modal-close');
+    const functionalToggle = document.getElementById('cookie-toggle-functional');
+
+    function getSavedConsent() {
+        try {
+            const stored = localStorage.getItem(CONSENT_KEY);
+            return stored ? JSON.parse(stored) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function saveConsent(consent) {
+        try {
+            localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
+            document.cookie = 'cookie_consent=' + encodeURIComponent(JSON.stringify(consent)) + '; path=/; max-age=' + (180 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+        } catch (e) {}
+        hideBanner();
+        hideModal();
+    }
+
+    function showBanner() {
+        if (!banner) return;
+        banner.style.display = 'block';
+        setTimeout(() => {
+            banner.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+        }, 100);
+    }
+
+    function hideBanner() {
+        if (!banner) return;
+        banner.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+        setTimeout(() => { banner.style.display = 'none'; }, 300);
+    }
+
+    function showModal() {
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        const saved = getSavedConsent();
+        if (saved && functionalToggle) {
+            functionalToggle.checked = !!saved.functional;
+        }
+    }
+
+    function hideModal() {
+        if (!modal) return;
+        modal.classList.add('hidden');
+    }
+
+    // Expose open function globally so footer link can call it
+    window.openCookieSettings = function() {
+        showModal();
+    };
+
+    if (acceptAllBtn) {
+        acceptAllBtn.addEventListener('click', function() {
+            saveConsent({ essential: true, functional: true, timestamp: new Date().toISOString() });
+        });
+    }
+
+    if (rejectOptionalBtn) {
+        rejectOptionalBtn.addEventListener('click', function() {
+            saveConsent({ essential: true, functional: false, timestamp: new Date().toISOString() });
+        });
+    }
+
+    if (openSettingsBtn) {
+        openSettingsBtn.addEventListener('click', function() {
+            showModal();
+        });
+    }
+
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', function() {
+            hideModal();
+        });
+    }
+
+    if (savePrefBtn) {
+        savePrefBtn.addEventListener('click', function() {
+            saveConsent({
+                essential: true,
+                functional: functionalToggle ? functionalToggle.checked : true,
+                timestamp: new Date().toISOString()
+            });
+        });
+    }
+
+    // Check if consent has already been recorded
+    const existing = getSavedConsent();
+    if (!existing) {
+        // Show after small delay so user doesn't get flash
+        setTimeout(showBanner, 800);
+    }
+})();
+</script>

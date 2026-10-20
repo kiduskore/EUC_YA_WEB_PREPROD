@@ -500,9 +500,10 @@
     "devotionals": 1,
     "inviteCodes": 3,
     "resetTokens": 3,
-    "subscribers": null,
+    "subscribers": 8,
     "weeklyPlans": 1,
     "prayerRequests": 8,
-    "prayerSupporters": 1
+    "prayerSupporters": 1,
+    "broadcasts": 3
   }
 }

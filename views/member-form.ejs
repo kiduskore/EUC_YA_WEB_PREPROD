@@ -340,6 +340,22 @@
                     </div>
                 </div>
 
+                <!-- Consent & Age Verification (Non-Dark Pattern, Unchecked by default) -->
+                <div class="space-y-3 pt-2 text-left">
+                    <label class="flex items-start gap-3 cursor-pointer select-none">
+                        <input type="checkbox" id="member_consent" required class="mt-1 w-4 h-4 rounded border-zinc-500 text-blue-600 focus:ring-blue-500">
+                        <span class="text-xs text-slate-300 leading-normal">
+                            I consent to Emmanuel United Church of MD securely storing my member details for pastoral care and discipleship coordination in accordance with the <a href="/privacy" target="_blank" class="text-blue-400 underline hover:text-blue-300">Privacy Policy</a>.
+                        </span>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer select-none">
+                        <input type="checkbox" id="member_age" required class="mt-1 w-4 h-4 rounded border-zinc-500 text-blue-600 focus:ring-blue-500">
+                        <span class="text-xs text-slate-300 leading-normal">
+                            I confirm I am 18 years of age or older (or 13–17 with parental/guardian permission).
+                        </span>
+                    </label>
+                </div>
+
                 <!-- Submit Button -->
                 <div class="pt-4 border-t border-white/10">
                     <button type="submit" id="submitBtn"

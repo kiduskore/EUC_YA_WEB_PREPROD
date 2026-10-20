@@ -1,0 +1,270 @@
+<%- include('partials/header') %>
+
+<main id="main-content" class="flex-grow pt-28 pb-20 px-6 lg:px-12 max-w-5xl mx-auto text-left">
+    <!-- Header Badge -->
+    <div class="mb-8">
+        <a href="/" class="inline-flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mb-4">
+            &larr; Back to Home
+        </a>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider mb-3">
+            Legal & Compliance
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-studio-900 dark:text-white tracking-tight mb-3">
+            Privacy Policy
+        </h1>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            Last Updated: October 20, 2026 &bull; Effective Immediately
+        </p>
+    </div>
+
+    <!-- Quick Summary Box -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-blue-50/60 dark:bg-studio-800/80 border border-blue-200/80 dark:border-blue-900/30 mb-12 space-y-3">
+        <h2 class="text-base font-bold text-blue-950 dark:text-blue-200 flex items-center gap-2">
+            <span>🛡️</span> <span>Our Ministry Privacy Commitment</span>
+        </h2>
+        <p class="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+            Emmanuel United Church of Maryland Young Adults Ministry ("EUCMD", "we", "us", or "our") deeply values your trust. <strong>We do not sell, rent, monetize, or trade your personal information.</strong> We only collect minimal information necessary to coordinate fellowship gatherings, pray for one another, manage discipleship small groups, and communicate church announcements.
+        </p>
+    </div>
+
+    <!-- Policy Sections -->
+    <div class="space-y-10 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
+        
+        <!-- 1. Who We Are -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                1. Organization & Data Controller
+            </h2>
+            <p>
+                The data controller responsible for your personal information is:
+            </p>
+            <div class="p-5 rounded-2xl bg-zinc-50 dark:bg-studio-800/50 border border-zinc-200 dark:border-white/10 text-xs sm:text-sm space-y-1">
+                <p class="font-bold text-studio-900 dark:text-white">Emmanuel United Church of Maryland, Inc.</p>
+                <p>A Maryland Non-Profit Religious Organization (501(c)(3))</p>
+                <p>Physical Gathering Location: 914 Silver Spring Ave, Silver Spring, MD 20910</p>
+                <p>Main Church Sanctuary: 12604 New Hampshire Ave, Silver Spring, MD 20904</p>
+                <p>Official Contact Email: <a href="mailto:privacy@eucmaryland.org" class="text-blue-600 dark:text-blue-400 underline">privacy@eucmaryland.org</a></p>
+                <p>Ministry Phone: (301) 588-4422</p>
+            </div>
+        </section>
+
+        <!-- 2. Information We Collect -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                2. Information We Collect & Data Minimization
+            </h2>
+            <p>
+                Following the principle of data minimization, we only collect data that is strictly relevant and necessary:
+            </p>
+            <ul class="list-disc pl-6 space-y-2">
+                <li><strong>Contact Inquiries & Small Group Placement:</strong> Name, email address, optional phone number, and ministry interest (e.g., attending a Tuesday gathering, joining a discipleship pod).</li>
+                <li><strong>Newsletter Subscription:</strong> Email address for weekly devotional emails and gathering updates.</li>
+                <li><strong>Event RSVPs:</strong> Name, email, guest count, and optional notes (e.g., dietary considerations or ride-share needs).</li>
+                <li><strong>Prayer Requests:</strong> Name (or anonymous), and prayer request description shared with our pastoral intercession team.</li>
+                <li><strong>Leader Portal Accounts:</strong> For authorized ministry leaders, login email and bcrypt-hashed password credentials.</li>
+                <li><strong>Technical Session Cookies:</strong> Essential session cookies (<code class="text-xs bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">connect.sid</code>), CSRF defense tokens (<code class="text-xs bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">csrf_token</code>), and UI language preference (<code class="text-xs bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">lang</code>).</li>
+            </ul>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                We do <strong>not</strong> collect Social Security numbers, government identification, financial card numbers on our servers, or intrusive device tracking identifiers.
+            </p>
+        </section>
+
+        <!-- 3. Purpose & Legal Bases -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                3. Legal Bases for Processing (GDPR & US State Laws)
+            </h2>
+            <p>
+                We process your personal information under the following legal frameworks:
+            </p>
+            <ul class="list-disc pl-6 space-y-2">
+                <li><strong>Consent:</strong> When you voluntarily submit a contact form, join a small group, sign up for our newsletter, or submit a prayer request. You may withdraw consent at any time.</li>
+                <li><strong>Legitimate Religious & Ministry Interests:</strong> Facilitating spiritual fellowship, organizing weekly worship services, pastoral care, and member coordination.</li>
+                <li><strong>Legal Compliance:</strong> Retaining records where required by applicable federal, state, or Maryland laws.</li>
+            </ul>
+        </section>
+
+        <!-- 4. Third-Party Service Providers -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                4. Third-Party Service Providers (Subprocessors)
+            </h2>
+            <p>
+                We carefully vet third-party tools to ensure strict privacy safeguards:
+            </p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm border-collapse border border-zinc-200 dark:border-white/10 rounded-xl overflow-hidden">
+                    <thead class="bg-zinc-100 dark:bg-studio-800 text-studio-900 dark:text-white font-bold">
+                        <tr>
+                            <th class="p-3 border border-zinc-200 dark:border-white/10">Provider</th>
+                            <th class="p-3 border border-zinc-200 dark:border-white/10">Purpose</th>
+                            <th class="p-3 border border-zinc-200 dark:border-white/10">Location</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-white/10">
+                        <tr>
+                            <td class="p-3 font-semibold">Google Cloud / Firebase</td>
+                            <td class="p-3">Secure encrypted database storage (Firestore) & cloud hosting</td>
+                            <td class="p-3">USA</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold">IONOS / SMTP</td>
+                            <td class="p-3">Transactional email delivery (password resets, gathering RSVPs)</td>
+                            <td class="p-3">USA / EU</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold">Google Fonts</td>
+                            <td class="p-3">Open-source typography (Plus Jakarta Sans, Inter)</td>
+                            <td class="p-3">Global CDN</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                We do not utilize Meta Pixel, TikTok tracking, Google Analytics advertising features, or third-party behavioral profiling scripts.
+            </p>
+        </section>
+
+        <!-- 5. Children's Privacy (COPPA Compliance) -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                5. Age Requirements & Children's Privacy (COPPA)
+            </h2>
+            <p>
+                Our Young Adults ministry platform is designed for individuals who are <strong>18 years of age or older</strong>, or between ages 13 and 17 with explicit parental or legal guardian consent. 
+            </p>
+            <p>
+                In compliance with the Children’s Online Privacy Protection Act (COPPA), we <strong>do not knowingly collect, solicit, or maintain personal information from children under the age of 13</strong>. If we discover that personal data of a minor under 13 has been submitted without verified parental consent, we will promptly delete that information from our database. Parents or guardians may contact us at <a href="mailto:privacy@eucmaryland.org" class="text-blue-600 dark:text-blue-400 underline">privacy@eucmaryland.org</a> to request immediate deletion.
+            </p>
+        </section>
+
+        <!-- 6. Data Retention -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                6. Data Retention & Erasure Schedule
+            </h2>
+            <p>
+                We retain personal information only for as long as needed to fulfill ministry engagement:
+            </p>
+            <ul class="list-disc pl-6 space-y-1 text-xs sm:text-sm">
+                <li><strong>Newsletter Subscribers:</strong> Retained until you click "Unsubscribe" (which takes effect immediately).</li>
+                <li><strong>Event RSVPs:</strong> Retained for 90 days following event completion for attendance analytics, then purged or anonymized.</li>
+                <li><strong>Contact & Prayer Submissions:</strong> Retained for active pastoral follow-up, or until you submit a deletion request.</li>
+            </ul>
+        </section>
+
+        <!-- 7. Your Legal Privacy Rights -->
+        <section class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                7. Your Privacy Rights (Right to be Forgotten & Deletion)
+            </h2>
+            <p>
+                Regardless of your geographic location, you enjoy full sovereignty over your personal data:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 space-y-1">
+                    <h3 class="font-bold text-studio-900 dark:text-white text-sm">Right to Access & Portability</h3>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400">Request a complete copy of any personal data we hold associated with your email address.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 space-y-1">
+                    <h3 class="font-bold text-studio-900 dark:text-white text-sm">Right to Erasure (Deletion)</h3>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400">Request immediate deletion of your email, phone, RSVPs, and prayer logs from all systems.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 space-y-1">
+                    <h3 class="font-bold text-studio-900 dark:text-white text-sm">Right to Rectification</h3>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400">Correct or update any inaccurate contact details in our records.</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-studio-800 border border-zinc-200 dark:border-white/10 space-y-1">
+                    <h3 class="font-bold text-studio-900 dark:text-white text-sm">Right to Withdraw Consent</h3>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400">Opt out of newsletters, reminders, or notifications with a single click at any time.</p>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <a href="/privacy/data-deletion" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all">
+                    <span>Submit a Data Deletion Request &rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 8. CAN-SPAM Email Policy -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                8. Email Communications & CAN-SPAM Compliance
+            </h2>
+            <p>
+                Every automated email broadcast sent by our ministry strictly conforms to the U.S. CAN-SPAM Act:
+            </p>
+            <ul class="list-disc pl-6 space-y-1 text-xs sm:text-sm">
+                <li>Truthful sender information (<code class="bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">EUC Young Adults &lt;info@eucmaryland.org&gt;</code>).</li>
+                <li>Non-deceptive, accurate subject lines.</li>
+                <li>Clear physical postal address of Emmanuel United Church of MD in the email footer.</li>
+                <li>A functional, instant 1-click unsubscribe link in every non-transactional email.</li>
+            </ul>
+        </section>
+
+        <!-- 9. Data Processing Agreements (DPA) -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                9. Data Processing Agreements (DPAs)
+            </h2>
+            <p>
+                To safeguard personal data transferred to our hosting and operational vendors, Emmanuel United Church of Maryland maintains binding Data Processing Agreements (DPAs) containing Standard Contractual Clauses (SCCs) with our cloud service providers, including:
+            </p>
+            <ul class="list-disc pl-6 space-y-1 text-xs sm:text-sm">
+                <li><strong>Google LLC (Google Cloud / Firebase):</strong> Compliant with EU Standard Contractual Clauses and ISO/IEC 27001, 27017, and 27018 certifications for cloud database storage and access controls.</li>
+                <li><strong>IONOS Inc.:</strong> Encrypted SMTP transmission agreement for automated ministry emails and password assistance.</li>
+            </ul>
+        </section>
+
+        <!-- 10. Data Security & 72-Hour Breach Procedure -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                10. Security Measures & Data Breach Response Protocol
+            </h2>
+            <p>
+                We employ comprehensive technical and organizational safeguards to protect your personal information, including 256-bit TLS/SSL encryption in transit, strict HTTP security headers (HSTS, Content Security Policy, Permissions Policy), bcrypt password hashing, and encrypted database stores.
+            </p>
+            <div class="p-5 rounded-2xl bg-zinc-50 dark:bg-studio-800/60 border border-zinc-200 dark:border-white/10 space-y-2 text-xs sm:text-sm">
+                <p class="font-bold text-studio-900 dark:text-white">Our 72-Hour Incident Notification Protocol:</p>
+                <p>
+                    In the unlikely event of a verified security incident or data breach compromising personal data:
+                </p>
+                <ul class="list-disc pl-5 space-y-1 text-xs">
+                    <li>Our security team will immediately isolate the vulnerability and initiate forensic mitigation within 24 hours.</li>
+                    <li>If the incident poses a risk to user rights and freedoms, we will notify affected individuals and applicable supervisory authorities (including the Maryland Attorney General's Office under the Maryland Personal Information Protection Act) within <strong>72 hours</strong> of confirmation.</li>
+                    <li>Notices will outline the nature of the breach, affected records, steps taken to mitigate harm, and protective measures recommended for users.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 11. Payments & Subscriptions (Zero Recurring Charges) -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                11. Payments, Subscriptions & Recurring Charges
+            </h2>
+            <p>
+                Our digital platform does <strong>not</strong> sell subscriptions, software licenses, or recurring memberships. We do not store credit card numbers on our servers. All community events are 100% free of charge. Any voluntary charitable offerings made to the church are non-recurring, one-time contributions.
+            </p>
+        </section>
+
+        <!-- 12. Contact Us -->
+        <section class="space-y-3 border-t border-zinc-200 dark:border-white/10 pt-8">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                12. Contacting Our Privacy Officer
+            </h2>
+            <p>
+                For any questions regarding this Privacy Policy or our data handling practices, please write to:
+            </p>
+            <p class="text-xs sm:text-sm">
+                <strong>Emmanuel United Church of Maryland</strong><br>
+                Attn: Privacy & Data Protection<br>
+                914 Silver Spring Ave, Silver Spring, MD 20910<br>
+                Email: <a href="mailto:privacy@eucmaryland.org" class="text-blue-600 dark:text-blue-400 underline font-semibold">privacy@eucmaryland.org</a><br>
+                Phone: (301) 588-4422
+            </p>
+        </section>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
-import { SupportedLanguage, SUPPORTED_LANGUAGES, LanguageInfo } from './types';
-import { en } from './locales/en';
-import { am } from './locales/am';
-import { ti } from './locales/ti';
-import { om } from './locales/om';
+import type { Request, Response, NextFunction } from 'express';
+import { SUPPORTED_LANGUAGES } from './types.ts';
+import type { SupportedLanguage, LanguageInfo } from './types.ts';
+import { en } from './locales/en.ts';
+import { am } from './locales/am.ts';
+import { ti } from './locales/ti.ts';
+import { om } from './locales/om.ts';
 
-export * from './types';
-export * from '../context/LanguageContext';
+export * from './types.ts';
 
 export const translations: Record<SupportedLanguage, Record<string, string>> = {
   en,

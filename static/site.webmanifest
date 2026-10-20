@@ -1,0 +1,16 @@
+{
+  "name": "EUCMD Young Adults",
+  "short_name": "EUCMD YA",
+  "description": "Emmanuel United Church of Maryland Young Adults community platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#0075ff",
+  "icons": [
+    {
+      "src": "/static/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

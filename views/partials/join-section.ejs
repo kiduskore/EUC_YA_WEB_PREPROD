@@ -85,6 +85,22 @@
                         </label>
                         <textarea id="contact-notes" rows="4" placeholder="<%= typeof t !== 'undefined' ? t('contact.messagePlaceholder') : 'Share your note...' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl p-4 text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm resize-none hover:border-zinc-300 dark:hover:border-white/20"></textarea>
                     </div>
+
+                    <!-- Explicit Privacy & Age Consents (Anti-Dark Pattern, Unchecked by default) -->
+                    <div class="space-y-3 pt-1 text-left">
+                        <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" id="contact-consent" required class="mt-1 w-4 h-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500">
+                            <span class="text-xs text-zinc-600 dark:text-zinc-400 leading-normal">
+                                I consent to Emmanuel United Church of MD storing my contact details to reply to my inquiry in accordance with the <a href="/privacy" target="_blank" class="text-blue-600 dark:text-blue-400 underline font-medium">Privacy Policy</a>.
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" id="contact-age-consent" required class="mt-1 w-4 h-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500">
+                            <span class="text-xs text-zinc-600 dark:text-zinc-400 leading-normal">
+                                I confirm I am 18 years of age or older (or 13–17 with parental/guardian permission).
+                            </span>
+                        </label>
+                    </div>
                     
                     <div id="contact-success" class="hidden bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 rounded-xl p-4 text-sm font-medium flex items-center gap-3">
                         <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>

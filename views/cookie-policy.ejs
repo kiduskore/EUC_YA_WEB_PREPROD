@@ -1,0 +1,141 @@
+<%- include('partials/header') %>
+
+<main id="main-content" class="flex-grow pt-28 pb-20 px-6 lg:px-12 max-w-5xl mx-auto text-left">
+    <!-- Header Badge -->
+    <div class="mb-8">
+        <a href="/" class="inline-flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mb-4">
+            &larr; Back to Home
+        </a>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider mb-3">
+            Transparency & Consent
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-studio-900 dark:text-white tracking-tight mb-3">
+            Cookie Policy
+        </h1>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            Last Updated: October 20, 2026 &bull; Effective Immediately
+        </p>
+    </div>
+
+    <!-- Interactive Preference Trigger Box -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-zinc-100 dark:bg-studio-800/80 border border-zinc-200 dark:border-white/10 mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div>
+            <h2 class="text-base font-bold text-studio-900 dark:text-white mb-1">
+                Customize Your Cookie Preferences
+            </h2>
+            <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">
+                You can review, modify, or revoke your cookie consent settings at any time.
+            </p>
+        </div>
+        <button type="button" 
+                onclick="window.openCookieSettings && window.openCookieSettings()" 
+                class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm transition-all shadow-md shrink-0">
+            Open Cookie Settings
+        </button>
+    </div>
+
+    <div class="space-y-10 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
+        
+        <!-- 1. What are cookies -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                1. What Are Cookies?
+            </h2>
+            <p>
+                Cookies are small text files placed on your computer or mobile device when you visit websites. They help web applications remember your preferences, keep you logged into secure leader accounts, and protect against security threats like Cross-Site Request Forgery (CSRF).
+            </p>
+        </section>
+
+        <!-- 2. Audit of Cookies Used -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                2. Audit of Cookies Used on This Website
+            </h2>
+            <p>
+                Below is a full, transparent inventory of every cookie utilized by this application:
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm border-collapse border border-zinc-200 dark:border-white/10 rounded-xl overflow-hidden">
+                    <thead class="bg-zinc-100 dark:bg-studio-800 text-studio-900 dark:text-white font-bold">
+                        <tr>
+                            <th class="p-3 border border-zinc-200 dark:border-white/10">Cookie Name</th>
+                            <th class="p-3 border border-zinc-200 dark:border-white/10">Classification</th>
+                            <th class="p-3 border border-zinc-200 dark:border-white/10">Duration</th>
+                            <th class="p-3 border border-zinc-200 dark:border-white/10">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-white/10">
+                        <tr>
+                            <td class="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">connect.sid</td>
+                            <td class="p-3 font-semibold text-zinc-900 dark:text-white">Strictly Necessary</td>
+                            <td class="p-3">Session / 24 Hours</td>
+                            <td class="p-3">Maintains authenticated session state for ministry leaders. Secure &amp; HttpOnly.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">csrf_token</td>
+                            <td class="p-3 font-semibold text-zinc-900 dark:text-white">Strictly Necessary</td>
+                            <td class="p-3">Session</td>
+                            <td class="p-3">Protects forms against Cross-Site Request Forgery (CSRF) cyber attacks.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">lang</td>
+                            <td class="p-3 font-semibold text-zinc-900 dark:text-white">Functional</td>
+                            <td class="p-3">365 Days</td>
+                            <td class="p-3">Remembers your preferred language selection (English, አማርኛ, ትግርኛ, Afaan Oromoo).</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">cookie_consent</td>
+                            <td class="p-3 font-semibold text-zinc-900 dark:text-white">Functional</td>
+                            <td class="p-3">180 Days</td>
+                            <td class="p-3">Records your cookie preferences so you do not see the banner on every visit.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. Third-Party Trackers & SDKs -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                3. Third-Party Marketing Trackers & Ad Pixels
+            </h2>
+            <div class="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-emerald-950 dark:text-emerald-200 text-xs sm:text-sm">
+                <strong>No Commercial Advertising or Tracking Pixels:</strong> We do not deploy Meta Pixel (Facebook), Google AdSense, TikTok Pixel, or any third-party behavioral profiling scripts. We do not sell ad impressions or monetize visitor traffic.
+            </div>
+        </section>
+
+        <!-- 4. How to Manage in Browser -->
+        <section class="space-y-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                4. Managing Cookies in Your Browser
+            </h2>
+            <p>
+                In addition to our on-site settings, you can manage or block cookies through your web browser preferences:
+            </p>
+            <ul class="list-disc pl-6 space-y-1 text-xs sm:text-sm">
+                <li><strong>Chrome:</strong> Settings &gt; Privacy and security &gt; Third-party cookies</li>
+                <li><strong>Safari:</strong> Settings &gt; Safari &gt; Advanced &gt; Block all cookies</li>
+                <li><strong>Firefox:</strong> Options &gt; Privacy &amp; Security &gt; Cookies and Site Data</li>
+                <li><strong>Edge:</strong> Settings &gt; Cookies and site permissions</li>
+            </ul>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                <em>Note:</em> Disabling strictly necessary cookies (<code class="bg-zinc-200 dark:bg-zinc-800 px-1 rounded">connect.sid</code> or <code class="bg-zinc-200 dark:bg-zinc-800 px-1 rounded">csrf_token</code>) will prevent secure leader login and form submissions.
+            </p>
+        </section>
+
+        <!-- 5. Contact Details -->
+        <section class="space-y-3 border-t border-zinc-200 dark:border-white/10 pt-8">
+            <h2 class="text-xl sm:text-2xl font-bold text-studio-900 dark:text-white tracking-tight">
+                5. Questions About Our Cookie Usage
+            </h2>
+            <p class="text-xs sm:text-sm">
+                <strong>Emmanuel United Church of Maryland</strong><br>
+                Email: <a href="mailto:privacy@eucmaryland.org" class="text-blue-600 dark:text-blue-400 underline font-semibold">privacy@eucmaryland.org</a><br>
+                Address: 914 Silver Spring Ave, Silver Spring, MD 20910
+            </p>
+        </section>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

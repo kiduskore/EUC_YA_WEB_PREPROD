@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<main id="main-content" class="flex-grow pt-32 pb-24 px-6 lg:px-12 max-w-4xl mx-auto text-center flex flex-col items-center justify-center min-h-[70vh]">
+    <div class="space-y-6 max-w-xl">
+        <!-- 404 Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider">
+            <span>404</span> &bull; <span>Page Not Found</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-black text-studio-900 dark:text-white tracking-tight">
+            Lost Your Way?
+        </h1>
+
+        <p class="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            The page you are looking for may have been moved, renamed, or is temporarily unavailable. 
+        </p>
+
+        <!-- Scripture Reflection -->
+        <div class="p-5 rounded-2xl bg-zinc-100 dark:bg-studio-800/60 border border-zinc-200 dark:border-white/5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 italic">
+            "Your word is a lamp to my feet and a light to my path." &mdash; <span class="font-semibold text-zinc-800 dark:text-zinc-200">Psalm 119:105</span>
+        </div>
+
+        <!-- Navigation CTAs -->
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="/" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-sm shadow-md transition-all">
+                &larr; Return to Homepage
+            </a>
+            <a href="/events" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-zinc-100 dark:bg-studio-800 hover:bg-zinc-200 dark:hover:bg-studio-700 active:scale-95 text-zinc-900 dark:text-white font-bold text-sm transition-all border border-zinc-200 dark:border-white/10">
+                Upcoming Events & RSVP
+            </a>
+            <a href="/#resources" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-zinc-100 dark:bg-studio-800 hover:bg-zinc-200 dark:hover:bg-studio-700 active:scale-95 text-zinc-900 dark:text-white font-bold text-sm transition-all border border-zinc-200 dark:border-white/10">
+                Discipleship Resources
+            </a>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/footer') %>
