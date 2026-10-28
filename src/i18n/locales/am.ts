@@ -29,8 +29,9 @@ export const am = {
   // Hero Section
   'hero.tag': 'የኢዩሲ ሜሪላንድ ወጣቶች',
   'hero.followInstagram': 'በኢንስታግራም ይከተሉን →',
-  'hero.titleLine1': 'በጥልቀት ማደግ።',
-  'hero.titleLine2': 'በስፋት መድረስ።',
+  'hero.titleLine1': '“በፊቱ የተሰበሰቡ፣',
+  'hero.titleLine2': 'ለዓላማው የተሰናዱ።”',
+  'hero.scripture': 'የሐዋርያት ሥራ 1:14 · 1:8',
   'hero.subtitle': 'እኛ በሜሪላንድ ውስጥ ኢየሱስን ለማወቅ፣ አማኞችን ለማስታጠቅ እና ደቀ መዛሙርትን ለማብቃት የተነሳን የደቀ መዝሙርነት ወጣቶች ሕብረት ነን።',
   'hero.joinGroup': 'የሕብረት ቡድንን ተቀላቀል',
   'hero.freeResources': 'ነፃ የትምህርት መርጃዎች',

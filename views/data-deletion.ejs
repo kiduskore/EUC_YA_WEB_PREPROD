@@ -130,7 +130,7 @@ async function submitDataDeletion(e) {
             successBox.classList.remove('hidden');
             receiptEl.textContent = data.receiptId || ('ERASURE-' + Math.random().toString(36).substring(2, 9).toUpperCase());
         } else {
-            errorBox.textContent = data.error || 'Failed to submit request. Please try again or email privacy@eucmaryland.org';
+            errorBox.textContent = data.error || 'Failed to submit request. Please try again or email info@eucmaryland.org';
             errorBox.classList.remove('hidden');
             btn.disabled = false;
             btn.textContent = 'Submit Erasure Request';

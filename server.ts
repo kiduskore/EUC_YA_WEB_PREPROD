@@ -348,13 +348,13 @@ const SEARCH_DATABASE = [
     keywords: ["giving", "generosity", "tithing", "stewardship", "finances", "money", "offering", "tithe", "charity"] 
   },
   { 
-    title: "Revive Us Again (Psalm 85:6) • Coming Soon", 
+    title: "Knowing God (Psalm 85:6-7) • Coming Soon", 
     category: "events", 
     pillar: "Special Event", 
-    desc: "Upcoming Maryland & DMV Young Adults Gathering for spiritual awakening, prayer, and revival.", 
+    desc: "Upcoming Maryland & DMV Young Adults Gathering for spiritual awakening, knowing God, prayer, and revival.", 
     url: "/#coming-soon-event", 
     icon: "✨",
-    keywords: ["revive", "event", "gathering", "psalm 85", "awakening", "prayer night", "retreat", "conference", "maryland", "special"] 
+    keywords: ["knowing god", "event", "gathering", "psalm 85", "awakening", "prayer night", "retreat", "conference", "maryland", "special", "worship"] 
   },
   { 
     title: "Tuesday Night Young Adult Gathering & Prayer", 
@@ -695,7 +695,7 @@ app.post('/api/privacy/delete-request', (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error('Data erasure error:', err);
-    return res.status(500).json({ error: 'Failed to process data deletion request. Please contact privacy@eucmaryland.org' });
+    return res.status(500).json({ error: 'Failed to process data deletion request. Please contact info@eucmaryland.org' });
   }
 });
 
@@ -1229,7 +1229,7 @@ app.post(['/api/newsletter/subscribe', '/api/members/subscribe', '/api/subscribe
         const transporter = getTransporter();
         const senderFrom = process.env.SMTP_USER 
           ? `"EUC Young Adults" <${process.env.SMTP_USER}>` 
-          : '"EUC Young Adults" <newsletter@eucmaryland.org>';
+          : '"EUC Young Adults" <info@eucmaryland.org>';
 
         const welcomeHtml = `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
@@ -1286,7 +1286,7 @@ app.post(['/api/newsletter/subscribe', '/api/members/subscribe', '/api/subscribe
 
             <div style="background-color: #f8fafc; padding: 20px 30px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b; line-height: 1.5;">
               <p style="margin: 0 0 4px; font-weight: 700; color: #334155;">Emmanuel United Church of Maryland &bull; Young Adults Ministry</p>
-              <p style="margin: 0 0 4px;">914 Silver Spring Ave, Silver Spring, MD 20910 &bull; Phone: (301) 588-4422</p>
+              <p style="margin: 0 0 4px;">914 Silver Spring Ave, Silver Spring, MD 20910 &bull; Phone: (202) 760-1096</p>
               <p style="margin: 0 0 8px;">Sunday Service: 10:30 AM at 12604 New Hampshire Ave, Silver Spring, MD 20904</p>
               <p style="margin: 0; font-size: 11px;">You received this email because you subscribed on our website. <a href="${baseUrl}/unsubscribe?email=${encodeURIComponent(cleanEmail)}" style="color: #0075ff; text-decoration: underline;">Click here to unsubscribe with 1-click</a> or reply to this email.</p>
             </div>
@@ -1393,7 +1393,7 @@ app.post('/api/newsletter/send-update', requireAuth, async (req: Request, res: R
 
         <div style="background-color: #f8fafc; padding: 18px 28px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 11px; color: #64748b; line-height: 1.5;">
           <p style="margin: 0 0 4px; font-weight: 700; color: #334155;">Emmanuel United Church of Maryland &bull; Young Adults Ministry</p>
-          <p style="margin: 0 0 4px;">914 Silver Spring Ave, Silver Spring, MD 20910 &bull; Phone: (301) 588-4422</p>
+          <p style="margin: 0 0 4px;">914 Silver Spring Ave, Silver Spring, MD 20910 &bull; Phone: (202) 760-1096</p>
           <p style="margin: 0;">You received this update because you are subscribed to the EUCMD Young Adults newsletter. <a href="${baseUrl}/unsubscribe" style="color: #0075ff; text-decoration: underline;">Unsubscribe with 1-click</a></p>
         </div>
       </div>

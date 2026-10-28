@@ -1,22 +1,22 @@
 <% if (typeof currentPath === 'undefined' || (!currentPath.startsWith('/dashboard') && !currentPath.startsWith('/login') && !currentPath.startsWith('/member-form'))) { %>
-<!-- Sticky Mobile Quick Action Bar (WCAG 2.1 accessible, mobile-only) -->
-<aside aria-label="Quick Actions" class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-studio-900/95 backdrop-blur-lg border-t border-zinc-200 dark:border-white/10 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 safe-area-inset-bottom">
+<!-- Sticky Mobile Quick Action Bar (Warm Stone Editorial Design) -->
+<aside aria-label="Quick Actions" class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-stone-50/95 dark:bg-stone-950/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-800 px-4 py-2.5 shadow-[0_-4px_20px_rgba(28,25,23,0.06)] flex items-center justify-between gap-3 safe-area-inset-bottom">
     <div class="flex flex-col text-left">
-        <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Tuesday Gathering
+        <span class="text-[10px] font-semibold text-warm-ochre dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            Tuesday Night Gathering
         </span>
-        <span class="text-xs font-black text-zinc-900 dark:text-white">
-            7:00 PM EST &bull; Silver Spring
+        <span class="text-xs font-semibold text-stone-900 dark:text-stone-100">
+            7:30 PM · 914 Silver Spring Ave
         </span>
     </div>
     <div class="flex items-center gap-2">
-        <a href="/events" class="px-3.5 py-2 rounded-xl bg-zinc-100 dark:bg-studio-800 text-zinc-800 dark:text-zinc-200 text-xs font-bold border border-zinc-200 dark:border-white/10 active:scale-95 transition-all">
-            Events
+        <a href="/#weekly-gathering" class="px-3 py-2 rounded-lg bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 text-xs font-semibold border border-stone-300 dark:border-stone-700 shadow-subtle active:scale-95 transition-all">
+            Schedule
         </a>
-        <a href="/#join" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md active:scale-95 transition-all flex items-center gap-1">
+        <a href="/#join" class="px-3.5 py-2 rounded-lg bg-stone-900 text-stone-50 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 text-xs font-semibold shadow-subtle active:scale-95 transition-all flex items-center gap-1">
             <span>Connect</span>
-            <span>&rarr;</span>
+            <span aria-hidden="true">&rarr;</span>
         </a>
     </div>
 </aside>

@@ -29,8 +29,9 @@ export const om = {
   // Hero Section
   'hero.tag': 'Dargaggoota EUCMD',
   'hero.followInstagram': 'Instagram irratti nu hordofaa →',
-  'hero.titleLine1': 'Gad Fageenyaan Guddisuu.',
-  'hero.titleLine2': 'Bal\'inaan Dhaqqabuu.',
+  'hero.titleLine1': '“Fuula Isaa Duratti Walitti Qabamanii,',
+  'hero.titleLine2': 'Kaayyoo Isaatiif Humna Argatan.”',
+  'hero.scripture': 'Hojii Ergamootaa 1:14 · 1:8',
   'hero.subtitle': 'Nuti hawaasa dargaggoota Meeriilaand keessatti Yesuusin beekuu, amantoota qopheessuu fi bartoota cimsuuf kutannoo qabnudha.',
   'hero.joinGroup': 'Garee Xiqqaatti Dabalami',
   'hero.freeResources': 'Qabeenya Bilisaa',

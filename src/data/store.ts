@@ -197,12 +197,46 @@ export interface NewsletterBroadcast {
   sent_at: string;
 }
 
+export interface DepartmentLeader {
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  notes?: string;
+}
+
+export interface DepartmentTask {
+  id: string;
+  title: string;
+  assignedTo: string;
+  dueDate: string;
+  completed: boolean;
+}
+
+export interface Department {
+  id: string;
+  number: number;
+  name: string;
+  shortName: string;
+  schedule: string;
+  location: string;
+  accentColor: string;
+  leader: DepartmentLeader;
+  assistant1: DepartmentLeader;
+  assistant2: DepartmentLeader;
+  responsibilities: string[];
+  tasks: DepartmentTask[];
+  notes?: string;
+  updatedAt?: string;
+}
+
 class InMemoryStore {
   users: User[] = [];
   roles: Role[] = [];
   permissions: Permission[] = [];
   rolePermissions: RolePermission[] = [];
   inviteCodes: InviteCode[] = [];
+  departments: Department[] = [];
   members: Member[] = [];
   pods: Pod[] = [];
   podMembers: PodMember[] = [];
@@ -542,6 +576,456 @@ class InMemoryStore {
         created_at: '2026-09-01',
       },
     ];
+
+    this.initDefaultDepartments();
+    this.initOfficialDnaPods();
+  }
+
+  initOfficialDnaPods() {
+    const rawRosters = [
+      {
+        id: 1,
+        name: 'DNA Pod 1',
+        primaryLeads: ['Bercy', 'Kal'],
+        members: ['Bercy', 'Kal', 'Dibora', 'Dula', 'Kaleb', 'Kana', 'Abigiya']
+      },
+      {
+        id: 2,
+        name: 'DNA Pod 2',
+        primaryLeads: ['Biniyam', 'Fiker'],
+        members: ['Biniyam', 'Fiker', 'Tsion', 'Josh', 'Meeraf']
+      },
+      {
+        id: 3,
+        name: 'DNA Pod 3',
+        primaryLeads: ['Gedi', 'Nahom'],
+        members: ['Gedi', 'Nahom', 'Ruth', 'Zetseat', 'Miki']
+      },
+      {
+        id: 4,
+        name: 'DNA Pod 4',
+        primaryLeads: ['Ela', 'Kidus'],
+        members: ['Ela', 'Kidus', 'Yezich', 'Eden', 'Miki', 'Regan']
+      }
+    ];
+
+    if (!this.nextIds) this.nextIds = {} as any;
+    let memberIdCounter = 101;
+    this.members = [];
+    this.pods = [];
+    this.podMembers = [];
+
+    rawRosters.forEach((podData) => {
+      const podId = podData.id;
+      let leaderMemberId: number | null = null;
+
+      podData.members.forEach((memberName) => {
+        const isLeader = podData.primaryLeads.includes(memberName);
+        const memberEmail = `${memberName.toLowerCase().replace(/[^a-z0-9]/g, '')}@eucmaryland.org`;
+        const memberId = memberIdCounter++;
+
+        if (isLeader && leaderMemberId === null) {
+          leaderMemberId = memberId;
+        }
+
+        this.members.push({
+          id: memberId,
+          name: memberName,
+          email: memberEmail,
+          phone: '(202) 760-1096',
+          join_date: '2026-01-15',
+          role: isLeader ? 'leader' : 'member',
+          spiritual_stage: isLeader ? 'leading' : 'saved',
+          pod_id: podId,
+          pod_name: podData.name,
+          pod: podData.name,
+          is_active: true,
+          created_at: '2026-01-15T00:00:00Z',
+          city: 'Silver Spring, MD',
+          life_stage: 'Young Adult',
+          interests: ['Bible Study', 'Community', 'Discipleship'],
+          notes: `${podData.name} member`
+        });
+
+        this.podMembers.push({
+          pod_id: podId,
+          member_id: memberId,
+          joined_at: '2026-01-15T00:00:00Z'
+        });
+      });
+
+      this.pods.push({
+        id: podId,
+        name: podData.name,
+        leader_id: leaderMemberId,
+        created_at: '2026-01-15T00:00:00Z'
+      });
+    });
+
+    this.nextIds.members = memberIdCounter;
+    this.nextIds.pods = 5;
+  }
+
+  initDefaultDepartments() {
+    this.departments = [
+      {
+        id: 'bible_study',
+        number: 1,
+        name: 'Bible Study — Tuesday',
+        shortName: 'Bible Study',
+        schedule: 'Every Tuesday at 7:00 PM',
+        location: '914 Silver Spring Ave, Suite 204B, Silver Spring, MD',
+        accentColor: 'from-blue-600 to-indigo-600',
+        leader: {
+          name: 'Kidus Kore',
+          email: 'leader@euc.org',
+          phone: '(202) 760-1096',
+          role: 'Department Leader',
+          notes: 'Leading Tuesday interactive Scripture studies and discipleship discussion.'
+        },
+        assistant1: {
+          name: 'Yonas Haile',
+          email: 'yonas.h@eucmaryland.org',
+          phone: '(240) 412-8819',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Curating discussion questions and small group materials.'
+        },
+        assistant2: {
+          name: 'Betelhem Tefera',
+          email: 'betelhem.t@eucmaryland.org',
+          phone: '(301) 674-9921',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Tracking upcoming sessions and sharing study notes with members.'
+        },
+        responsibilities: [
+          'Prepare weekly Bible study topics and Scripture passages.',
+          'Coordinate discussion questions and study materials.',
+          'Track upcoming sessions and share study notes.'
+        ],
+        tasks: [
+          { id: 'bs-1', title: 'Prepare Tuesday study guide for Acts 2:42-47', assignedTo: 'Kidus Kore', dueDate: 'Every Monday', completed: true },
+          { id: 'bs-2', title: 'Send discussion questions to DNA Pod leaders', assignedTo: 'Yonas Haile', dueDate: 'Every Tuesday 12 PM', completed: false },
+          { id: 'bs-3', title: 'Publish study notes & summary to Young Adult Hub', assignedTo: 'Betelhem Tefera', dueDate: 'Every Wednesday', completed: false }
+        ],
+        notes: 'Meets every Tuesday for prayer, fellowship, and verse-by-verse inductive study.',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'event_organizing',
+        number: 2,
+        name: 'Event Organizing',
+        shortName: 'Event Organizing',
+        schedule: 'Monthly Fellowships & Seasonal Retreats',
+        location: 'DMV Area & Fellowship Hall',
+        accentColor: 'from-emerald-600 to-teal-600',
+        leader: {
+          name: 'Selamawit Bekele',
+          email: 'selam.b@eucmaryland.org',
+          phone: '(202) 819-3342',
+          role: 'Department Leader',
+          notes: 'Managing overall event strategy, community retreats, and vision nights.'
+        },
+        assistant1: {
+          name: 'Daniel Mengistu',
+          email: 'daniel.m@eucmaryland.org',
+          phone: '(240) 581-2204',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Logistics, event budgeting, supplies purchasing, and equipment setup.'
+        },
+        assistant2: {
+          name: 'Ruth Tadesse',
+          email: 'ruth.t@eucmaryland.org',
+          phone: '(301) 902-1145',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Volunteer team scheduling and day-of event checklists.'
+        },
+        responsibilities: [
+          'Plan fellowships, retreats, outreach, and special gatherings.',
+          'Manage budgets, logistics, supplies, and event timelines.',
+          'Assign event tasks and coordinate volunteers.'
+        ],
+        tasks: [
+          { id: 'eo-1', title: 'Finalize logistics & venue checklist for upcoming fellowship', assignedTo: 'Selamawit Bekele', dueDate: '2026-10-25', completed: true },
+          { id: 'eo-2', title: 'Manage catering budget & supply purchases', assignedTo: 'Daniel Mengistu', dueDate: '2026-10-28', completed: false },
+          { id: 'eo-3', title: 'Assign setup, tear-down, and hospitality volunteer shifts', assignedTo: 'Ruth Tadesse', dueDate: '2026-10-30', completed: false }
+        ],
+        notes: 'Coordinates all external fellowships, city outreach days, and the annual fall retreat.',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'media',
+        number: 3,
+        name: 'Media',
+        shortName: 'Media & Creative',
+        schedule: 'Weekly Gatherings & Digital Channels',
+        location: 'Media Booth & Creative Lab',
+        accentColor: 'from-purple-600 to-pink-600',
+        leader: {
+          name: 'Dawit Alemu',
+          email: 'dawit.a@eucmaryland.org',
+          phone: '(240) 771-4490',
+          role: 'Department Leader',
+          notes: 'Overseeing live event capture, high-quality video recaps, and sound.'
+        },
+        assistant1: {
+          name: 'Hanna Girma',
+          email: 'hanna.g@eucmaryland.org',
+          phone: '(202) 438-6623',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Social media graphics, promotional flyers, and weekly announcement slides.'
+        },
+        assistant2: {
+          name: 'Nahom Berhanu',
+          email: 'nahom.b@eucmaryland.org',
+          phone: '(301) 829-4501',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Permission and consent verification before publishing photos/videos.'
+        },
+        responsibilities: [
+          'Manage photography, video, graphics, and announcements.',
+          'Prepare media for ministry events and social channels.',
+          'Confirm permissions before publishing identifiable photos or videos.'
+        ],
+        tasks: [
+          { id: 'med-1', title: 'Curate highlight photos and recaps from Tuesday gathering', assignedTo: 'Dawit Alemu', dueDate: 'Every Wednesday', completed: true },
+          { id: 'med-2', title: 'Design weekly Instagram carousel announcements', assignedTo: 'Hanna Girma', dueDate: 'Every Thursday', completed: false },
+          { id: 'med-3', title: 'Audit media releases and privacy permissions for attendees', assignedTo: 'Nahom Berhanu', dueDate: 'Ongoing', completed: false }
+        ],
+        notes: 'Maintains EUCMD visual excellence across Instagram, web presence, and Sunday announcements.',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'teaching',
+        number: 4,
+        name: 'Teaching',
+        shortName: 'Teaching & Equipping',
+        schedule: 'Bi-Weekly Seminars & Sunday Classes',
+        location: 'Main Sanctuary & Online Classroom',
+        accentColor: 'from-amber-600 to-orange-600',
+        leader: {
+          name: 'Pastor Samuel Gebre',
+          email: 'samuel.g@eucmaryland.org',
+          phone: '(240) 650-7712',
+          role: 'Department Leader',
+          notes: 'Guiding teaching standards, theological framework, and guest speakers.'
+        },
+        assistant1: {
+          name: 'Michael Assefa',
+          email: 'michael.a@eucmaryland.org',
+          phone: '(202) 991-5520',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Speaker hospitality, sermon presentation slides, and curriculum materials.'
+        },
+        assistant2: {
+          name: 'Lydia Worku',
+          email: 'lydia.w@eucmaryland.org',
+          phone: '(301) 714-8833',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Liaison with Bible Study leaders to ensure coordinated teaching roadmaps.'
+        },
+        responsibilities: [
+          'Coordinate teaching sessions and learning resources.',
+          'Support speakers and prepare lesson materials.',
+          'Work with Bible Study to keep teaching plans aligned.'
+        ],
+        tasks: [
+          { id: 'tch-1', title: 'Review upcoming 6-week Foundations of Faith curriculum', assignedTo: 'Pastor Samuel Gebre', dueDate: '2026-11-01', completed: false },
+          { id: 'tch-2', title: 'Compile study handout packets for guest speaker', assignedTo: 'Michael Assefa', dueDate: '2026-10-27', completed: true },
+          { id: 'tch-3', title: 'Sync with Bible Study team on Tuesday doctrinal topics', assignedTo: 'Lydia Worku', dueDate: 'Monthly 1st Mon', completed: false }
+        ],
+        notes: 'Works hand-in-hand with pastoral leadership to ground young adults in sound biblical truth.',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'worship',
+        number: 5,
+        name: 'Worship',
+        shortName: 'Worship & Music',
+        schedule: 'Thursdays Rehearsal 7:30 PM & Weekend Services',
+        location: 'Sanctuary Stage & Music Room',
+        accentColor: 'from-rose-600 to-red-600',
+        leader: {
+          name: 'Eden Tesfaye',
+          email: 'eden.t@eucmaryland.org',
+          phone: '(240) 882-9901',
+          role: 'Department Leader',
+          notes: 'Overseeing worship culture, spiritual preparation, and weekly song selections.'
+        },
+        assistant1: {
+          name: 'Abel Solomon',
+          email: 'abel.s@eucmaryland.org',
+          phone: '(202) 760-1096',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Instrumental arrangements, vocal harmonies, and rehearsal coaching.'
+        },
+        assistant2: {
+          name: 'Meron Kebede',
+          email: 'meron.k@eucmaryland.org',
+          phone: '(301) 512-6634',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Vocal rotation rosters, schedule notices, and audio tech handoffs.'
+        },
+        responsibilities: [
+          'Prepare worship sets and song lists.',
+          'Coordinate singers, musicians, and rehearsals.',
+          'Share schedules and technical requirements with Media.'
+        ],
+        tasks: [
+          { id: 'wor-1', title: 'Curate 4-song acoustic worship set for Tuesday gathering', assignedTo: 'Eden Tesfaye', dueDate: 'Every Tuesday', completed: true },
+          { id: 'wor-2', title: 'Lead acoustic guitar & keyboard sound check', assignedTo: 'Abel Solomon', dueDate: 'Every Tuesday 6:15 PM', completed: false },
+          { id: 'wor-3', title: 'Submit song lyrics and chord charts to Media booth', assignedTo: 'Meron Kebede', dueDate: 'Every Monday 5 PM', completed: false }
+        ],
+        notes: 'Creating an atmosphere where young adults passionately encounter Jesus in worship.',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'prayer',
+        number: 6,
+        name: 'Prayer',
+        shortName: 'Prayer & Intercession',
+        schedule: 'Every Saturday 6:30 AM & Pre-Service Prayer',
+        location: 'Prayer Chapel & Virtual Prayer Line',
+        accentColor: 'from-cyan-600 to-blue-600',
+        leader: {
+          name: 'Rahel Wolde',
+          email: 'rahel.w@eucmaryland.org',
+          phone: '(202) 664-8821',
+          role: 'Department Leader',
+          notes: 'Intercessory prayer leadership, fasting periods, and monthly prayer vigils.'
+        },
+        assistant1: {
+          name: 'Bereket Tilahun',
+          email: 'bereket.t@eucmaryland.org',
+          phone: '(240) 339-1178',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Distributing prayer guides and organizing small group prayer stations.'
+        },
+        assistant2: {
+          name: 'Martha Desta',
+          email: 'martha.d@eucmaryland.org',
+          phone: '(301) 402-9980',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Strict confidentiality management for private member prayer requests.'
+        },
+        responsibilities: [
+          'Coordinate prayer meetings and prayer schedules.',
+          'Share prayer points and organize group prayer sessions.',
+          'Handle sensitive prayer requests with appropriate privacy.'
+        ],
+        tasks: [
+          { id: 'pry-1', title: 'Host weekly Saturday morning dawn prayer on Zoom', assignedTo: 'Rahel Wolde', dueDate: 'Every Saturday 6:30 AM', completed: true },
+          { id: 'pry-2', title: 'Compile and distribute monthly ministry prayer guide', assignedTo: 'Bereket Tilahun', dueDate: '1st of month', completed: false },
+          { id: 'pry-3', title: 'Review incoming confidential prayer wall requests privately', assignedTo: 'Martha Desta', dueDate: 'Daily', completed: false }
+        ],
+        notes: 'Covering our pastors, leaders, small groups, and young adults in continuous prayer.',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'welcoming_followup',
+        number: 7,
+        name: 'Welcoming & Follow-Up',
+        shortName: 'Welcoming & Follow-Up',
+        schedule: 'Every Tuesday & Sunday Gatherings',
+        location: 'Welcome Desk & Foyer Greeting Area',
+        accentColor: 'from-violet-600 to-purple-600',
+        leader: {
+          name: 'Yohannes Fikre',
+          email: 'yohannes.f@eucmaryland.org',
+          phone: '(240) 554-7721',
+          role: 'Department Leader',
+          notes: 'First impressions team, greeter training, and guest welcome package.'
+        },
+        assistant1: {
+          name: 'Feven Belay',
+          email: 'feven.b@eucmaryland.org',
+          phone: '(202) 831-4419',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Personal follow-up texts, phone calls, and welcome email greetings.'
+        },
+        assistant2: {
+          name: 'Caleb Zewdu',
+          email: 'caleb.z@eucmaryland.org',
+          phone: '(301) 918-3350',
+          role: 'Supportive Leader (Assistant)',
+          notes: 'Guest contact preference records and warm handoff to DNA Pods.'
+        },
+        responsibilities: [
+          'Welcome new attendees and help them feel included.',
+          'Coordinate follow-up messages and invitations.',
+          'Track contact preferences and follow up respectfully.'
+        ],
+        tasks: [
+          { id: 'wlc-1', title: 'Welcome table setup and guest gift bags preparation', assignedTo: 'Yohannes Fikre', dueDate: 'Every Tuesday 6:30 PM', completed: true },
+          { id: 'wlc-2', title: 'Send warm welcome text to all first-time visitors', assignedTo: 'Feven Belay', dueDate: 'Within 24-48 hrs', completed: false },
+          { id: 'wlc-3', title: 'Sync visitor cards into pipeline and verify contact preferences', assignedTo: 'Caleb Zewdu', dueDate: 'Every Thursday', completed: false }
+        ],
+        notes: 'Ensuring every person who walks through our doors feels welcomed, loved, and valued.',
+        updatedAt: new Date().toISOString()
+      }
+    ];
+  }
+
+  getDepartments(): Department[] {
+    if (!this.departments || this.departments.length === 0) {
+      this.initDefaultDepartments();
+    }
+    return this.departments;
+  }
+
+  getDepartment(id: string): Department | undefined {
+    return this.getDepartments().find((d) => d.id === id);
+  }
+
+  updateDepartment(id: string, updates: Partial<Department>): Department | null {
+    const dept = this.getDepartment(id);
+    if (!dept) return null;
+    if (updates.name) dept.name = updates.name;
+    if (updates.schedule) dept.schedule = updates.schedule;
+    if (updates.location) dept.location = updates.location;
+    if (updates.leader) dept.leader = { ...dept.leader, ...updates.leader };
+    if (updates.assistant1) dept.assistant1 = { ...dept.assistant1, ...updates.assistant1 };
+    if (updates.assistant2) dept.assistant2 = { ...dept.assistant2, ...updates.assistant2 };
+    if (updates.responsibilities && Array.isArray(updates.responsibilities)) {
+      dept.responsibilities = updates.responsibilities;
+    }
+    if (updates.notes !== undefined) dept.notes = updates.notes;
+    dept.updatedAt = new Date().toISOString();
+    return dept;
+  }
+
+  addDepartmentTask(deptId: string, task: Omit<DepartmentTask, 'id'>): DepartmentTask | null {
+    const dept = this.getDepartment(deptId);
+    if (!dept) return null;
+    const newTask: DepartmentTask = {
+      id: `task-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      title: task.title,
+      assignedTo: task.assignedTo || dept.leader.name,
+      dueDate: task.dueDate || 'This Week',
+      completed: !!task.completed,
+    };
+    if (!dept.tasks) dept.tasks = [];
+    dept.tasks.push(newTask);
+    dept.updatedAt = new Date().toISOString();
+    return newTask;
+  }
+
+  updateDepartmentTask(deptId: string, taskId: string, updates: Partial<DepartmentTask>): boolean {
+    const dept = this.getDepartment(deptId);
+    if (!dept || !dept.tasks) return false;
+    const t = dept.tasks.find((x) => x.id === taskId);
+    if (!t) return false;
+    Object.assign(t, updates);
+    dept.updatedAt = new Date().toISOString();
+    return true;
+  }
+
+  deleteDepartmentTask(deptId: string, taskId: string): boolean {
+    const dept = this.getDepartment(deptId);
+    if (!dept || !dept.tasks) return false;
+    const initialLen = dept.tasks.length;
+    dept.tasks = dept.tasks.filter((x) => x.id !== taskId);
+    dept.updatedAt = new Date().toISOString();
+    return dept.tasks.length < initialLen;
   }
 
   // Helpers
@@ -1216,6 +1700,7 @@ const saveToDB = async () => {
       resetTokens: rawStore.resetTokens,
       events: rawStore.events,
       eventRsvps: rawStore.eventRsvps,
+      departments: rawStore.departments,
       nextIds: rawStore.nextIds
     };
 
@@ -1252,13 +1737,16 @@ const initDb = () => {
       if (!rawStore.resetTokens) rawStore.resetTokens = [];
       if (!rawStore.subscribers) rawStore.subscribers = [];
       if (!rawStore.newsletterBroadcasts) rawStore.newsletterBroadcasts = [];
+      if (!rawStore.departments || rawStore.departments.length === 0) {
+        rawStore.initDefaultDepartments();
+      }
       if (!rawStore.nextIds) rawStore.nextIds = {} as any;
       if (!rawStore.nextIds.subscribers) rawStore.nextIds.subscribers = (rawStore.subscribers.length + 1) || 1;
       if (!rawStore.nextIds.broadcasts) rawStore.nextIds.broadcasts = (rawStore.newsletterBroadcasts.length + 1) || 1;
       console.log('[Local FS] Restored state from data.json');
 
       // Purge old demo mock members and test script artifacts
-      if (rawStore.members && rawStore.members.some(m => m.name === 'Force Save' || m.name === 'Migrate Trigger' || m.id <= 13 || m.name === 'Kidus Teshome')) {
+      if (rawStore.members && rawStore.members.some(m => m.name === 'Force Save' || m.name === 'Migrate Trigger')) {
         rawStore.members = [];
         rawStore.podMembers = [];
         if (rawStore.pods) {
@@ -1285,6 +1773,13 @@ const initDb = () => {
           rawStore.nextIds.weeklyPlans = 1;
         }
         console.log('[Store] Cleared starter DNA pods and mock plans.');
+        saveToDB();
+      }
+
+      // Ensure official DNA Pods and member rosters exist
+      if (!rawStore.pods || rawStore.pods.length === 0 || !rawStore.members || rawStore.members.length === 0) {
+        rawStore.initOfficialDnaPods();
+        console.log('[Store] Initialized 4 official DNA Pods and member rosters.');
         saveToDB();
       }
 

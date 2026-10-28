@@ -28,8 +28,9 @@ export const en = {
   // Hero Section
   'hero.tag': 'EUCMD Young Adults',
   'hero.followInstagram': 'Follow us on Instagram →',
-  'hero.titleLine1': 'Growing Deep.',
-  'hero.titleLine2': 'Reaching Wide.',
+  'hero.titleLine1': '“Gathered in His Presence,',
+  'hero.titleLine2': 'Empowered for His Purpose.”',
+  'hero.scripture': 'Acts 1:14 · Acts 1:8',
   'hero.subtitle': 'We are a community of young adults in Maryland passionate about encountering Jesus, equipping believers, and empowering disciples.',
   'hero.joinGroup': 'Join a Small Group',
   'hero.freeResources': 'Free Resources',

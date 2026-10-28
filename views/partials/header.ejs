@@ -1,13 +1,38 @@
 <!DOCTYPE html>
 <html lang="<%= typeof lang !== 'undefined' ? lang : 'en' %>" dir="ltr">
 <head>
+    <script>
+        // Suppress and isolate third-party browser extension errors (e.g. MetaMask, external web3 wallets)
+        (function() {
+            function isExtError(msg, src, err) {
+                var str = (msg || '') + ' ' + (src || '') + ' ' + (err && (err.message || err.stack) || '');
+                return /nkbihfbeogaeaoehlefnkodbefgpgknn|chrome-extension:\/\/|moz-extension:\/\/|safari-extension:\/\/|MetaMask|Failed to connect to MetaMask|window\.ethereum/i.test(str);
+            }
+            window.addEventListener('unhandledrejection', function(event) {
+                var reason = event.reason;
+                var reasonText = (reason && (reason.message || reason.stack || String(reason))) || '';
+                if (isExtError(reasonText, '', reason)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+            window.addEventListener('error', function(event) {
+                if (isExtError(event.message, event.filename, event.error)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     
     <!-- Primary SEO Metadata -->
     <title><%= typeof metaTitle !== 'undefined' ? metaTitle : 'EUCMD Young Adults | Christian Church Community in Maryland' %></title>
     <meta name="description" content="<%= typeof metaDesc !== 'undefined' ? metaDesc : 'Emmanuel United Church of Maryland Young Adults community. Growing deep in faith, leadership, weekly small groups, discipleship, and spiritual renewal across the DMV.' %>">
-    <meta name="keywords" content="young adult church maryland, dmv christian young adults, christian small groups maryland, revive us again conference, silver spring church young adults, eucmd young adults">
+    <meta name="keywords" content="young adult church maryland, dmv christian young adults, christian small groups maryland, knowing god conference, silver spring church young adults, eucmd young adults">
     <meta name="author" content="Emmanuel United Church of Maryland">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     
@@ -87,9 +112,9 @@
         },
         {
           "@type": "Event",
-          "@id": "https://ya.eucmaryland.org/#event-revive-us-again",
-          "name": "Revive Us Again — EUCMD Young Adults Regional Gathering",
-          "description": "A holy gathering for young adults across Maryland seeking spiritual renewal, deep worship, and an encounter with the living God based on Psalm 85:6.",
+          "@id": "https://ya.eucmaryland.org/#event-knowing-god",
+          "name": "Knowing God — EUCMD Young Adults Regional Gathering",
+          "description": "A holy gathering for young adults across Maryland seeking spiritual renewal, deep worship, and an encounter with the living God based on Psalm 85:6-7.",
           "eventStatus": "https://schema.org/EventScheduled",
           "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
           "location": {
@@ -140,31 +165,43 @@
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', '"Noto Sans Ethiopic"', 'system-ui', '-apple-system', 'sans-serif'],
                         ethiopic: ['"Noto Sans Ethiopic"', '"Plus Jakarta Sans"', 'sans-serif'],
-                        display: ['"Cinzel"', '"Playfair Display"', 'Georgia', 'serif'],
+                        display: ['"Cormorant Garamond"', '"Playfair Display"', 'Georgia', 'serif'],
                         serif: ['"Cormorant Garamond"', '"Playfair Display"', 'Georgia', 'serif'],
-                        brush: ['"Playfair Display"', 'Georgia', 'serif']
+                        cinzel: ['"Cinzel"', 'serif'],
                     },
                     colors: {
-                        brandDark: '#F4F4F5', // zinc-100
-                        cardDark: '#FFFFFF',
-                        accent: '#000000',
-                        accent2: '#52525B', // zinc-600
-                        success: '#000000',
+                        stone: {
+                            50: '#FAF8F5',
+                            100: '#F4EFE6',
+                            200: '#E8E1D5',
+                            300: '#D5CBB9',
+                            400: '#B0A28B',
+                            500: '#8C7C63',
+                            600: '#6E604B',
+                            700: '#524736',
+                            800: '#383023',
+                            900: '#211C14',
+                            950: '#14110C'
+                        },
+                        warm: {
+                            bronze: '#9E6738',
+                            ochre: '#B65C2B',
+                            forest: '#324030',
+                            sand: '#F7F4EE'
+                        },
                         studio: {
-                            900: '#09090b', // zinc-950
-                            800: '#18181b', // zinc-900
-                            700: '#27272a', // zinc-800
-                            100: '#f4f4f5',
-                            50: '#fafafa'
+                            900: '#15120E', // warm dark stone
+                            800: '#1F1B16',
+                            700: '#2E2820',
+                            100: '#F4EFE6',
+                            50: '#FAF8F5'  // warm stone background
                         }
                     },
                     boxShadow: {
-                        'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.1)',
-                        'premium-dark': '0 20px 40px -10px rgba(0, 0, 0, 0.4)',
-                        'glow': '0 0 20px rgba(0, 117, 255, 0.15)'
-                    },
-                    transitionTimingFunction: {
-                        'butter': 'cubic-bezier(0.19, 1, 0.22, 1)'
+                        'subtle': '0 1px 3px 0 rgba(28, 25, 23, 0.04), 0 1px 2px -1px rgba(28, 25, 23, 0.04)',
+                        'editorial': '0 10px 30px -10px rgba(28, 25, 23, 0.08), 0 4px 6px -2px rgba(28, 25, 23, 0.03)',
+                        'editorial-dark': '0 20px 40px -15px rgba(0, 0, 0, 0.6)',
+                        'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.06)'
                     }
                 }
             }
@@ -284,66 +321,67 @@
         }
         
         .macos-nav {
-            background-color: rgba(255, 255, 255, 0.6) !important;
+            background-color: rgba(255, 255, 255, 0.8) !important;
             backdrop-filter: blur(24px) saturate(180%) !important;
             -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+        }
+
+        html.dark .macos-nav {
+            background-color: rgba(21, 18, 14, 0.85) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
         
         .macos-card {
-            background-color: rgba(255, 255, 255, 0.6) !important;
-            backdrop-filter: blur(16px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.4) !important;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05) !important;
+            background-color: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
             border-radius: 1.5rem;
             overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html.dark .macos-card {
+            background-color: #1F1B16 !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        html.dark .macos-glass {
+            background-color: rgba(31, 27, 22, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
         }
     
         html.dark body {
-            background-color: #09090b; /* Zinc 950 */
-            color: #f4f4f5; /* Zinc 100 */
+            background-color: #14110C; /* Rich dark stone */
+            color: #F4EFE6; /* Warm stone text */
         }
         
-        html.dark .macos-glass {
-            background-color: rgba(24, 24, 27, 0.5) !important; /* Zinc 900 with opacity */
-            backdrop-filter: blur(24px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+        .editorial-rule {
+            height: 1px;
+            background-color: #E8E1D5;
+        }
+        html.dark .editorial-rule {
+            background-color: #2E2820;
         }
         
-        html.dark .macos-nav {
-            background-color: rgba(9, 9, 11, 0.65) !important; /* Zinc 950 */
-            backdrop-filter: blur(24px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
-        
-        html.dark .macos-card {
-            background-color: rgba(24, 24, 27, 0.4) !important; /* Zinc 900 */
-            backdrop-filter: blur(16px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5) !important;
-        }
-
         /* Reading Progress Bar */
         #progress-bar {
             position: fixed;
             top: 0;
             left: 0;
-            height: 4px;
-            background: linear-gradient(to right, #0075ff, #10b981);
+            height: 3px;
+            background: linear-gradient(to right, #9E6738, #B65C2B);
             width: 0%;
             z-index: 9999;
             transition: width 0.1s ease;
         }
     </style>
 </head>
-<body class="bg-studio-50 dark:bg-studio-900 text-zinc-900 dark:text-zinc-100 overflow-x-hidden min-h-screen flex flex-col">
+<body class="bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 overflow-x-hidden min-h-screen flex flex-col font-sans selection:bg-stone-200 dark:selection:bg-stone-800">
     <!-- Accessible Skip to Main Content Link (WCAG 2.1 AA) -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2.5 focus:bg-blue-600 focus:text-white focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white font-bold text-xs">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2.5 focus:bg-stone-900 focus:text-white focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-stone-400 font-bold text-xs">
         Skip to main content
     </a>
 

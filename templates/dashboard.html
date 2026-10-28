@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        // Suppress and isolate third-party browser extension errors (e.g. MetaMask, external web3 wallets)
+        (function() {
+            function isExtError(msg, src, err) {
+                var str = (msg || '') + ' ' + (src || '') + ' ' + (err && (err.message || err.stack) || '');
+                return /nkbihfbeogaeaoehlefnkodbefgpgknn|chrome-extension:\/\/|moz-extension:\/\/|safari-extension:\/\/|MetaMask|Failed to connect to MetaMask|window\.ethereum/i.test(str);
+            }
+            window.addEventListener('unhandledrejection', function(event) {
+                var reason = event.reason;
+                var reasonText = (reason && (reason.message || reason.stack || String(reason))) || '';
+                if (isExtError(reasonText, '', reason)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+            window.addEventListener('error', function(event) {
+                if (isExtError(event.message, event.filename, event.error)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+        })();
+    </script>
     <meta name="description" content="Dashboard and leader tools for EUCMD Young Adults.">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:;">
     <meta charset="UTF-8">
@@ -123,11 +148,15 @@
             </div>
             
             <!-- Top YA Menu -->
-            <div class="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
-                <button @click="currentView = 'ya_hub'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_hub' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">YA Hub</button>
-                <button @click="currentView = 'ya_groups'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_groups' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Groups</button>
-                <button @click="currentView = 'ya_toolkit'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_toolkit' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Toolkit</button>
-                <button @click="currentView = 'ya_reflections'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_reflections' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Reflections</button>
+            <div class="hidden lg:flex items-center gap-5 xl:gap-7 absolute left-1/2 -translate-x-1/2">
+                <button @click="currentView = 'ya_hub'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_hub' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">YA Hub</button>
+                <button @click="currentView = 'ya_groups'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_groups' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Groups</button>
+                <button @click="currentView = 'ya_toolkit'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_toolkit' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Toolkit</button>
+                <button @click="currentView = 'ya_reflections'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_reflections' ? 'text-blue-500' : 'text-slate-400 hover:text-white'">Reflections</button>
+                <button @click="currentView = 'upper_room'" class="text-sm font-bold transition-colors whitespace-nowrap flex items-center gap-1.5" :class="currentView === 'upper_room' ? 'text-amber-400 font-extrabold' : 'text-slate-400 hover:text-white'">
+                    <span>Upper Room</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Core</span>
+                </button>
             </div>
             <div class="flex items-center gap-4">
                 <div class="relative">
@@ -1159,7 +1188,7 @@
             <h3 class="text-xl font-bold mb-3">Need Support?</h3>
             <p class="text-slate-400 mb-6 max-w-lg mx-auto">Ministry is a team effort. If you need guidance, prayer, or resources, reach out to our pastoral team. Also, don't forget you can use the Leader Dashboard to manage your DNA Pod!</p>
             <div class="flex items-center justify-center gap-4">
-                <a href="mailto:pastor@eucmaryland.org" class="bg-white text-black px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">Contact Leadership</a>
+                <a href="mailto:info@eucmaryland.org" class="bg-white text-black px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">Contact Leadership</a>
                 <a href="/dashboard" class="bg-transparent border border-slate-700 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">Open Dashboard</a>
             </div>
         </div>

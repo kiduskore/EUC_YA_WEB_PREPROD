@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        // Suppress and isolate third-party browser extension errors (e.g. MetaMask, external web3 wallets)
+        (function() {
+            function isExtError(msg, src, err) {
+                var str = (msg || '') + ' ' + (src || '') + ' ' + (err && (err.message || err.stack) || '');
+                return /nkbihfbeogaeaoehlefnkodbefgpgknn|chrome-extension:\/\/|moz-extension:\/\/|safari-extension:\/\/|MetaMask|Failed to connect to MetaMask|window\.ethereum/i.test(str);
+            }
+            window.addEventListener('unhandledrejection', function(event) {
+                var reason = event.reason;
+                var reasonText = (reason && (reason.message || reason.stack || String(reason))) || '';
+                if (isExtError(reasonText, '', reason)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+            window.addEventListener('error', function(event) {
+                if (isExtError(event.message, event.filename, event.error)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EUCMD Young Adults - Redesign V2</title>
@@ -70,9 +95,10 @@
                 <div class="inline-flex items-center justify-center mb-6 tag-pill">
                     Foundation
                 </div>
-                <h1 class="font-heading font-black text-5xl md:text-7xl tracking-tight text-white mb-6 leading-[1.1]">
-                    Growing Deep.<br/>Reaching Wide.
+                <h1 class="font-heading font-black text-3xl md:text-5xl tracking-tight text-white mb-4 leading-[1.15]">
+                    “Gathered in His Presence,<br/>Empowered for His Purpose.”
                 </h1>
+                <p class="text-xs uppercase tracking-widest font-bold text-accent mb-6">Acts 1:14 · Acts 1:8</p>
                 <p class="text-lg text-slate-200 mb-10 max-w-xl mx-auto leading-relaxed">
                     A vibrant community of young adults seeking to build a resilient faith, discover purpose, and impact the world.
                 </p>

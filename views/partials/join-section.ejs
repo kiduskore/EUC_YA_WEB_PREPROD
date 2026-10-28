@@ -1,114 +1,135 @@
-    <section id="join" class="py-24 relative overflow-hidden bg-studio-50 dark:bg-studio-900 border-t border-zinc-200 dark:border-white/5">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div class="gsap-fade-up">
-                <span class="text-accent2 dark:text-zinc-400 font-bold tracking-[0.15em] uppercase text-xs mb-4 block">
-                    <%= typeof t !== 'undefined' ? t('connect.tag') : 'Connect With Us' %>
-                </span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 tracking-tight text-studio-900 dark:text-white">
-                    <%= typeof t !== 'undefined' ? t('connect.title') : 'Weekly Gatherings & Life Groups' %>
-                </h2>
-                <p class="text-zinc-600 dark:text-zinc-400 mb-8 text-lg leading-relaxed">
-                    <%= typeof t !== 'undefined' ? t('contact.subtitle') : 'Whether you are visiting for the first time, looking for a life group, or seeking prayer, reach out to us below.' %>
-                </p>
+    <section id="join" class="py-20 sm:py-28 relative overflow-hidden bg-stone-100/60 dark:bg-stone-900/40 border-t border-stone-200/80 dark:border-stone-850">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+            
+            <!-- Left Info Column -->
+            <div class="lg:col-span-5 space-y-8">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 block mb-2">
+                        <%= typeof t !== 'undefined' ? t('connect.tag') : 'Connect With Us' %>
+                    </span>
+                    <h2 class="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-stone-900 dark:text-stone-100 leading-tight mb-4">
+                        We would love to welcome you.
+                    </h2>
+                    <p class="text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
+                        Whether you are visiting for the first time, looking for a life pod in your neighborhood, or have questions about faith in Christ, reach out to our team.
+                    </p>
+                </div>
                 
-                <div class="space-y-4 mb-8">
-                    <div class="macos-card p-6 rounded-2xl border-l-4 border-l-blue-600 dark:bg-studio-800">
-                        <h3 class="font-bold text-gray-900 dark:text-white text-base mb-1 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-[#0075ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            <%= typeof t !== 'undefined' ? t('connect.location.title') : 'Emmanuel United Church of MD' %>
+                <div class="space-y-4">
+                    <!-- Tuesday Gathering Box -->
+                    <div class="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-subtle">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-warm-ochre dark:text-amber-400 block mb-1">Weekly Young Adults Gathering</span>
+                        <h3 class="font-serif font-bold text-stone-900 dark:text-stone-100 text-lg mb-1">
+                            Tuesday Nights at 7:30 PM
                         </h3>
-                        <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-line"><%= typeof t !== 'undefined' ? t('connect.location.desc') : 'Sunday Service, @10:30AM\n12604 New Hampshire Ave, Silver Spring, MD 20904\nCell: +12407162246' %></p>
+                        <p class="text-stone-600 dark:text-stone-400 text-xs sm:text-sm leading-relaxed mb-3">
+                            914 Silver Spring Ave, Suite 204B, Silver Spring, MD 20910.<br/>
+                            Followed by fellowship, tea, coffee, and prayer circles.
+                        </p>
+                        <a href="https://maps.google.com/?q=914+Silver+Spring+Ave+204B,+Silver+Spring,+MD+20910" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-900 dark:text-stone-200 hover:text-warm-ochre dark:hover:text-amber-400 transition-colors">
+                            <span>Get Directions (Google Maps)</span>
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
                     </div>
 
-                    <div class="macos-card p-6 rounded-2xl border-l-4 border-l-purple-500">
-                        <h3 class="font-bold text-gray-900 dark:text-white text-base mb-1 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <%= typeof t !== 'undefined' ? t('connect.schedule.title') : 'Gathering Times' %>
+                    <!-- Sunday Church Service Box -->
+                    <div class="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-subtle">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-stone-500 block mb-1">Sunday Worship with EUC Church Family</span>
+                        <h3 class="font-serif font-bold text-stone-900 dark:text-stone-100 text-lg mb-1">
+                            Sundays at 10:30 AM
                         </h3>
-                        <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-line"><%= typeof t !== 'undefined' ? t('connect.schedule.desc') : 'Every Tuesday at 7:00 PM EST\nFollowed by fellowship & prayer\n914 Silver Spring Ave 204B Silver Spring, MD 20910' %></p>
-                        <a href="https://maps.google.com/?q=914+Silver+Spring+Ave+204B,+Silver+Spring,+MD+20910" target="_blank" class="inline-flex items-center gap-1.5 mt-3 text-xs font-bold text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            <span>Get Directions (Google Maps) &rarr;</span>
+                        <p class="text-stone-600 dark:text-stone-400 text-xs sm:text-sm leading-relaxed mb-3">
+                            Emmanuel United Church of Maryland<br/>
+                            12604 New Hampshire Ave, Silver Spring, MD 20904
+                        </p>
+                        <a href="https://eucmaryland.org" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-900 dark:text-stone-200 hover:text-warm-ochre dark:hover:text-amber-400 transition-colors">
+                            <span>Visit Church Website (eucmaryland.org)</span>
+                            <span aria-hidden="true">&nearr;</span>
                         </a>
                     </div>
                 </div>
             </div>
 
             <!-- Contact Form Card -->
-            <div id="contact" class="macos-card p-8 lg:p-10 dark:bg-studio-800 border-zinc-200 dark:border-white/5 shadow-xl gsap-fade-up">
-                <h3 class="text-2xl font-bold tracking-tight text-studio-900 dark:text-white mb-2">
-                    <%= typeof t !== 'undefined' ? t('contact.tag') : 'Send A Message' %>
-                </h3>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-8">
-                    <%= typeof t !== 'undefined' ? t('contact.subtitle') : 'Share your info and we will connect with you.' %>
-                </p>
+            <div id="contact" class="lg:col-span-7 bg-white dark:bg-stone-900 p-8 sm:p-10 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-editorial dark:shadow-editorial-dark">
+                <div class="mb-6">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-warm-ochre dark:text-amber-400 block mb-1">
+                        Direct Inquiry
+                    </span>
+                    <h3 class="text-2xl font-serif font-bold tracking-tight text-stone-900 dark:text-stone-100">
+                        <%= typeof t !== 'undefined' ? t('contact.tag') : 'Send a Note to Our Leadership' %>
+                    </h3>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                        <%= typeof t !== 'undefined' ? t('contact.subtitle') : 'Share your details and one of our pastors or life pod leaders will personally connect with you.' %>
+                    </p>
+                </div>
 
-                <form id="contact-form" class="space-y-6">
+                <form id="contact-form" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                        <label class="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5 tracking-wider uppercase">
                             <%= typeof t !== 'undefined' ? t('contact.nameLabel') : 'YOUR FULL NAME' %>
                         </label>
-                        <input type="text" id="contact-name" required placeholder="<%= typeof t !== 'undefined' ? t('contact.namePlaceholder') : 'Full Name' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20">
+                        <input type="text" id="contact-name" required placeholder="<%= typeof t !== 'undefined' ? t('contact.namePlaceholder') : 'Full Name' %>" class="w-full bg-stone-50 dark:bg-stone-800/60 border border-stone-300 dark:border-stone-700 rounded-xl px-4 py-3 text-stone-900 dark:text-white placeholder-stone-400 text-xs sm:text-sm focus:outline-none focus:border-stone-900 dark:focus:border-stone-100 transition-colors">
                     </div>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                            <label class="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5 tracking-wider uppercase">
                                 <%= typeof t !== 'undefined' ? t('contact.emailLabel') : 'EMAIL ADDRESS' %>
                             </label>
-                            <input type="email" id="contact-email" required placeholder="<%= typeof t !== 'undefined' ? t('contact.emailPlaceholder') : 'Email' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20">
+                            <input type="email" id="contact-email" required placeholder="<%= typeof t !== 'undefined' ? t('contact.emailPlaceholder') : 'name@example.com' %>" class="w-full bg-stone-50 dark:bg-stone-800/60 border border-stone-300 dark:border-stone-700 rounded-xl px-4 py-3 text-stone-900 dark:text-white placeholder-stone-400 text-xs sm:text-sm focus:outline-none focus:border-stone-900 dark:focus:border-stone-100 transition-colors">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                            <label class="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5 tracking-wider uppercase">
                                 <%= typeof t !== 'undefined' ? t('contact.phoneLabel') : 'PHONE NUMBER' %>
                             </label>
-                            <input type="tel" id="contact-phone" placeholder="<%= typeof t !== 'undefined' ? t('contact.phonePlaceholder') : 'Phone' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20">
+                            <input type="tel" id="contact-phone" placeholder="<%= typeof t !== 'undefined' ? t('contact.phonePlaceholder') : '(301) 555-0199' %>" class="w-full bg-stone-50 dark:bg-stone-800/60 border border-stone-300 dark:border-stone-700 rounded-xl px-4 py-3 text-stone-900 dark:text-white placeholder-stone-400 text-xs sm:text-sm focus:outline-none focus:border-stone-900 dark:focus:border-stone-100 transition-colors">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
-                            <%= typeof t !== 'undefined' ? t('contact.interestLabel') : 'WHAT ARE YOU INTERESTED IN?' %>
+                        <label class="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5 tracking-wider uppercase">
+                            <%= typeof t !== 'undefined' ? t('contact.interestLabel') : 'HOW CAN WE HELP YOU?' %>
                         </label>
-                        <select id="contact-interest" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl px-4 min-h-[52px] text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm hover:border-zinc-300 dark:hover:border-white/20 appearance-none">
+                        <select id="contact-interest" class="w-full bg-stone-50 dark:bg-stone-800/60 border border-stone-300 dark:border-stone-700 rounded-xl px-4 py-3 text-stone-900 dark:text-white text-xs sm:text-sm focus:outline-none focus:border-stone-900 dark:focus:border-stone-100 transition-colors">
                             <option value="gathering"><%= typeof t !== 'undefined' ? t('contact.interest.gathering') : 'Attending a Tuesday Gathering' %></option>
-                            <option value="smallgroup"><%= typeof t !== 'undefined' ? t('contact.interest.smallgroup') : 'Joining a Small Group' %></option>
+                            <option value="smallgroup"><%= typeof t !== 'undefined' ? t('contact.interest.smallgroup') : 'Joining a Small Group Life Pod' %></option>
                             <option value="serving"><%= typeof t !== 'undefined' ? t('contact.interest.serving') : 'Serving Opportunities' %></option>
                             <option value="prayer"><%= typeof t !== 'undefined' ? t('contact.interest.prayer') : 'Prayer Request' %></option>
-                            <option value="other"><%= typeof t !== 'undefined' ? t('contact.interest.other') : 'General Inquiry' %></option>
+                            <option value="other"><%= typeof t !== 'undefined' ? t('contact.interest.other') : 'General Question' %></option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-400 mb-2.5 tracking-widest uppercase">
+                        <label class="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5 tracking-wider uppercase">
                             <%= typeof t !== 'undefined' ? t('contact.messageLabel') : 'YOUR MESSAGE' %>
                         </label>
-                        <textarea id="contact-notes" rows="4" placeholder="<%= typeof t !== 'undefined' ? t('contact.messagePlaceholder') : 'Share your note...' %>" class="w-full bg-zinc-50 dark:bg-studio-900/50 border border-zinc-200 dark:border-white/10 rounded-xl p-4 text-studio-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-sm shadow-sm resize-none hover:border-zinc-300 dark:hover:border-white/20"></textarea>
+                        <textarea id="contact-notes" rows="3" placeholder="<%= typeof t !== 'undefined' ? t('contact.messagePlaceholder') : 'Tell us a bit about yourself or how we can pray for you...' %>" class="w-full bg-stone-50 dark:bg-stone-800/60 border border-stone-300 dark:border-stone-700 rounded-xl p-4 text-stone-900 dark:text-white placeholder-stone-400 text-xs sm:text-sm focus:outline-none focus:border-stone-900 dark:focus:border-stone-100 transition-colors resize-none"></textarea>
                     </div>
 
                     <!-- Explicit Privacy & Age Consents (Anti-Dark Pattern, Unchecked by default) -->
-                    <div class="space-y-3 pt-1 text-left">
+                    <div class="space-y-2 pt-2 text-left">
                         <label class="flex items-start gap-2.5 cursor-pointer select-none">
-                            <input type="checkbox" id="contact-consent" required class="mt-1 w-4 h-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500">
-                            <span class="text-xs text-zinc-600 dark:text-zinc-400 leading-normal">
-                                I consent to Emmanuel United Church of MD storing my contact details to reply to my inquiry in accordance with the <a href="/privacy" target="_blank" class="text-blue-600 dark:text-blue-400 underline font-medium">Privacy Policy</a>.
+                            <input type="checkbox" id="contact-consent" required class="mt-0.5 w-3.5 h-3.5 rounded border-stone-300 text-stone-900">
+                            <span class="text-xs text-stone-600 dark:text-stone-400 leading-normal">
+                                I consent to Emmanuel United Church of MD storing my contact details to reply to my inquiry in accordance with the <a href="/privacy" target="_blank" class="text-stone-900 dark:text-stone-200 underline font-medium">Privacy Policy</a>.
                             </span>
                         </label>
                         <label class="flex items-start gap-2.5 cursor-pointer select-none">
-                            <input type="checkbox" id="contact-age-consent" required class="mt-1 w-4 h-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500">
-                            <span class="text-xs text-zinc-600 dark:text-zinc-400 leading-normal">
+                            <input type="checkbox" id="contact-age-consent" required class="mt-0.5 w-3.5 h-3.5 rounded border-stone-300 text-stone-900">
+                            <span class="text-xs text-stone-600 dark:text-stone-400 leading-normal">
                                 I confirm I am 18 years of age or older (or 13–17 with parental/guardian permission).
                             </span>
                         </label>
                     </div>
                     
-                    <div id="contact-success" class="hidden bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 rounded-xl p-4 text-sm font-medium flex items-center gap-3">
-                        <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        <span><%= typeof t !== 'undefined' ? t('contact.success') : 'Thank you! We will reach out shortly.' %></span>
+                    <div id="contact-success" class="hidden bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 rounded-xl p-4 text-xs font-medium flex items-center gap-3">
+                        <span class="text-emerald-600 font-bold text-base">✓</span>
+                        <span><%= typeof t !== 'undefined' ? t('contact.success') : 'Thank you! Your message has been received. A ministry leader will connect with you shortly.' %></span>
                     </div>
 
-                    <button type="submit" id="contact-submit" class="w-full bg-studio-900 text-white dark:bg-white dark:text-studio-900 font-bold rounded-xl min-h-[56px] hover:bg-blue-600 dark:hover:bg-zinc-200 active:bg-blue-700 dark:active:bg-zinc-300 transition-all shadow-md text-sm tracking-wide touch-manipulation active:scale-[0.98]">
-                        <%= typeof t !== 'undefined' ? t('contact.submitBtn') : 'Send Message' %>
+                    <button type="submit" id="contact-submit" class="w-full bg-stone-900 text-stone-50 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white font-semibold rounded-xl min-h-[50px] transition-all shadow-subtle text-xs tracking-wide touch-manipulation active:scale-[0.98]">
+                        <%= typeof t !== 'undefined' ? t('contact.submitBtn') : 'Send Note & Connect' %> &rarr;
                     </button>
                 </form>
             </div>

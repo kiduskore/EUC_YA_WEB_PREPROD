@@ -29,8 +29,9 @@ export const ti = {
   // Hero Section
   'hero.tag': 'ናይ ኢዩሲ ሜሪላንድ መንእሰያት',
   'hero.followInstagram': 'ኣብ ኢንስታግራም ተኸተሉና →',
-  'hero.titleLine1': 'ብዕምቆት ምዕባይ።',
-  'hero.titleLine2': 'ብስፍሓት ምብጻሕ።',
+  'hero.titleLine1': '“ኣብ ቅድሚኡ ዝተኣከቡ፣',
+  'hero.titleLine2': 'ንዕላማኡ ሓይሊ ዝለበሱ።”',
+  'hero.scripture': 'ግብሪ ሃዋርያት 1:14 · 1:8',
   'hero.subtitle': 'ንሕና ኣብ ሜሪላንድ ንየሱስ ንምፍላጥ፣ ንኣመንቲ ንምዕጣቕን ንደቀ መዛሙርቲ ንምብቃዕን ዝተበገስና ናይ መንእሰያት ሕብረት ኢና።',
   'hero.joinGroup': 'ናይ ንኡስ ጉጅለ ሕብረት ተጸንበር',
   'hero.freeResources': 'ነጻ መጽናዕታዊ ጽሑፋት',

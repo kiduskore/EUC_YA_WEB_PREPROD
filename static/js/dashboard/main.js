@@ -128,7 +128,7 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             
             const getInitialView = () => {
                 const hash = (window.location.hash || '').replace('#', '').trim();
-                const validViews = ['overview', 'members', 'pods', 'planner', 'journey', 'training', 'invites', 'resources', 'ya_hub', 'ya_groups', 'ya_toolkit', 'ya_reflections'];
+                const validViews = ['overview', 'departments', 'members', 'pods', 'pipeline', 'events', 'planner', 'prayer', 'journey', 'training', 'resources', 'newsletter', 'invites', 'ya_hub', 'ya_groups', 'ya_toolkit', 'ya_reflections', 'upper_room'];
                 if (hash && validViews.includes(hash)) {
                     return hash;
                 }
@@ -138,7 +138,7 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             
             window.addEventListener('hashchange', () => {
                 const hash = (window.location.hash || '').replace('#', '').trim();
-                const validViews = ['overview', 'members', 'pods', 'planner', 'journey', 'training', 'invites', 'resources', 'ya_hub', 'ya_groups', 'ya_toolkit', 'ya_reflections'];
+                const validViews = ['overview', 'departments', 'members', 'pods', 'pipeline', 'events', 'planner', 'prayer', 'journey', 'training', 'resources', 'newsletter', 'invites', 'ya_hub', 'ya_groups', 'ya_toolkit', 'ya_reflections', 'upper_room'];
                 if (hash && validViews.includes(hash)) {
                     currentView.value = hash;
                 }
@@ -158,6 +158,8 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             const allNavItems = [
 
                 { id: 'overview', label: 'Overview', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>' },
+                { id: 'upper_room', label: 'Upper Room', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>' },
+                { id: 'departments', label: '7 Departments', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>' },
                 { id: 'members', label: 'Members', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>' },
                 { id: 'pods', label: 'DNA Pods', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>' },
                 { id: 'pipeline', label: 'Pipeline', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>' },
@@ -186,15 +188,39 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
                 const item = navItems.value.find(n => n.id === currentView.value);
                 if (item) return item.label;
                 const yaTitles = {
+                    'departments': 'Ministry Departments & Leadership Triads',
                     'ya_hub': 'Young Adult Hub',
                     'ya_groups': 'YA Small Groups',
                     'ya_toolkit': 'YA Leadership Toolkit',
-                    'ya_reflections': 'YA Reflections'
+                    'ya_reflections': 'YA Reflections',
+                    'upper_room': 'Upper Room Core Leaders'
                 };
                 return yaTitles[currentView.value] || 'Dashboard';
             });
 
             // STATE
+            const departments = ref([]);
+            const activeDeptFilter = ref('all');
+            const showEditDeptModal = ref(false);
+            const deptForm = ref({
+                id: '',
+                name: '',
+                schedule: '',
+                location: '',
+                leader: { name: '', email: '', phone: '', role: 'Department Leader', notes: '' },
+                assistant1: { name: '', email: '', phone: '', role: 'Supportive Leader / Assistant', notes: '' },
+                assistant2: { name: '', email: '', phone: '', role: 'Supportive Leader / Assistant', notes: '' },
+                responsibilities: [],
+                notes: ''
+            });
+            const showAddTaskModal = ref(false);
+            const deptTaskForm = ref({
+                deptId: '',
+                title: '',
+                assignedTo: '',
+                dueDate: ''
+            });
+            const deptStatusMsg = ref('');
             const stats = ref([]);
             const rawStats = ref({});
             const stageDistribution = ref([]);
@@ -218,7 +244,357 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
             const newcomerForm = ref({ name: '', phone: '', email: '', notes: '' });
             const journeyStages = ['new', 'saved', 'baptized', 'foundations', 'ready_to_lead', 'leading'];
 
-            // API HELPERS
+            // UPPER ROOM CORE LEADERS & SUCCESSION PROTOCOL
+            const defaultUpperRoomRoles = [
+                {
+                    id: 'discipleship',
+                    icon: '📖',
+                    title: 'Discipleship Lead',
+                    currentLead: 'Nahome',
+                    isTemp: false,
+                    leadLabel: 'Current Lead',
+                    coreResponsibilities: 'Facilitate the Tuesday Bible study, curate engaging study materials, foster deep spiritual growth, and cultivate an environment for open biblical discussion. You are responsible for ensuring attendees are growing in their faith and actively applying scriptural principles.',
+                    actionItem: 'Please identify a 2nd and 3rd lead to assist in leading group discussions, stepping in to teach when you are unavailable, and learning how to source and structure study content.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Focus on curriculum sourcing, discussion facilitation, and small group spiritual tracking.'
+                },
+                {
+                    id: 'events',
+                    icon: '📋',
+                    title: 'Event Coordinator',
+                    currentLead: 'Fikir',
+                    isTemp: false,
+                    leadLabel: 'Current Lead',
+                    coreResponsibilities: 'Plan, organize, and execute all ministry events from concept to completion. This includes managing logistics, coordinating venue setups, overseeing event budgets, and ensuring all gatherings run on schedule and align with the ministry\'s vision.',
+                    actionItem: 'Please identify a 2nd and 3rd lead to help manage day-of logistics, serve as the primary point of contact if you are absent, and master the event planning workflows.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Venue checklists, budget reconciliation, schedule oversight, and vendor coordination.'
+                },
+                {
+                    id: 'production',
+                    icon: '🎥',
+                    title: 'Production Lead',
+                    currentLead: 'Gedi & Kal',
+                    isTemp: false,
+                    leadLabel: 'Current Leads',
+                    coreResponsibilities: 'Oversee all audio, visual, and media operations during services and events. This includes managing live sound mixing, running presentation software, operating cameras, handling live streaming, and ensuring all technical equipment is maintained and properly configured.',
+                    actionItem: 'Please identify a 2nd and 3rd lead (or train up current volunteers) to assist with the tech booth, step in to run sound or media if either of you are absent, and document technical setups for seamless knowledge transfer.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Audio mixing guides, ProPresenter presets, cable labeling, and broadcast stream monitoring.'
+                },
+                {
+                    id: 'teaching',
+                    icon: '📚',
+                    title: 'Teaching Lead',
+                    currentLead: 'Biniam',
+                    isTemp: false,
+                    leadLabel: 'Current Lead',
+                    coreResponsibilities: 'Develop and deliver biblically sound, engaging, and relevant teaching series. You are responsible for maintaining theological accuracy, structuring sermon outlines, and effectively communicating the core message to the young adult community.',
+                    actionItem: 'Please identify a 2nd and 3rd lead who can be mentored in teaching, assist in outlining curriculums, and step in to deliver messages during your absence.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Sermon manuscript review, theological alignment, and preaching rotation mentorship.'
+                },
+                {
+                    id: 'worship',
+                    icon: '🎤',
+                    title: 'Worship Lead',
+                    currentLead: 'Ela',
+                    isTemp: false,
+                    leadLabel: 'Current Lead',
+                    coreResponsibilities: 'Plan worship setlists, lead band rehearsals, and guide the congregation in musical worship. You are responsible for scheduling musicians, ensuring musical excellence, and fostering a spiritually engaging worship environment.',
+                    actionItem: 'Please identify a 2nd and 3rd lead (such as a co-leader or musical director) to help lead rehearsals, cover worship sets when you are out, and learn how to manage the band schedule.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Setlist arrangements, chord charts, vocalist coaching, and rehearsal scheduling.'
+                },
+                {
+                    id: 'prayer',
+                    icon: '🙏',
+                    title: 'Prayer Coordinator',
+                    currentLead: 'Bersi',
+                    isTemp: false,
+                    leadLabel: 'Current Lead',
+                    coreResponsibilities: 'Organize and lead prayer meetings, manage incoming prayer requests, and cultivate a strong culture of intercession within the young adult group. You ensure that the ministry, its leaders, and its members are consistently covered in prayer.',
+                    actionItem: 'Please identify a 2nd and 3rd lead to assist in guiding corporate prayer, managing the distribution of prayer requests, and taking the lead on prayer initiatives when you are absent.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Intercessory calendar, prayer wall monitoring, and corporate prayer moderation.'
+                },
+                {
+                    id: 'guest_experience',
+                    icon: '🤝',
+                    title: 'Guest Experience Leads',
+                    currentLead: 'Kidus & Bersi',
+                    isTemp: true,
+                    leadLabel: 'Temp Current Leads',
+                    coreResponsibilities: 'Create a welcoming, hospitable environment for all attendees. This includes overseeing the greeting team, managing the follow-up process for first-time guests, and ensuring new members are successfully integrated into the community and small groups.',
+                    actionItem: 'Please identify a 2nd and 3rd lead to manage the greeting schedule, handle digital follow-up communications, and act as the primary hosts if both of you are unavailable.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Welcome desk schedule, newcomer follow-up workflows, and hospitality supplies.'
+                },
+                {
+                    id: 'operations',
+                    icon: '⚙️',
+                    title: 'Lead Operations Facilitator',
+                    currentLead: 'Kidus',
+                    isTemp: false,
+                    leadLabel: 'Current Lead',
+                    coreResponsibilities: 'Architect and manage the ministry\'s digital platform and operational workflows. You serve as the central hub for all teams, providing the technical tools, system infrastructure, and administrative support required for each department to achieve their goals efficiently.',
+                    actionItem: 'Identify and cross-train a 2nd and 3rd admin who can manage backend platform permissions, troubleshoot digital issues, and maintain operational continuity if you are away.',
+                    secondLead: '',
+                    thirdLead: '',
+                    notes: 'Admin access permissions, system failover protocols, and database maintenance.'
+                }
+            ];
+
+            const loadUpperRoomData = () => {
+                try {
+                    const saved = localStorage.getItem('euc_upper_room_roles');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        return defaultUpperRoomRoles.map(defaultRole => {
+                            const found = parsed.find(p => p.id === defaultRole.id);
+                            return found ? { ...defaultRole, ...found } : defaultRole;
+                        });
+                    }
+                } catch(e) {}
+                return JSON.parse(JSON.stringify(defaultUpperRoomRoles));
+            };
+
+            const upperRoomRoles = ref(loadUpperRoomData());
+            const upperRoomSearch = ref('');
+            const upperRoomSavedMsg = ref('');
+            const upperRoomRoleFilter = ref('all');
+
+            const filteredUpperRoomRoles = computed(() => {
+                let list = upperRoomRoles.value;
+                if (upperRoomRoleFilter.value !== 'all') {
+                    list = list.filter(r => r.id === upperRoomRoleFilter.value);
+                }
+                if (upperRoomSearch.value.trim()) {
+                    const q = upperRoomSearch.value.toLowerCase().trim();
+                    list = list.filter(r => 
+                        r.title.toLowerCase().includes(q) ||
+                        r.currentLead.toLowerCase().includes(q) ||
+                        (r.secondLead && r.secondLead.toLowerCase().includes(q)) ||
+                        (r.thirdLead && r.thirdLead.toLowerCase().includes(q)) ||
+                        r.coreResponsibilities.toLowerCase().includes(q)
+                    );
+                }
+                return list;
+            });
+
+            const saveUpperRoomSuccession = () => {
+                try {
+                    localStorage.setItem('euc_upper_room_roles', JSON.stringify(upperRoomRoles.value));
+                    upperRoomSavedMsg.value = '✓ Succession protocol nominations saved successfully!';
+                    setTimeout(() => { upperRoomSavedMsg.value = ''; }, 3500);
+                } catch(e) {
+                    alert('Could not save to local storage.');
+                }
+            };
+
+            const resetUpperRoomSuccession = async () => {
+                if (!(await customConfirm('Are you sure you want to reset all designated 2nd and 3rd leads to default state?'))) return;
+                upperRoomRoles.value = JSON.parse(JSON.stringify(defaultUpperRoomRoles));
+                localStorage.removeItem('euc_upper_room_roles');
+                upperRoomSavedMsg.value = 'Protocol data reset to default.';
+                setTimeout(() => { upperRoomSavedMsg.value = ''; }, 3000);
+            };
+
+            const copySuccessionSummary = () => {
+                const lines = [
+                    'UPPER ROOM CORE LEADERS · MINISTRY LEADERSHIP ROLES & SUCCESSION PROTOCOL',
+                    '========================================================================',
+                    'Requirement: Identify and train a 2nd and 3rd lead for every ministry.\n'
+                ];
+                upperRoomRoles.value.forEach(r => {
+                    lines.push(`• ${r.title} (${r.leadLabel}: ${r.currentLead})`);
+                    lines.push(`  2nd Lead: ${r.secondLead || '[Pending Designation]'}`);
+                    lines.push(`  3rd Lead: ${r.thirdLead || '[Pending Designation]'}`);
+                    if (r.notes) lines.push(`  Handover Focus: ${r.notes}`);
+                    lines.push('');
+                });
+                navigator.clipboard.writeText(lines.join('\n'));
+                upperRoomSavedMsg.value = '📋 Succession roster copied to clipboard!';
+                setTimeout(() => { upperRoomSavedMsg.value = ''; }, 3500);
+            };
+
+            // DNA PODS (SMALL GROUP DISCIPLESHIP) STATE & PROTOCOL
+            const defaultDnaPods = [
+                {
+                    id: 1,
+                    name: 'DNA Pod 1',
+                    primaryLeads: 'Bercy & Kal',
+                    primaryLeadNames: ['Bercy', 'Kal'],
+                    secondLead: '',
+                    secondLeadPhone: '',
+                    secondLeadEmail: '',
+                    members: ['Bercy', 'Kal', 'Dibora', 'Dula', 'Kaleb', 'Kana', 'Abigiya'],
+                    notes: 'Weekly Tuesday Bible study application and DMV fellowship.'
+                },
+                {
+                    id: 2,
+                    name: 'DNA Pod 2',
+                    primaryLeads: 'Biniyam & Fiker',
+                    primaryLeadNames: ['Biniyam', 'Fiker'],
+                    secondLead: '',
+                    secondLeadPhone: '',
+                    secondLeadEmail: '',
+                    members: ['Biniyam', 'Fiker', 'Tsion', 'Josh', 'Meeraf'],
+                    notes: 'Word study deeper discussions and intentional check-ins.'
+                },
+                {
+                    id: 3,
+                    name: 'DNA Pod 3',
+                    primaryLeads: 'Gedi & Nahom',
+                    primaryLeadNames: ['Gedi', 'Nahom'],
+                    secondLead: '',
+                    secondLeadPhone: '',
+                    secondLeadEmail: '',
+                    members: ['Gedi', 'Nahom', 'Ruth', 'Zetseat', 'Miki'],
+                    notes: 'Spiritual care, discussion facilitation, and leadership multiplication.'
+                },
+                {
+                    id: 4,
+                    name: 'DNA Pod 4',
+                    primaryLeads: 'Ela & Kidus',
+                    primaryLeadNames: ['Ela', 'Kidus'],
+                    secondLead: '',
+                    secondLeadPhone: '',
+                    secondLeadEmail: '',
+                    members: ['Ela', 'Kidus', 'Yezich', 'Eden', 'Miki', 'Regan'],
+                    notes: 'Community connection, welcoming newcomers, and prayer intercession.'
+                }
+            ];
+
+            const loadDnaPodsData = () => {
+                try {
+                    const saved = localStorage.getItem('euc_dna_pods_roster');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        return defaultDnaPods.map(defaultPod => {
+                            const found = parsed.find(p => p.id === defaultPod.id);
+                            return found ? { ...defaultPod, ...found } : defaultPod;
+                        });
+                    }
+                } catch(e) {}
+                return JSON.parse(JSON.stringify(defaultDnaPods));
+            };
+
+            const dnaPods = ref(loadDnaPodsData());
+            const dnaPodsSearch = ref('');
+            const dnaPodFilter = ref('all');
+            const dnaPodsSavedMsg = ref('');
+            const upperRoomActiveTab = ref('all'); // 'all' | 'ministries' | 'dna_pods'
+            const dnaPodLeaders = ['Bercy', 'Biniyam', 'Gedi', 'Ela', 'Kidus', 'Nahom', 'Fiker', 'Kal'];
+
+            const filteredDnaPods = computed(() => {
+                let list = dnaPods.value;
+                if (dnaPodFilter.value !== 'all') {
+                    list = list.filter(p => p.id === Number(dnaPodFilter.value));
+                }
+                if (dnaPodsSearch.value.trim()) {
+                    const q = dnaPodsSearch.value.toLowerCase().trim();
+                    list = list.filter(p =>
+                        p.name.toLowerCase().includes(q) ||
+                        p.primaryLeads.toLowerCase().includes(q) ||
+                        (p.secondLead && p.secondLead.toLowerCase().includes(q)) ||
+                        p.members.some(m => m.toLowerCase().includes(q)) ||
+                        (p.notes && p.notes.toLowerCase().includes(q))
+                    );
+                }
+                return list;
+            });
+
+            const saveDnaPodsNominations = () => {
+                try {
+                    localStorage.setItem('euc_dna_pods_roster', JSON.stringify(dnaPods.value));
+                    dnaPodsSavedMsg.value = '✓ DNA Pod Co-Facilitator nominations saved successfully!';
+                    setTimeout(() => { dnaPodsSavedMsg.value = ''; }, 3500);
+                } catch(e) {
+                    alert('Could not save to local storage.');
+                }
+            };
+
+            const resetDnaPodsNominations = async () => {
+                if (!(await customConfirm('Are you sure you want to reset all designated DNA Pod 2nd leads to default?'))) return;
+                dnaPods.value = JSON.parse(JSON.stringify(defaultDnaPods));
+                localStorage.removeItem('euc_dna_pods_roster');
+                dnaPodsSavedMsg.value = 'DNA Pod nominations reset to default.';
+                setTimeout(() => { dnaPodsSavedMsg.value = ''; }, 3000);
+            };
+
+            const copyDnaPodsRosters = () => {
+                const lines = [
+                    '🌱 DNA PODS (SMALL GROUP DISCIPLESHIP) · EUC YOUNG ADULTS',
+                    '========================================================',
+                    'Current Pod Leaders: Bercy, Biniyam, Gedi, Ela, Kidus, Nahom, Fiker, and Kal (serving as primary facilitators for their respective groups).\n',
+                    'Core Responsibilities: Facilitate consistent, tight-knit community and spiritual growth within your assigned group. You are responsible for regular check-ins, guiding discussions (applying the Tuesday Bible study and Sunday teachings), offering spiritual care, and ensuring every member feels known and supported. You are also tasked with nurturing your group toward healthy multiplication.\n',
+                    'Action Item: Every DNA Pod must identify a 2nd lead (Co-Facilitator) from within their group. This person will help coordinate meetups, track prayer requests, and step in to lead the pod discussions if the primary leader is absent. This ensures the pod\'s momentum continues without interruption and trains future leaders for when the pods multiply.\n',
+                    'CURRENT DNA POD ROSTERS:\n'
+                ];
+                dnaPods.value.forEach(p => {
+                    lines.push(`• ${p.name}`);
+                    lines.push(`  Primary Facilitators: ${p.primaryLeads}`);
+                    lines.push(`  2nd Lead (Co-Facilitator): ${p.secondLead || '[Pending Designation from within group]'}`);
+                    lines.push(`  Members (${p.members.length}): ${p.members.join(', ')}`);
+                    lines.push('');
+                });
+                navigator.clipboard.writeText(lines.join('\n'));
+                dnaPodsSavedMsg.value = '📋 DNA Pod Rosters copied to clipboard!';
+                setTimeout(() => { dnaPodsSavedMsg.value = ''; }, 3500);
+            };
+
+            const copyLeadershipEssentials = () => {
+                const text = `UPPER ROOM YOUNG ADULTS
+Leadership Essentials
+Welcome to our leadership development journey. Drawing from our recent ministry teachings and the core principles found in Leadership Essentials: Shaping Vision, Multiplying Influence, Defining Character by Greg Ogden and Daniel Meyer, these notes are designed to ground us as we step forward. True leadership is not about a title; it is about multiplying influence and reflecting Christ to our generation.
+
+Overcoming Leadership Deficits
+Stepping into leadership can be daunting. In our ministry gatherings, we identified five common personal and structural barriers that prevent young adults from fully embracing their call to lead:
+• Equipment Shortage: Feeling a lack of the necessary resources, training, or tools to execute the vision effectively.
+• Unclear Descriptions: Operating without a clear job description, leaving roles ambiguous and goals undefined.
+• Toxic Precedents: Carrying a negative image of leadership due to past exposure to unhealthy, domineering, or toxic leadership environments.
+• Mentorship Void: Facing a shortage of mature, available mentors to properly guide and train emerging leaders.
+• Passion Deficit: A fundamental lack of willingness, drive, or passion to step up and serve the community sacrificially.
+
+The Call to Step Up
+Despite these barriers, the Upper Room ministry requires young adults who are willing to bridge the gap. We cannot wait for perfect conditions or flawless mentorship to begin serving. Leadership begins with a simple, passionate willingness to be used by God right where you are.
+
+Core Principles of Christian Leadership
+At the heart of the Upper Room ministry is the belief that Christian leadership is fundamentally defined as Christ-like influence. While the corporate world often views leadership through the lens of power, self-promotion, and upward mobility, the kingdom of God views it through the lens of downward mobility and service. Christ Himself modeled this, showing that true authority comes from laying down one's life for others.
+
+Shaping Vision
+A leader without a vision is merely managing the status quo. Vision is the clear, challenging picture of the future of our ministry as it can and must be. Compelling vision must be rooted in God's character and purposes, rather than our own ambition. It requires us to look beyond immediate obstacles and articulate a hope-filled future that inspires the entire community to action.
+
+"The most essential value for any Christian leader is not administrative skill, but deep intimacy with God. A genuine passion for Christ must precede and sustain all ministry efforts."
+
+Intimacy as the Foundation
+A genuine passion for Christ—who our teachings describe as the treasure of all knowledge and wisdom—is the engine of endurance. Without this foundational intimacy, leadership becomes mechanical, exhausting, and prone to burnout. We cannot lead others to a place we have not been ourselves; our public influence will only ever be as strong as our private devotion.
+
+Multiplying Influence
+True kingdom leadership is never solitary (2 Timothy 2:2). Our task is not merely to do the work of ministry, but to equip and empower others. Every lead trains a 2nd and 3rd, and every DNA Pod develops co-facilitators to nurture sustainable community.
+
+Defining Character
+Skill and charisma may open doors, but character sustains leadership. Integrity, humility, emotional resilience, and servanthood are non-negotiable for anyone carrying responsibility in God's house.
+
+Practical Steps for Upper Room Leaders
+1. Prioritize Secret-Place Intimacy: Ground every ministry initiative in prayer and quiet seeking of the Lord.
+2. Build Intentional Relationships: Connect relationally with co-leads and volunteers beyond scheduled tasks.
+3. Train with Open Hands: Freely share knowledge, authority, and workflows with designated 2nd and 3rd leads.
+4. Protect Unity and Honor: Guard love, vulnerability, and mutual encouragement across all pods and teams.`;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text);
+                }
+                upperRoomSavedMsg.value = '📋 Leadership Essentials publication copied to clipboard!';
+                setTimeout(() => { upperRoomSavedMsg.value = ''; }, 3500);
+            };
 
             // DATA FETCHERS
             const fetchStats = async () => {
@@ -911,7 +1287,10 @@ import { apiClient } from '/static/js/dashboard/apiClient.js';
                 journeyStages, stageCounts, isStageCompleted, getJourneyProgress, updateStage,
                 resources, filteredResources, resourceCategory, getResourceCatClass, resourceForm, addResource, deleteResource, showAddResource, showNotifications, notifications, handleNotificationClick,
                 eventsList, showAddEvent, showRsvpsModal, activeEventForRsvps, activeRsvpsList, loadingRsvps, eventForm, fetchEvents, createEvent, deleteEvent, viewEventRsvps,
-                newsletterSubscribers, newsletterBroadcasts, newsletterForm, sendingNewsletterUpdate, newsletterStatusMsg, newsletterErrorMsg, loadingNewsletter, newsletterSearch, filteredSubscribers, activeSubscribersCount, fetchNewsletter, sendNewsletterUpdate, setNewsletterTemplate, removeSubscriber, copySubscribersEmails
+                newsletterSubscribers, newsletterBroadcasts, newsletterForm, sendingNewsletterUpdate, newsletterStatusMsg, newsletterErrorMsg, loadingNewsletter, newsletterSearch, filteredSubscribers, activeSubscribersCount, fetchNewsletter, sendNewsletterUpdate, setNewsletterTemplate, removeSubscriber, copySubscribersEmails,
+                upperRoomRoles, upperRoomSearch, upperRoomSavedMsg, upperRoomRoleFilter, filteredUpperRoomRoles, saveUpperRoomSuccession, resetUpperRoomSuccession, copySuccessionSummary,
+                dnaPods, dnaPodsSearch, dnaPodFilter, dnaPodsSavedMsg, upperRoomActiveTab, dnaPodLeaders, filteredDnaPods, saveDnaPodsNominations, resetDnaPodsNominations, copyDnaPodsRosters,
+                copyLeadershipEssentials
             };
         }
     }).mount('#app');

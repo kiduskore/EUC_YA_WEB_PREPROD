@@ -8,6 +8,31 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>EUC Dashboard</title>
+    <script>
+        // Suppress and isolate third-party browser extension errors (e.g. MetaMask, external web3 wallets)
+        (function() {
+            function isExtError(msg, src, err) {
+                var str = (msg || '') + ' ' + (src || '') + ' ' + (err && (err.message || err.stack) || '');
+                return /nkbihfbeogaeaoehlefnkodbefgpgknn|chrome-extension:\/\/|moz-extension:\/\/|safari-extension:\/\/|MetaMask|Failed to connect to MetaMask|window\.ethereum/i.test(str);
+            }
+            window.addEventListener('unhandledrejection', function(event) {
+                var reason = event.reason;
+                var reasonText = (reason && (reason.message || reason.stack || String(reason))) || '';
+                if (isExtError(reasonText, '', reason)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+            window.addEventListener('error', function(event) {
+                if (isExtError(event.message, event.filename, event.error)) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            }, true);
+        })();
+    </script>
     <script src="/static/js/vendor/tailwindcss.js"></script>
     <script src="/static/js/vendor/vue.global.js"></script>
     <script src="/static/js/vendor/chart.js"></script>
@@ -37,10 +62,7 @@
                     }
                 }
             }
-        }
-                }
-            }
-        }
+        };
     </script>
     <script>
         window.USER_PERMISSIONS = <%- JSON.stringify(user_permissions || []) %>;
@@ -136,7 +158,7 @@
         <div class="w-full h-px border-t border-white/10 mb-6"></div>
         
         <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
-            <button v-for="nav in navItems" :key="nav.id" @click="currentView = nav.id"
+            <button v-for="nav in navItems" :key="nav.id" @click="currentView = nav.id; isSidebarOpen = false"
                 class="w-full text-left py-3.5 px-4 rounded-xl text-sm font-semibold transition-all flex items-center gap-4 relative overflow-hidden"
                 :class="currentView === nav.id ? 'glass shadow-sm border border-white/20 text-white' : 'text-slate-300 hover:text-white hover:bg-white/10'">
                 <!-- Icon box -->
@@ -177,11 +199,15 @@
             </div>
             
             <!-- Top YA Menu -->
-            <div class="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
-                <button @click="currentView = 'ya_hub'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_hub' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">YA Hub</button>
-                <button @click="currentView = 'ya_groups'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_groups' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Groups</button>
-                <button @click="currentView = 'ya_toolkit'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_toolkit' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Toolkit</button>
-                <button @click="currentView = 'ya_reflections'" class="text-sm font-bold transition-colors" :class="currentView === 'ya_reflections' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Reflections</button>
+            <div class="hidden lg:flex items-center gap-5 xl:gap-7 absolute left-1/2 -translate-x-1/2">
+                <button @click="currentView = 'ya_hub'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_hub' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">YA Hub</button>
+                <button @click="currentView = 'ya_groups'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_groups' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Groups</button>
+                <button @click="currentView = 'ya_toolkit'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_toolkit' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Toolkit</button>
+                <button @click="currentView = 'ya_reflections'" class="text-sm font-bold transition-colors whitespace-nowrap" :class="currentView === 'ya_reflections' ? 'text-blue-500' : 'text-slate-300 hover:text-white'">Reflections</button>
+                <button @click="currentView = 'upper_room'" class="text-sm font-bold transition-colors whitespace-nowrap flex items-center gap-1.5" :class="currentView === 'upper_room' ? 'text-amber-400 font-extrabold' : 'text-slate-300 hover:text-white'">
+                    <span>Upper Room</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Core</span>
+                </button>
             </div>
             
             <div class="flex items-center gap-4">
@@ -569,6 +595,111 @@
 
         <!-- 3. DNA PODS & 12 TRIBES -->
         <div v-show="currentView === 'pods' && !loading" class="space-y-6">
+
+            <!-- Official DNA Pods (Small Group Discipleship) Roster Card -->
+            <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-emerald-500/30 relative overflow-hidden shadow-xl mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-3.5">
+                        <span class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-2xl border border-emerald-500/30">
+                            🌱
+                        </span>
+                        <div>
+                            <span class="text-emerald-400 font-bold uppercase tracking-wider text-xs block">Official Roster &amp; Protocol</span>
+                            <h2 class="text-2xl font-black text-white">DNA Pods (Small Group Discipleship)</h2>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button @click="copyDnaPodsRosters" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition-all flex items-center gap-1.5 shadow-sm">
+                            <span>📋</span>
+                            <span>Copy All Pod Rosters</span>
+                        </button>
+                        <button @click="currentView = 'upper_room'; upperRoomActiveTab = 'dna_pods'" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-extrabold shadow-md transition-all flex items-center gap-1.5">
+                            <span>⚙️</span>
+                            <span>Manage Co-Facilitators</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Current Pod Leaders Badge Bar -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-white/10 mb-4 space-y-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-300 block">
+                        Current Pod Leaders (serving as primary facilitators for their respective groups):
+                    </span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Bercy</span>
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Kal</span>
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Biniyam</span>
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Fiker</span>
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Gedi</span>
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Nahom</span>
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Ela</span>
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold">Kidus</span>
+                    </div>
+                </div>
+
+                <!-- Core Responsibilities & Action Item -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 rounded-2xl bg-black/30 border-l-4 border-l-emerald-400 border border-white/5 space-y-1">
+                        <strong class="text-xs font-bold uppercase tracking-wider text-emerald-300 block">📌 Core Responsibilities</strong>
+                        <p class="text-slate-300 text-xs leading-relaxed">
+                            Facilitate consistent, tight-knit community and spiritual growth within your assigned group. You are responsible for regular check-ins, guiding discussions (applying the Tuesday Bible study and Sunday teachings), offering spiritual care, and ensuring every member feels known and supported. You are also tasked with nurturing your group toward healthy multiplication.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-emerald-500/10 border-l-4 border-l-emerald-400 border border-emerald-500/20 space-y-1">
+                        <strong class="text-xs font-bold uppercase tracking-wider text-emerald-300 block">⚡ Action Item: Designate 2nd Lead</strong>
+                        <p class="text-emerald-100 text-xs leading-relaxed">
+                            Every DNA Pod must identify a 2nd lead (Co-Facilitator) from within their group. This person will help coordinate meetups, track prayer requests, and step in to lead the pod discussions if the primary leader is absent. This ensures the pod's momentum continues without interruption and trains future leaders for when the pods multiply.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4 Pod Cards in Pods View -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider text-white">Current DNA Pod Rosters (4 Active Pods)</span>
+                        <span class="text-xs text-slate-400">Total Members: 23</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div v-for="pod in dnaPods" :key="pod.id" class="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg">🌱</span>
+                                    <h4 class="text-base font-bold text-white">{{ pod.name }}</h4>
+                                </div>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                    {{ pod.primaryLeads }}
+                                </span>
+                            </div>
+
+                            <div v-if="pod.secondLead" class="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs flex items-center justify-between">
+                                <span class="text-slate-300">Co-Facilitator (2nd Lead):</span>
+                                <span class="text-blue-300 font-bold">⭐ {{ pod.secondLead }}</span>
+                            </div>
+                            <div v-else class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs flex items-center justify-between">
+                                <span class="text-amber-200">2nd Lead:</span>
+                                <span class="text-amber-300 font-bold">⚠️ Pending Designation</span>
+                            </div>
+
+                            <div>
+                                <span class="text-[11px] font-semibold text-slate-400 block mb-1.5">Members ({{ pod.members.length }}):</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span v-for="m in pod.members" :key="m" 
+                                          class="px-2.5 py-1 rounded-lg text-xs font-medium"
+                                          :class="pod.primaryLeadNames.includes(m) 
+                                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold' 
+                                              : (pod.secondLead === m 
+                                                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold' 
+                                                  : 'bg-white/10 text-slate-200 border border-white/5')">
+                                        {{ m }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- What are the 12 Tribes? Pastoral Care & Circle Guide -->
             <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-amber-500/25 mb-6 relative overflow-hidden">
@@ -1218,10 +1349,44 @@
             
             <h3 class="text-xl font-bold mb-4">Ready to dive in?</h3>
             <p class="text-slate-300 mb-6">Fill out the short form below and one of our facilitators will reach out to get you connected.</p>
-            <form @submit.prevent class="flex gap-4 max-w-md">
+            <form @submit.prevent class="flex gap-4 max-w-md mb-8">
                 <input type="email" name="email" placeholder="Enter your email address" required class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#0075ff]">
                 <button type="submit" class="bg-[#0075ff] text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 transition-colors">Sign Up</button>
             </form>
+
+            <hr class="border-white/10 mb-8">
+
+            <!-- Active DNA Pods Overview -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider block">Discipleship Pods</span>
+                        <h3 class="text-2xl font-bold text-white">Active DNA Pod Rosters</h3>
+                    </div>
+                    <button @click="currentView = 'upper_room'; upperRoomActiveTab = 'dna_pods'" class="text-xs text-emerald-400 hover:text-white font-bold flex items-center gap-1">
+                        <span>Manage Co-Facilitators</span>
+                        <span>&rarr;</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div v-for="pod in dnaPods" :key="pod.id" class="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-white flex items-center gap-1.5">
+                                <span>🌱</span> {{ pod.name }}
+                            </span>
+                            <span class="text-xs font-bold text-emerald-400">{{ pod.primaryLeads }}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span v-for="m in pod.members" :key="m" 
+                                  class="px-2.5 py-1 rounded-lg text-xs font-medium"
+                                  :class="pod.primaryLeadNames.includes(m) ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-white/10 text-slate-200'">
+                                {{ m }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
         </div>
@@ -1241,6 +1406,24 @@
         <h2 class="text-2xl font-bold mb-8">Ministry Tools & Downloads</h2>
         
         <div class="grid gap-6">
+            <!-- Featured Leadership Essentials Publication Card -->
+            <div @click="currentView = 'upper_room'; upperRoomActiveTab = 'publication'" class="glass p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-white/10 transition-colors cursor-pointer group border border-purple-500/30 bg-purple-500/5 shadow-lg">
+                <div class="flex items-start sm:items-center gap-4 sm:gap-6">
+                    <div class="w-12 h-12 bg-purple-500/20 text-purple-300 rounded-xl flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shrink-0 border border-purple-500/30">📖</div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">Upper Room Young Adults</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Official Publication</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-purple-300 transition-colors">Leadership Essentials</h3>
+                        <p class="text-sm text-slate-300 mt-1">Shaping Vision, Multiplying Influence, Defining Character &mdash; Greg Ogden &amp; Daniel Meyer study notes, overcoming deficits, and action items.</p>
+                    </div>
+                </div>
+                <button class="text-purple-200 font-bold px-4 py-2 bg-purple-500/20 rounded-xl text-xs hover:bg-purple-500/30 border border-purple-500/30 transition-colors shrink-0 flex items-center gap-1.5 self-end sm:self-center">
+                    <span>Read Publication</span>
+                    <span>&rarr;</span>
+                </button>
+            </div>
             <div class="glass p-6 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors cursor-pointer group">
                 <div class="flex items-center gap-6">
                     <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-2xl group-hover:bg-[#0075ff]/20 group-hover:text-blue-500 transition-colors">👋</div>
@@ -1290,7 +1473,7 @@
             <h3 class="text-xl font-bold mb-3">Need Support?</h3>
             <p class="text-slate-300 mb-6 max-w-lg mx-auto">Ministry is a team effort. If you need guidance, prayer, or resources, reach out to our pastoral team. Also, don't forget you can use the Leader Dashboard to manage your DNA Pod!</p>
             <div class="flex items-center justify-center gap-4">
-                <a href="mailto:pastor@eucmaryland.org" class="bg-white text-black px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">Contact Leadership</a>
+                <a href="mailto:info@eucmaryland.org" class="bg-white text-black px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">Contact Leadership</a>
                 <a href="/dashboard" class="bg-transparent border border-white/20 text-white px-6 py-3 rounded-xl font-bold hover:bg-white/10 transition-colors">Open Dashboard</a>
             </div>
         </div>
@@ -1377,6 +1560,1003 @@
         </div>
 
     </section>
+        </div>
+
+        <!-- UPPER ROOM CORE LEADERS: MINISTRY LEADERSHIP ROLES & SUCCESSION PROTOCOL -->
+        <div v-show="currentView === 'upper_room' && !loading" class="space-y-8 pb-16 animate-fade-in">
+            
+            <!-- Hero Executive Banner -->
+            <div class="glass bg-cardDark p-6 sm:p-8 md:p-10 rounded-3xl border border-white/10 relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-amber-500/15 via-orange-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="px-3.5 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                                <span>🏛️</span> Upper Room Core Leaders
+                            </span>
+                            <span class="px-3 py-1 rounded-xl bg-blue-500/15 text-blue-300 border border-blue-500/20 text-xs font-semibold">
+                                8 Key Ministries
+                            </span>
+                            <span class="px-3 py-1 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 text-xs font-semibold flex items-center gap-1.5">
+                                <span>🌱</span> 4 DNA Pods
+                            </span>
+                        </div>
+                        
+                        <!-- Quick actions -->
+                        <div class="flex items-center gap-3">
+                            <button v-if="upperRoomActiveTab === 'publication'" @click="copyLeadershipEssentials" class="px-4 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-xs font-bold border border-purple-500/30 transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                                <span>📋</span>
+                                <span>Copy Publication</span>
+                            </button>
+                            <button v-else-if="upperRoomActiveTab === 'dna_pods'" @click="copyDnaPodsRosters" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                                <span>📋</span>
+                                <span>Copy DNA Rosters</span>
+                            </button>
+                            <button v-else @click="copySuccessionSummary" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-200 text-xs font-bold border border-white/10 hover:border-white/20 transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                                <span>📋</span>
+                                <span>Copy Ministry Roles</span>
+                            </button>
+                            <button v-if="upperRoomActiveTab === 'dna_pods'" @click="saveDnaPodsNominations" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-extrabold shadow-md transition-all flex items-center gap-2 cursor-pointer">
+                                <span>💾</span>
+                                <span>Save Co-Facilitators</span>
+                            </button>
+                            <button v-else-if="upperRoomActiveTab === 'publication'" onclick="window.print()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold shadow-md transition-all flex items-center gap-2 cursor-pointer">
+                                <span>🖨️</span>
+                                <span>Print Notes</span>
+                            </button>
+                            <button v-else @click="saveUpperRoomSuccession" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-extrabold shadow-md transition-all flex items-center gap-2 cursor-pointer">
+                                <span>💾</span>
+                                <span>Save Nominations</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Protocol Section Tabs -->
+                    <div class="p-2 rounded-2xl bg-black/40 border border-white/10 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button @click="upperRoomActiveTab = 'all'" 
+                                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                                    :class="upperRoomActiveTab === 'all' ? 'bg-white/20 text-white shadow-sm' : 'text-slate-400 hover:text-white'">
+                                View All
+                            </button>
+                            <button @click="upperRoomActiveTab = 'ministries'" 
+                                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                                    :class="upperRoomActiveTab === 'ministries' ? 'bg-amber-500 text-black shadow-md font-extrabold' : 'text-slate-400 hover:text-white'">
+                                <span>🏛️</span>
+                                <span>Ministry Leadership Roles (8)</span>
+                            </button>
+                            <button @click="upperRoomActiveTab = 'dna_pods'" 
+                                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                                    :class="upperRoomActiveTab === 'dna_pods' ? 'bg-emerald-500 text-black shadow-md font-extrabold' : 'text-slate-400 hover:text-white'">
+                                <span>🌱</span>
+                                <span>DNA Pods Discipleship (4 Pods)</span>
+                                <span class="px-1.5 py-0.5 rounded-full text-[9px] bg-emerald-400/20 text-emerald-300 font-black">Rosters</span>
+                            </button>
+                            <button @click="upperRoomActiveTab = 'publication'" 
+                                    class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                                    :class="upperRoomActiveTab === 'publication' ? 'bg-purple-600 text-white shadow-md font-extrabold' : 'text-slate-400 hover:text-white'">
+                                <span>📖</span>
+                                <span>Leadership Essentials</span>
+                                <span class="px-1.5 py-0.5 rounded-full text-[9px] bg-purple-400/20 text-purple-200 font-black">Publication</span>
+                            </button>
+                        </div>
+
+                        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+                            <span>Leadership Succession &amp; Discipleship Framework</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+                            Ministry Leadership Roles &amp; Succession Protocol
+                        </h1>
+                        <p class="text-amber-200/90 text-sm md:text-base font-medium mt-2 max-w-3xl">
+                            Empowering Every Ministry Lead and DNA Pod with 2nd &amp; 3rd Tier Designated Successors
+                        </p>
+                    </div>
+
+                    <!-- Succession Protocol Mandate Callout -->
+                    <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-black/60 to-black/30 border-l-4 border-l-amber-400 border border-white/10 space-y-2">
+                        <div class="flex items-center gap-2 text-amber-300 text-xs font-black uppercase tracking-wider">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>Core Operational Protocol</span>
+                        </div>
+                        <p class="text-white text-sm sm:text-base leading-relaxed">
+                            "To ensure our ministries run efficiently and sustainably, every primary lead is required to identify and train a 2nd and 3rd lead. These designated team members will assist with weekly responsibilities, step in seamlessly during your absence, and actively participate in knowledge transfer to prevent any single point of failure in our operations."
+                        </p>
+                    </div>
+
+                    <!-- Status Notification Banners -->
+                    <div v-if="upperRoomSavedMsg" class="p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center justify-between">
+                        <span>{{ upperRoomSavedMsg }}</span>
+                        <button @click="upperRoomSavedMsg = ''" class="text-emerald-300 hover:text-white">&times;</button>
+                    </div>
+                    <div v-if="dnaPodsSavedMsg" class="p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center justify-between">
+                        <span>{{ dnaPodsSavedMsg }}</span>
+                        <button @click="dnaPodsSavedMsg = ''" class="text-emerald-300 hover:text-white">&times;</button>
+                    </div>
+
+                    <!-- 3 Protocol Anchors -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-start gap-3.5">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-lg shrink-0">
+                                1️⃣
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Primary Lead</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-normal">
+                                    Direct vision steward, weekly facilitator, curriculum &amp; tone leader.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-start gap-3.5">
+                            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-300 flex items-center justify-center text-lg shrink-0">
+                                2️⃣
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">2nd Lead (Co-Pilot)</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-normal">
+                                    Assists weekly, steps in on short notice, masters core departmental workflows.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-start gap-3.5">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-lg shrink-0">
+                                3️⃣
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">3rd Lead (Mentee)</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-normal">
+                                    Active apprentice, cross-training on runbooks, preventing single point of failure.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. MINISTRY LEADERSHIP ROLES (8 MINISTRIES) -->
+            <div v-show="upperRoomActiveTab === 'ministries' || upperRoomActiveTab === 'all'" class="space-y-8">
+                <!-- Search & Filters Toolbar -->
+                <div class="glass bg-cardDark p-4 sm:p-5 rounded-2xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:w-72">
+                            <input type="text" 
+                                   v-model="upperRoomSearch" 
+                                   placeholder="Search role, lead, or keyword..." 
+                                   class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-400 text-xs focus:outline-none focus:border-amber-400">
+                            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <button v-if="upperRoomSearch" @click="upperRoomSearch = ''" class="text-xs text-slate-400 hover:text-white px-2 py-1">Clear</button>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end overflow-x-auto pb-1 sm:pb-0">
+                        <span class="text-xs font-semibold text-slate-400 shrink-0">Filter:</span>
+                        <select v-model="upperRoomRoleFilter" class="bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                            <option value="all">All 8 Core Ministries</option>
+                            <option v-for="r in upperRoomRoles" :key="r.id" :value="r.id">{{ r.icon }} {{ r.title }}</option>
+                        </select>
+                        <button @click="resetUpperRoomSuccession" class="text-xs text-slate-400 hover:text-rose-400 px-3 py-2 rounded-xl hover:bg-rose-500/10 transition-colors shrink-0" title="Reset to defaults">
+                            Reset Defaults
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Core Roles Grid -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
+                    <div v-for="role in filteredUpperRoomRoles" :key="role.id" 
+                         class="glass bg-cardDark rounded-3xl p-6 sm:p-7 border border-white/10 hover:border-amber-500/30 transition-all flex flex-col justify-between shadow-xl relative overflow-hidden group">
+                        
+                        <div class="space-y-5">
+                            <!-- Role Header -->
+                            <div class="flex items-start justify-between gap-4 pb-4 border-b border-white/10">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shadow-inner shrink-0">
+                                        {{ role.icon }}
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-white group-hover:text-amber-300 transition-colors">
+                                            {{ role.title }}
+                                        </h3>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{{ role.leadLabel }}:</span>
+                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold" 
+                                                  :class="role.isTemp ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'">
+                                                {{ role.currentLead }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/5">
+                                    Active Protocol
+                                </span>
+                            </div>
+
+                            <!-- Core Responsibilities -->
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-300">
+                                    <span>📌</span>
+                                    <span>Core Responsibilities</span>
+                                </div>
+                                <p class="text-slate-200 text-xs sm:text-sm leading-relaxed bg-black/25 p-4 rounded-2xl border border-white/5">
+                                    {{ role.coreResponsibilities }}
+                                </p>
+                            </div>
+
+                            <!-- Action Item / Succession Protocol -->
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300">
+                                    <span>⚡</span>
+                                    <span>Action Item &amp; Succession Goal</span>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs leading-relaxed text-amber-100">
+                                    {{ role.actionItem }}
+                                </div>
+                            </div>
+
+                            <!-- 3-Deep Succession Triad Form / Inputs -->
+                            <div class="pt-2 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                        <span>👥</span> Leadership Succession Triad
+                                    </span>
+                                    <span class="text-[11px] text-slate-400">Designated Nominees</span>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                    <!-- 1st Lead (Primary) -->
+                                    <div class="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                                        <div class="flex items-center justify-between text-[10px] uppercase tracking-wider text-slate-400 font-bold">
+                                            <span>Primary Lead</span>
+                                            <span class="text-emerald-400">● 1st</span>
+                                        </div>
+                                        <div class="text-xs font-bold text-white truncate" :title="role.currentLead">
+                                            {{ role.currentLead }}
+                                        </div>
+                                        <div class="text-[10px] text-slate-400">Active In Position</div>
+                                    </div>
+
+                                    <!-- 2nd Lead -->
+                                    <div class="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                                        <div class="flex items-center justify-between text-[10px] uppercase tracking-wider text-slate-400 font-bold">
+                                            <span>2nd Lead</span>
+                                            <span class="text-blue-400">● 2nd</span>
+                                        </div>
+                                        <input type="text" 
+                                               v-model="role.secondLead" 
+                                               placeholder="Enter 2nd lead..." 
+                                               class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+                                        <div class="text-[10px] text-slate-400">Co-Pilot &amp; Backup</div>
+                                    </div>
+
+                                    <!-- 3rd Lead -->
+                                    <div class="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                                        <div class="flex items-center justify-between text-[10px] uppercase tracking-wider text-slate-400 font-bold">
+                                            <span>3rd Lead</span>
+                                            <span class="text-purple-400">● 3rd</span>
+                                        </div>
+                                        <input type="text" 
+                                               v-model="role.thirdLead" 
+                                               placeholder="Enter 3rd lead..." 
+                                               class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+                                        <div class="text-[10px] text-slate-400">Mentee in Training</div>
+                                    </div>
+                                </div>
+
+                                <!-- Knowledge Transfer & Operational Notes -->
+                                <div class="pt-1">
+                                    <label class="text-[11px] font-semibold text-slate-400 block mb-1">
+                                        Knowledge Transfer Focus &amp; Handoff Notes:
+                                    </label>
+                                    <input type="text" 
+                                           v-model="role.notes" 
+                                           placeholder="Runbooks, accounts, access passwords, key weekly checklists..." 
+                                           class="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-amber-400">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer Actions -->
+                        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full" 
+                                      :class="(role.secondLead && role.thirdLead) ? 'bg-emerald-400 shadow-sm' : (role.secondLead ? 'bg-amber-400' : 'bg-rose-400')"></span>
+                                <span class="text-[11px] font-medium text-slate-300">
+                                    {{ (role.secondLead && role.thirdLead) ? 'Triad Complete' : (role.secondLead ? '2nd Lead Nominated' : 'Successors Needed') }}
+                                </span>
+                            </div>
+                            <button @click="saveUpperRoomSuccession" 
+                                    class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                                <span>Save Changes</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Succession Next Steps Checklist -->
+                <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📋</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Next Steps for Every Primary Lead</h3>
+                            <p class="text-xs text-slate-400">Implement these 4 practices to fulfill the Upper Room Succession Protocol</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-amber-400 font-extrabold text-xs uppercase tracking-wider block">Step 01</span>
+                            <h4 class="text-sm font-bold text-white">Identify 2nd &amp; 3rd Leads</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Have intentional conversations with potential candidates to confirm their calling, capacity, and heart to serve.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-amber-400 font-extrabold text-xs uppercase tracking-wider block">Step 02</span>
+                            <h4 class="text-sm font-bold text-white">Share Access &amp; Runbooks</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Provide credentials, playlists, presentation templates, contact lists, and venue keys so operations never halt.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-amber-400 font-extrabold text-xs uppercase tracking-wider block">Step 03</span>
+                            <h4 class="text-sm font-bold text-white">Schedule Shadow Days</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Have your 2nd and 3rd leads co-lead meetings, handle sound mixing, or manage check-in alongside you.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-amber-400 font-extrabold text-xs uppercase tracking-wider block">Step 04</span>
+                            <h4 class="text-sm font-bold text-white">Trial Run In Your Absence</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Designate one gathering or event per quarter where your designated leads run the entire department end-to-end.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 🌱 DNA PODS (SMALL GROUP DISCIPLESHIP) SECTION -->
+            <div v-show="upperRoomActiveTab === 'dna_pods' || upperRoomActiveTab === 'all'" class="space-y-8">
+                
+                <!-- DNA Pods Protocol Hero Banner -->
+                <div class="glass bg-cardDark p-6 sm:p-8 md:p-10 rounded-3xl border border-emerald-500/30 relative overflow-hidden shadow-2xl">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-500/15 via-teal-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative z-10 space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                                    <span>🌱</span> Small Group Discipleship
+                                </span>
+                                <span class="px-3 py-1 rounded-xl bg-white/10 text-slate-200 border border-white/10 text-xs font-semibold">
+                                    4 Active Pods · 23 Members
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <button @click="copyDnaPodsRosters" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                                    <span>📋</span>
+                                    <span>Copy All Rosters</span>
+                                </button>
+                                <button @click="saveDnaPodsNominations" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-extrabold shadow-md transition-all flex items-center gap-2 cursor-pointer">
+                                    <span>💾</span>
+                                    <span>Save Co-Facilitators</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
+                                <span>🌱</span>
+                                <span>DNA Pods (Small Group Discipleship)</span>
+                            </h2>
+                            <p class="text-emerald-200/90 text-sm md:text-base font-medium mt-2 max-w-3xl">
+                                Consistent, tight-knit community, intentional spiritual care, and succession through trained 2nd Leads (Co-Facilitators).
+                            </p>
+                        </div>
+
+                        <!-- Current Pod Leaders Badge Bar -->
+                        <div class="p-5 rounded-2xl bg-black/40 border border-white/10 space-y-3">
+                            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-300">
+                                <span>👥</span>
+                                <span>Current Pod Leaders (Serving as primary facilitators for their respective groups):</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2.5">
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Bercy <span class="text-[10px] text-emerald-400 font-normal">(Pod 1)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Kal <span class="text-[10px] text-emerald-400 font-normal">(Pod 1)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Biniyam <span class="text-[10px] text-emerald-400 font-normal">(Pod 2)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Fiker <span class="text-[10px] text-emerald-400 font-normal">(Pod 2)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Gedi <span class="text-[10px] text-emerald-400 font-normal">(Pod 3)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Nahom <span class="text-[10px] text-emerald-400 font-normal">(Pod 3)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Ela <span class="text-[10px] text-emerald-400 font-normal">(Pod 4)</span>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                                    <span>🌿</span> Kidus <span class="text-[10px] text-emerald-400 font-normal">(Pod 4)</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Core Responsibilities Card -->
+                        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-black/60 to-black/30 border-l-4 border-l-emerald-400 border border-white/10 space-y-2">
+                            <div class="flex items-center gap-2 text-emerald-300 text-xs font-black uppercase tracking-wider">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                <span>Core Responsibilities</span>
+                            </div>
+                            <p class="text-white text-sm sm:text-base leading-relaxed">
+                                "Facilitate consistent, tight-knit community and spiritual growth within your assigned group. You are responsible for regular check-ins, guiding discussions (applying the Tuesday Bible study and Sunday teachings), offering spiritual care, and ensuring every member feels known and supported. You are also tasked with nurturing your group toward healthy multiplication."
+                            </p>
+                        </div>
+
+                        <!-- Action Item Callout -->
+                        <div class="p-5 sm:p-6 rounded-2xl bg-emerald-500/10 border-l-4 border-l-emerald-400 border border-emerald-500/20 space-y-2">
+                            <div class="flex items-center gap-2 text-emerald-300 text-xs font-black uppercase tracking-wider">
+                                <span>⚡</span>
+                                <span>Action Item: Designate 2nd Lead (Co-Facilitator)</span>
+                            </div>
+                            <p class="text-emerald-100 text-sm leading-relaxed">
+                                "Every DNA Pod must identify a 2nd lead (Co-Facilitator) from within their group. This person will help coordinate meetups, track prayer requests, and step in to lead the pod discussions if the primary leader is absent. This ensures the pod's momentum continues without interruption and trains future leaders for when the pods multiply."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DNA Pod Search & Filter Toolbar -->
+                <div class="glass bg-cardDark p-4 sm:p-5 rounded-2xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:w-72">
+                            <input type="text" 
+                                   v-model="dnaPodsSearch" 
+                                   placeholder="Search member, leader, or pod..." 
+                                   class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-400 text-xs focus:outline-none focus:border-emerald-400">
+                            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <button v-if="dnaPodsSearch" @click="dnaPodsSearch = ''" class="text-xs text-slate-400 hover:text-white px-2 py-1">Clear</button>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end overflow-x-auto pb-1 sm:pb-0">
+                        <span class="text-xs font-semibold text-slate-400 shrink-0">Filter Pod:</span>
+                        <select v-model="dnaPodFilter" class="bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400">
+                            <option value="all">All 4 DNA Pods</option>
+                            <option v-for="p in dnaPods" :key="p.id" :value="p.id">{{ p.name }} ({{ p.primaryLeads }})</option>
+                        </select>
+                        <button @click="resetDnaPodsNominations" class="text-xs text-slate-400 hover:text-rose-400 px-3 py-2 rounded-xl hover:bg-rose-500/10 transition-colors shrink-0" title="Reset nominations to defaults">
+                            Reset Defaults
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4 DNA Pod Rosters Grid -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
+                    <div v-for="pod in filteredDnaPods" :key="pod.id" 
+                         class="glass bg-cardDark rounded-3xl p-6 sm:p-7 border border-white/10 hover:border-emerald-500/30 transition-all flex flex-col justify-between shadow-xl relative overflow-hidden group">
+                        
+                        <div class="space-y-5">
+                            <!-- Pod Card Header -->
+                            <div class="flex items-start justify-between gap-4 pb-4 border-b border-white/10">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shadow-inner shrink-0">
+                                        🌱
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition-colors flex items-center gap-2">
+                                            <span>{{ pod.name }}</span>
+                                        </h3>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Primary Facilitators:</span>
+                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                                {{ pod.primaryLeads }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-white/10 text-slate-200 border border-white/10">
+                                    {{ pod.members.length }} Members
+                                </span>
+                            </div>
+
+                            <!-- Designated 2nd Lead (Co-Facilitator) Selection & Mandate -->
+                            <div class="p-4 rounded-2xl bg-black/40 border border-white/10 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full" :class="pod.secondLead ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'"></span>
+                                        <label class="text-xs font-bold uppercase tracking-wider text-white">
+                                            Designated 2nd Lead (Co-Facilitator)
+                                        </label>
+                                    </div>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-md font-bold" 
+                                          :class="pod.secondLead ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'">
+                                        {{ pod.secondLead ? '✓ Nominated' : '⚠️ Action Item Pending' }}
+                                    </span>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-[10px] text-slate-400 block mb-1">Select from Members or Type Name:</label>
+                                        <div class="flex gap-1.5">
+                                            <select v-model="pod.secondLead" class="bg-white/5 border border-white/10 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400 flex-1">
+                                                <option value="">Choose member...</option>
+                                                <option v-for="m in pod.members" :key="m" :value="m">{{ m }}</option>
+                                            </select>
+                                            <input type="text" 
+                                                   v-model="pod.secondLead" 
+                                                   placeholder="Or custom..." 
+                                                   class="w-28 bg-white/5 border border-white/10 rounded-xl px-2.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] text-slate-400 block mb-1">Co-Facilitator Phone / Contact:</label>
+                                        <input type="text" 
+                                               v-model="pod.secondLeadPhone" 
+                                               placeholder="e.g. (240) 555-0199" 
+                                               class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 leading-normal">
+                                    Co-facilitators help coordinate weekly meetups, log prayer requests, and step in to lead pod discussions when the primary facilitator is absent.
+                                </p>
+                            </div>
+
+                            <!-- Current DNA Pod Rosters -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                                        <span>📋</span> Current DNA Pod Roster ({{ pod.members.length }})
+                                    </span>
+                                    <span class="text-[11px] text-emerald-400 font-semibold">Active Circle</span>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-black/25 border border-white/5">
+                                    <div class="flex flex-wrap gap-2">
+                                        <span v-for="member in pod.members" :key="member" 
+                                              class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
+                                              :class="pod.primaryLeadNames.includes(member) 
+                                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold' 
+                                                  : (pod.secondLead === member 
+                                                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40 font-bold' 
+                                                      : 'bg-white/5 text-slate-200 border border-white/10')">
+                                            <span>{{ pod.primaryLeadNames.includes(member) ? '👑' : (pod.secondLead === member ? '⭐' : '👤') }}</span>
+                                            <span>{{ member }}</span>
+                                            <span v-if="pod.primaryLeadNames.includes(member)" class="text-[9px] uppercase tracking-wider px-1 rounded bg-emerald-500/30 text-emerald-200">Lead</span>
+                                            <span v-else-if="pod.secondLead === member" class="text-[9px] uppercase tracking-wider px-1 rounded bg-blue-500/30 text-blue-200">2nd Lead</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Operational Notes / Focus -->
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-semibold text-slate-400 block">
+                                    Pod Focus, Meeting Schedule &amp; Spiritual Milestones:
+                                </label>
+                                <input type="text" 
+                                       v-model="pod.notes" 
+                                       placeholder="e.g. Tuesday study review, prayer check-in schedule..." 
+                                       class="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="pt-5 mt-5 border-t border-white/10 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full" 
+                                      :class="pod.secondLead ? 'bg-emerald-400 shadow-sm' : 'bg-amber-400'"></span>
+                                <span class="text-[11px] font-medium text-slate-300">
+                                    {{ pod.secondLead ? 'Co-Facilitator Identified' : 'Awaiting 2nd Lead Designation' }}
+                                </span>
+                            </div>
+                            <button @click="saveDnaPodsNominations" 
+                                    class="px-4 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                                <span>Save Changes</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DNA Discipleship 4-Pillar Roadmap -->
+                <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🌱</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">DNA Pod Discipleship &amp; Multiplication Framework</h3>
+                            <p class="text-xs text-slate-400">Core operational practices for facilitators and co-facilitators</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-emerald-400 font-extrabold text-xs uppercase tracking-wider block">Pillar 01</span>
+                            <h4 class="text-sm font-bold text-white">Known &amp; Supported</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Ensure every member feels valued, prayed for, and closely connected through consistent weekly check-ins.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-emerald-400 font-extrabold text-xs uppercase tracking-wider block">Pillar 02</span>
+                            <h4 class="text-sm font-bold text-white">Living the Word</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Guide discussions applying the Tuesday Bible study and Sunday teachings to personal daily life.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-emerald-400 font-extrabold text-xs uppercase tracking-wider block">Pillar 03</span>
+                            <h4 class="text-sm font-bold text-white">Co-Facilitator Mentorship</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Identify your 2nd lead, share group communication tasks, and have them step in seamlessly to facilitate.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-black/30 border border-white/5 space-y-2">
+                            <span class="text-emerald-400 font-extrabold text-xs uppercase tracking-wider block">Pillar 04</span>
+                            <h4 class="text-sm font-bold text-white">Healthy Multiplication</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                When a pod reaches capacity, multiply into daughter pods led by trained facilitators to keep fellowship intimate.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 3. 📖 UPPER ROOM YOUNG ADULTS: LEADERSHIP ESSENTIALS PUBLICATION -->
+            <div v-show="upperRoomActiveTab === 'publication' || upperRoomActiveTab === 'all'" class="space-y-8">
+                
+                <!-- Publication Hero Banner -->
+                <div class="glass bg-cardDark p-6 sm:p-8 md:p-10 rounded-3xl border border-purple-500/30 relative overflow-hidden shadow-2xl">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-500/15 via-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+                    
+                    <div class="relative z-10 space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="px-3.5 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                                    <span>📖</span> Leadership Development &amp; Ministry Reading
+                                </span>
+                                <span class="px-3 py-1 rounded-xl bg-white/10 text-slate-200 border border-white/10 text-xs font-semibold">
+                                    Greg Ogden &amp; Daniel Meyer
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <button @click="copyLeadershipEssentials" class="px-4 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 text-xs font-bold border border-purple-500/30 transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                                    <span>📋</span>
+                                    <span>Copy Text</span>
+                                </button>
+                                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 text-xs font-bold border border-white/10 transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                                    <span>🖨️</span>
+                                    <span>Print Notes</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs uppercase tracking-widest font-extrabold text-purple-400 block mb-1">
+                                UPPER ROOM YOUNG ADULTS
+                            </span>
+                            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+                                Leadership Essentials
+                            </h2>
+                            <p class="text-purple-200/90 text-sm md:text-base font-medium mt-3 max-w-3xl leading-relaxed">
+                                Welcome to our leadership development journey. Drawing from our recent ministry teachings and the core principles found in <em>Leadership Essentials: Shaping Vision, Multiplying Influence, Defining Character</em> by Greg Ogden and Daniel Meyer, these notes are designed to ground us as we step forward. True leadership is not about a title; it is about multiplying influence and reflecting Christ to our generation.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Overcoming Leadership Deficits & The Call to Step Up -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left: 5 Barriers -->
+                    <div class="lg:col-span-7 glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-white/10 space-y-5">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">⚠️</span>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Overcoming Leadership Deficits</h3>
+                                <p class="text-xs text-slate-400 mt-0.5">Stepping into leadership can be daunting. In our ministry gatherings, we identified five common personal and structural barriers that prevent young adults from fully embracing their call to lead:</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <div class="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                                    <h4 class="text-sm font-bold text-rose-300">Equipment Shortage:</h4>
+                                </div>
+                                <p class="text-xs text-slate-300 pl-4 leading-relaxed">
+                                    Feeling a lack of the necessary resources, training, or tools to execute the vision effectively.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                    <h4 class="text-sm font-bold text-amber-300">Unclear Descriptions:</h4>
+                                </div>
+                                <p class="text-xs text-slate-300 pl-4 leading-relaxed">
+                                    Operating without a clear job description, leaving roles ambiguous and goals undefined.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                                    <h4 class="text-sm font-bold text-orange-300">Toxic Precedents:</h4>
+                                </div>
+                                <p class="text-xs text-slate-300 pl-4 leading-relaxed">
+                                    Carrying a negative image of leadership due to past exposure to unhealthy, domineering, or toxic leadership environments.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                                    <h4 class="text-sm font-bold text-blue-300">Mentorship Void:</h4>
+                                </div>
+                                <p class="text-xs text-slate-300 pl-4 leading-relaxed">
+                                    Facing a shortage of mature, available mentors to properly guide and train emerging leaders.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                                    <h4 class="text-sm font-bold text-purple-300">Passion Deficit:</h4>
+                                </div>
+                                <p class="text-xs text-slate-300 pl-4 leading-relaxed">
+                                    A fundamental lack of willingness, drive, or passion to step up and serve the community sacrificially.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: The Call to Step Up & Core Principles -->
+                    <div class="lg:col-span-5 space-y-6 flex flex-col">
+                        <!-- The Call to Step Up -->
+                        <div class="glass bg-gradient-to-br from-amber-500/10 via-cardDark to-cardDark p-6 sm:p-7 rounded-3xl border border-amber-500/20 space-y-3">
+                            <div class="flex items-center gap-2.5 text-amber-300">
+                                <span class="text-xl">🔥</span>
+                                <h3 class="text-lg font-bold text-white">The Call to Step Up</h3>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                Despite these barriers, the Upper Room ministry requires young adults who are willing to bridge the gap. We cannot wait for perfect conditions or flawless mentorship to begin serving. Leadership begins with a simple, passionate willingness to be used by God right where you are.
+                            </p>
+                        </div>
+
+                        <!-- Core Principles of Christian Leadership -->
+                        <div class="glass bg-cardDark p-6 sm:p-7 rounded-3xl border border-white/10 space-y-3 flex-1">
+                            <div class="flex items-center gap-2.5 text-blue-400">
+                                <span class="text-xl">✝️</span>
+                                <h3 class="text-lg font-bold text-white">Core Principles of Christian Leadership</h3>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                At the heart of the Upper Room ministry is the belief that Christian leadership is fundamentally defined as Christ-like influence. While the corporate world often views leadership through the lens of power, self-promotion, and upward mobility, the kingdom of God views it through the lens of downward mobility and service. Christ Himself modeled this, showing that true authority comes from laying down one's life for others.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Shaping Vision & Intimacy as the Foundation -->
+                <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-xl">🔭</span>
+                                <h3 class="text-xl font-bold text-white">Shaping Vision</h3>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                A leader without a vision is merely managing the status quo. Vision is the clear, challenging picture of the future of our ministry as it can and must be. According to <em>Leadership Essentials</em>, a compelling vision must be rooted in God's character and purposes, rather than our own ambition. It requires us to look beyond the immediate obstacles and articulate a hope-filled future that inspires the entire young adult community to action.
+                            </p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-xl">🕊️</span>
+                                <h3 class="text-xl font-bold text-white">Intimacy as the Foundation</h3>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                A genuine passion for Christ—who our teachings describe as the treasure of all knowledge and wisdom—is the engine of endurance. Without this foundational intimacy, leadership becomes mechanical, exhausting, and prone to burnout. We cannot lead others to a place we have not been ourselves; our public influence will only ever be as strong as our private devotion.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Highlight Quote Callout -->
+                    <div class="p-6 rounded-2xl bg-gradient-to-r from-purple-500/20 via-indigo-500/15 to-purple-500/10 border-l-4 border-l-purple-400 border border-purple-500/20 text-center sm:text-left">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                            <span class="text-4xl leading-none text-purple-400 font-serif">“</span>
+                            <blockquote class="text-base sm:text-lg font-bold text-purple-100 italic leading-snug">
+                                The most essential value for any Christian leader is not administrative skill, but deep intimacy with God. A genuine passion for Christ must precede and sustain all ministry efforts.
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: The Progression of a Leader (4 Stages) -->
+                <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-2xl">🪜</span>
+                            <h3 class="text-xl font-bold text-white">The Progression of a Leader</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                            Leadership is not an instant appointment but a gradual maturation process. We grow into our influence by passing through essential stages of development:
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="p-5 rounded-2xl bg-black/40 border border-white/5 space-y-2 relative overflow-hidden group hover:border-purple-500/30 transition-all">
+                            <span class="text-purple-400 font-extrabold text-xs uppercase tracking-wider block">Stage 01</span>
+                            <h4 class="text-sm font-bold text-white">Following as a Disciple</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Before you can lead others, you must first learn how to follow Christ with humility and consistency.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-black/40 border border-white/5 space-y-2 relative overflow-hidden group hover:border-purple-500/30 transition-all">
+                            <span class="text-purple-400 font-extrabold text-xs uppercase tracking-wider block">Stage 02</span>
+                            <h4 class="text-sm font-bold text-white">Becoming a Model</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Demonstrating character, spiritual disciplines, and faithfulness in small things that others can observe and emulate.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-black/40 border border-white/5 space-y-2 relative overflow-hidden group hover:border-purple-500/30 transition-all">
+                            <span class="text-purple-400 font-extrabold text-xs uppercase tracking-wider block">Stage 03</span>
+                            <h4 class="text-sm font-bold text-white">Reproducing Disciples</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Intentionally investing in individuals, coaching them to grow in faith and step into their own callings.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-black/40 border border-white/5 space-y-2 relative overflow-hidden group hover:border-purple-500/30 transition-all">
+                            <span class="text-purple-400 font-extrabold text-xs uppercase tracking-wider block">Stage 04</span>
+                            <h4 class="text-sm font-bold text-white">Building Powerful Teams</h4>
+                            <p class="text-xs text-slate-300 leading-normal">
+                                Unifying diverse gifts and leading a cohesive group to accomplish Kingdom goals together.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Multiplying Influence, Defining Character & Exercising Authority in Love -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass bg-cardDark p-6 rounded-3xl border border-white/10 space-y-3">
+                        <div class="flex items-center gap-2 text-indigo-400">
+                            <span class="text-xl">🌱</span>
+                            <h4 class="text-base font-bold text-white">Multiplying Influence</h4>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            True leaders do not gather followers; they raise up leaders. By delegating responsibilities, coaching 2nd and 3rd leads, and sharing ownership, we ensure that the ministry multiplies its reach without bottlenecking around one individual.
+                        </p>
+                    </div>
+
+                    <div class="glass bg-cardDark p-6 rounded-3xl border border-white/10 space-y-3">
+                        <div class="flex items-center gap-2 text-amber-400">
+                            <span class="text-xl">🛡️</span>
+                            <h4 class="text-base font-bold text-white">Defining Character</h4>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Talent might open the door to leadership, but only character keeps you there. Integrity, humility, honesty, and emotional maturity are non-negotiable standards for anyone guiding others in the church.
+                        </p>
+                    </div>
+
+                    <div class="glass bg-cardDark p-6 rounded-3xl border border-white/10 space-y-3">
+                        <div class="flex items-center gap-2 text-emerald-400">
+                            <span class="text-xl">❤️</span>
+                            <h4 class="text-base font-bold text-white">Exercising Authority in Love</h4>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Spiritual authority is not exercised by coercion or control, but through patient, servant-hearted love. We lead by example and persuasion, always prioritizing the spiritual wellbeing of those entrusted to our care.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Summary of Development Phases Table -->
+                <div class="glass bg-cardDark p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xl">📊</span>
+                            <h3 class="text-lg font-bold text-white">Summary of Development Phases</h3>
+                        </div>
+                        <span class="text-xs text-purple-400 font-semibold">Leadership Essentials Framework</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-2xl border border-white/10">
+                        <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                            <thead class="bg-black/50 text-slate-400 uppercase tracking-wider text-[11px] border-b border-white/10">
+                                <tr>
+                                    <th class="p-4 font-bold text-purple-300">Phase</th>
+                                    <th class="p-4 font-bold text-purple-300">Focus Area</th>
+                                    <th class="p-4 font-bold text-purple-300">Key Outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 bg-black/20">
+                                <tr class="hover:bg-white/5 transition-colors">
+                                    <td class="p-4 font-bold text-white flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                                        Foundation
+                                    </td>
+                                    <td class="p-4 text-slate-200 font-medium">Intimacy with God</td>
+                                    <td class="p-4 text-emerald-300 font-medium">Spiritual vitality and vision</td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition-colors">
+                                    <td class="p-4 font-bold text-white flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                        Formation
+                                    </td>
+                                    <td class="p-4 text-slate-200 font-medium">Defining Character</td>
+                                    <td class="p-4 text-emerald-300 font-medium">Trust and integrity in ministry</td>
+                                </tr>
+                                <tr class="hover:bg-white/5 transition-colors">
+                                    <td class="p-4 font-bold text-white flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                                        Fruition
+                                    </td>
+                                    <td class="p-4 text-slate-200 font-medium">Multiplying Influence</td>
+                                    <td class="p-4 text-emerald-300 font-medium">Building powerful, equipped teams</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section: PREPARATION & ACTION ITEMS -->
+                <div class="glass bg-gradient-to-r from-purple-900/40 via-cardDark to-indigo-900/30 p-6 sm:p-8 rounded-3xl border border-purple-500/40 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🎯</span>
+                        <div>
+                            <h3 class="text-lg sm:text-xl font-bold text-white">PREPARATION &amp; ACTION ITEMS</h3>
+                            <p class="text-xs text-purple-200/80">Monthly gathering readiness checklist for all core leads</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div class="p-5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+                            <span class="text-purple-400 font-extrabold text-xs uppercase tracking-wider block">📖 Required Reading</span>
+                            <h4 class="text-sm font-bold text-white">Read chapters up to page 26</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Read chapters up to page 26 in <em>Leadership Essentials</em> before our next monthly gathering.
+                            </p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+                            <span class="text-purple-400 font-extrabold text-xs uppercase tracking-wider block">✍️ Homework &amp; Reflection</span>
+                            <h4 class="text-sm font-bold text-white">Truths, Scripture &amp; Exercise</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Review the core truths, memorize the assigned scripture passages, complete the inductive Bible study questions, and prepare the leadership exercise reflections.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+                        <span class="font-bold text-white flex items-center gap-2">
+                            <span>🏛️</span>
+                            <span>Upper Room Young Adults Ministry</span>
+                        </span>
+                        <span>EUC Maryland · Leadership Development</span>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
         <!-- 9. LEADER TRAINING -->
