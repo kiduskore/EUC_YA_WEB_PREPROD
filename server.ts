@@ -348,13 +348,13 @@ const SEARCH_DATABASE = [
     keywords: ["giving", "generosity", "tithing", "stewardship", "finances", "money", "offering", "tithe", "charity"] 
   },
   { 
-    title: "Knowing God (Psalm 85:6-7) • Coming Soon", 
+    title: "Knowing God (Isaiah 40:28) • Coming Soon", 
     category: "events", 
     pillar: "Special Event", 
-    desc: "Upcoming Maryland & DMV Young Adults Gathering for spiritual awakening, knowing God, prayer, and revival.", 
+    desc: "Upcoming Maryland & DMV Young Adults Gathering for spiritual awakening, knowing the everlasting God, prayer, and revival.", 
     url: "/#coming-soon-event", 
     icon: "✨",
-    keywords: ["knowing god", "event", "gathering", "psalm 85", "awakening", "prayer night", "retreat", "conference", "maryland", "special", "worship"] 
+    keywords: ["knowing god", "event", "gathering", "isaiah 40 28", "everlasting god", "creator", "prayer night", "retreat", "conference", "maryland", "special", "worship"] 
   },
   { 
     title: "Tuesday Night Young Adult Gathering & Prayer", 
@@ -402,13 +402,13 @@ const SEARCH_DATABASE = [
     keywords: ["young professionals", "career", "work", "dc", "dmv", "government", "tech", "adulting", "consulting"] 
   },
   { 
-    title: "Psalm 85:6 — \"Will you not revive us again?\"", 
+    title: "Isaiah 40:28 — \"The Lord is the everlasting God\"", 
     category: "scriptures", 
     pillar: "Scripture", 
-    desc: "\"Will you not revive us again, that your people may rejoice in you? Show us your steadfast love, Lord.\"", 
+    desc: "\"Do you not know? Have you not heard? The Lord is the everlasting God, the Creator of the ends of the earth. He will not grow tired or weary, and His understanding no one can fathom.\"", 
     url: "/#coming-soon-event", 
-    icon: "📜",
-    keywords: ["psalm 85", "scripture", "revival", "bible verse", "awaken", "promise", "joy", "salvation"] 
+    icon: "📜", 
+    keywords: ["isaiah 40 28", "scripture", "everlasting god", "creator", "bible verse", "knowing god", "strength", "hope"] 
   },
   { 
     title: "Matthew 28:19-20 — The Great Commission", 

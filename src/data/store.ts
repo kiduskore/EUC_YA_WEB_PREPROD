@@ -582,87 +582,164 @@ class InMemoryStore {
   }
 
   initOfficialDnaPods() {
-    const rawRosters = [
+    if (!this.nextIds) this.nextIds = {} as any;
+
+    this.members = [
       {
         id: 1,
-        name: 'DNA Pod 1',
-        primaryLeads: ['Bercy', 'Kal'],
-        members: ['Bercy', 'Kal', 'Dibora', 'Dula', 'Kaleb', 'Kana', 'Abigiya']
+        name: 'Kidus Kore',
+        email: 'keku121@gmail.com',
+        phone: '2027601096',
+        join_date: '2026-01-15',
+        role: 'admin',
+        spiritual_stage: 'leading',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: '',
+        life_stage: '',
+        interests: ['Leadership', 'Administration', 'Community'],
+        notes: 'Upper Room Admin & Core Leader'
       },
       {
         id: 2,
-        name: 'DNA Pod 2',
-        primaryLeads: ['Biniyam', 'Fiker'],
-        members: ['Biniyam', 'Fiker', 'Tsion', 'Josh', 'Meeraf']
+        name: 'Bercy kebede',
+        email: 'bersabay1234@gmail.com',
+        phone: '2404762343',
+        join_date: '2026-01-15',
+        role: 'member',
+        spiritual_stage: 'leading',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: '6004 northwest dr Hyattsville md 20782',
+        life_stage: 'Career / Working',
+        interests: ['Prayer', 'Hospitality', 'Discipleship'],
+        notes: 'Prayer Coordinator & Guest Experience Lead'
       },
       {
         id: 3,
-        name: 'DNA Pod 3',
-        primaryLeads: ['Gedi', 'Nahom'],
-        members: ['Gedi', 'Nahom', 'Ruth', 'Zetseat', 'Miki']
+        name: 'Nahom Tegegn',
+        email: 'nahiwende92@gmail.com',
+        phone: '2028262001',
+        join_date: '2026-01-15',
+        role: 'member',
+        spiritual_stage: 'leading',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: 'Silver Spring, MD',
+        life_stage: 'Career / Working',
+        interests: ['Discipleship', 'Bible Study', 'Teaching'],
+        notes: 'Discipleship Lead'
       },
       {
         id: 4,
-        name: 'DNA Pod 4',
-        primaryLeads: ['Ela', 'Kidus'],
-        members: ['Ela', 'Kidus', 'Yezich', 'Eden', 'Miki', 'Regan']
+        name: 'Gideon Dilebo',
+        email: 'dilebogideon@gmail.com',
+        phone: '2406021016',
+        join_date: '2026-01-15',
+        role: 'member',
+        spiritual_stage: 'foundations',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: '',
+        life_stage: '',
+        interests: ['Production', 'Sound Mixing', 'Media'],
+        notes: 'Production Lead'
+      },
+      {
+        id: 5,
+        name: 'Fikir Kebede',
+        email: 'gizachewhaimef@gmail.com',
+        phone: '3013268345',
+        join_date: '2026-01-15',
+        role: 'member',
+        spiritual_stage: 'saved',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: 'Silverspring',
+        life_stage: 'Other',
+        interests: ['Event Coordination', 'Hospitality', 'Logistics'],
+        notes: 'Event Coordinator'
+      },
+      {
+        id: 6,
+        name: 'Elias Orion Belachew',
+        email: 'eliasorion11@gmail.com',
+        phone: '2039045565',
+        join_date: '2026-01-15',
+        role: 'member',
+        spiritual_stage: 'ready_to_lead',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: 'Silver Spring',
+        life_stage: 'Career / Working',
+        interests: ['Worship', 'Band Rehearsals', 'Music'],
+        notes: 'Worship Lead'
+      },
+      {
+        id: 7,
+        name: 'Biniyam Sibane',
+        email: 'biniyamfekede10@gmail.com',
+        phone: '2409459529',
+        join_date: '2026-01-15',
+        role: 'member',
+        spiritual_stage: 'leading',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: 'Silver Spring',
+        life_stage: 'Other',
+        interests: ['Teaching', 'Theology', 'Curriculum'],
+        notes: 'Teaching Lead'
+      },
+      {
+        id: 8,
+        name: 'Kaleab Abate',
+        email: 'kbgecho@gmail.com',
+        phone: '7857645055',
+        join_date: '2026-01-15',
+        role: 'member',
+        spiritual_stage: 'ready_to_lead',
+        pod_id: null,
+        pod_name: null,
+        pod: null,
+        is_active: true,
+        created_at: '2026-01-15T00:00:00Z',
+        city: 'Silver Spring',
+        life_stage: 'Undergraduate Student',
+        interests: ['Production', 'Audio/Visual', 'Media'],
+        notes: 'Production Lead'
       }
     ];
 
-    if (!this.nextIds) this.nextIds = {} as any;
-    let memberIdCounter = 101;
-    this.members = [];
-    this.pods = [];
+    this.pods = [
+      { id: 1, name: 'DNA Pod 1', leader_id: null, created_at: '2026-01-15T00:00:00Z' },
+      { id: 2, name: 'DNA Pod 2', leader_id: null, created_at: '2026-01-15T00:00:00Z' },
+      { id: 3, name: 'DNA Pod 3', leader_id: null, created_at: '2026-01-15T00:00:00Z' },
+      { id: 4, name: 'DNA Pod 4', leader_id: null, created_at: '2026-01-15T00:00:00Z' }
+    ];
     this.podMembers = [];
 
-    rawRosters.forEach((podData) => {
-      const podId = podData.id;
-      let leaderMemberId: number | null = null;
-
-      podData.members.forEach((memberName) => {
-        const isLeader = podData.primaryLeads.includes(memberName);
-        const memberEmail = `${memberName.toLowerCase().replace(/[^a-z0-9]/g, '')}@eucmaryland.org`;
-        const memberId = memberIdCounter++;
-
-        if (isLeader && leaderMemberId === null) {
-          leaderMemberId = memberId;
-        }
-
-        this.members.push({
-          id: memberId,
-          name: memberName,
-          email: memberEmail,
-          phone: '(202) 760-1096',
-          join_date: '2026-01-15',
-          role: isLeader ? 'leader' : 'member',
-          spiritual_stage: isLeader ? 'leading' : 'saved',
-          pod_id: podId,
-          pod_name: podData.name,
-          pod: podData.name,
-          is_active: true,
-          created_at: '2026-01-15T00:00:00Z',
-          city: 'Silver Spring, MD',
-          life_stage: 'Young Adult',
-          interests: ['Bible Study', 'Community', 'Discipleship'],
-          notes: `${podData.name} member`
-        });
-
-        this.podMembers.push({
-          pod_id: podId,
-          member_id: memberId,
-          joined_at: '2026-01-15T00:00:00Z'
-        });
-      });
-
-      this.pods.push({
-        id: podId,
-        name: podData.name,
-        leader_id: leaderMemberId,
-        created_at: '2026-01-15T00:00:00Z'
-      });
-    });
-
-    this.nextIds.members = memberIdCounter;
+    this.nextIds.members = 9;
     this.nextIds.pods = 5;
   }
 
@@ -1777,9 +1854,9 @@ const initDb = () => {
       }
 
       // Ensure official DNA Pods and member rosters exist
-      if (!rawStore.pods || rawStore.pods.length === 0 || !rawStore.members || rawStore.members.length === 0) {
+      if (!rawStore.pods || rawStore.pods.length === 0 || !rawStore.members || !rawStore.members.some(m => m.name === 'Kidus Kore')) {
         rawStore.initOfficialDnaPods();
-        console.log('[Store] Initialized 4 official DNA Pods and member rosters.');
+        console.log('[Store] Initialized 8 official leadership members.');
         saveToDB();
       }
 
@@ -1896,11 +1973,17 @@ const initDb = () => {
           console.log('[PostgreSQL] Cleared starter DNA pods and mock plans from DB.');
         }
 
+        if (!rawStore.members || !rawStore.members.some(m => m.name === 'Kidus Kore')) {
+          rawStore.initOfficialDnaPods();
+          console.log('[PostgreSQL] Initialized 8 official leadership members.');
+        }
+
         const defaultHash = bcrypt.hashSync('password123', 10);
         
         const keku = rawStore.users.find(u => u.email.toLowerCase() === 'keku121@gmail.com');
         if (keku) {
             keku.role_id = 1; // Force site admin
+            keku.full_name = 'Kidus Kore';
         }
 
         if (!rawStore.users.some(u => u.email.toLowerCase() === 'keku121@gmail.com')) {
@@ -1908,7 +1991,7 @@ const initDb = () => {
             id: rawStore.nextIds.users++,
             email: 'keku121@gmail.com',
             password_hash: defaultHash,
-            full_name: 'Kidus',
+            full_name: 'Kidus Kore',
             role_id: 1,
             is_active: true,
           });
