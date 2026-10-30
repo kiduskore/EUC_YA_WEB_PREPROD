@@ -1781,32 +1781,19 @@ const saveToDB = async () => {
       nextIds: rawStore.nextIds
     };
 
-    // Always save to JSON file as fallback
+    // Safely save state to local JSON file storage
     try {
       fs.writeFileSync(DATA_FILE, JSON.stringify(stateToSave, null, 2));
     } catch (err) {
       console.error('Failed to save state to data.json:', err);
     }
-
-    if (!pool) return;
-
-    const res = await pool.query('SELECT id FROM app_state ORDER BY id DESC LIMIT 1');
-    if (res.rows.length > 0) {
-      await pool.query('UPDATE app_state SET data = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [stateToSave, res.rows[0].id]);
-    } else {
-      await pool.query('INSERT INTO app_state (data) VALUES ($1)', [stateToSave]);
-    }
   } catch (err: any) {
-    console.error('Failed to save state to DB:', err);
-    if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND' || err.message?.includes('getaddrinfo')) {
-      console.warn('[PostgreSQL] Disabling database sync due to unreachable host.');
-      pool = null;
-    }
+    console.error('Failed in saveToDB:', err);
   }
 };
 
 const initDb = () => {
-  // First load from local JSON file as base if it exists
+  // First load from local JSON file as primary persistent source
   try {
     if (fs.existsSync(DATA_FILE)) {
       const state = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
@@ -1822,41 +1809,10 @@ const initDb = () => {
       if (!rawStore.nextIds.broadcasts) rawStore.nextIds.broadcasts = (rawStore.newsletterBroadcasts.length + 1) || 1;
       console.log('[Local FS] Restored state from data.json');
 
-      // Purge old demo mock members and test script artifacts
-      if (rawStore.members && rawStore.members.some(m => m.name === 'Force Save' || m.name === 'Migrate Trigger')) {
-        rawStore.members = [];
-        rawStore.podMembers = [];
-        if (rawStore.pods) {
-          rawStore.pods.forEach(p => p.leader_id = null);
-        }
-        if (rawStore.nextIds) {
-          rawStore.nextIds.members = 1;
-        }
-        if (rawStore.prayerRequests) {
-          rawStore.prayerRequests = rawStore.prayerRequests.filter(p => p.id !== 7 && p.id !== 6);
-          rawStore.prayerRequests.forEach(p => p.member_id = null);
-        }
-        console.log('[Store] Cleared mock seed members and test records.');
-        saveToDB();
-      }
-
-      // Purge starter DNA pods and mock plans
-      if (rawStore.pods && rawStore.pods.some(p => p.name === 'Silver Spring Young Pros' || p.name === 'Bethesda Campus Pod' || p.name === 'College Park DNA Group' || p.name === 'Rockville Discipleship Circle')) {
-        rawStore.pods = [];
-        rawStore.podMembers = [];
-        rawStore.weeklyPlans = [];
-        if (rawStore.nextIds) {
-          rawStore.nextIds.pods = 1;
-          rawStore.nextIds.weeklyPlans = 1;
-        }
-        console.log('[Store] Cleared starter DNA pods and mock plans.');
-        saveToDB();
-      }
-
-      // Ensure official DNA Pods and member rosters exist
-      if (!rawStore.pods || rawStore.pods.length === 0 || !rawStore.members || !rawStore.members.some(m => m.name === 'Kidus Kore')) {
+      // Safe non-destructive initialization: only initialize if completely empty
+      if (!rawStore.pods || rawStore.pods.length === 0 || !rawStore.members || rawStore.members.length === 0) {
         rawStore.initOfficialDnaPods();
-        console.log('[Store] Initialized 8 official leadership members.');
+        console.log('[Store] Initialized official leadership members into empty store.');
         saveToDB();
       }
 
@@ -1873,6 +1829,11 @@ const initDb = () => {
       if (!rawStore.nextIds.eventRsvps) {
         rawStore.nextIds.eventRsvps = 1;
       }
+    } else {
+      // data.json does not exist yet: initialize default state non-destructively
+      rawStore.initOfficialDnaPods();
+      rawStore.events = rawStore.getDefaultEvents();
+      saveToDB();
     }
   } catch (err) {
     console.error('Failed to load from data.json:', err);
@@ -1884,29 +1845,30 @@ const initDb = () => {
   const sqlDbName = (process.env.SQL_DB_NAME || '').trim();
 
   if (!sqlHost || !sqlUser || !sqlPassword || !sqlDbName) {
-    console.log('[PostgreSQL] Missing SQL_* environment variables. Using Local FS / Memory only.');
+    console.log('[PostgreSQL] Missing SQL_* environment variables. Using Local FS persistence.');
     return;
   }
 
+  // Safe read-only/backup connection: do not run destructive migrations or auto-update queries
   try {
     pool = new pg.Pool({
       host: sqlHost,
       user: sqlUser,
       password: sqlPassword,
       database: sqlDbName,
-      max: 10,
+      max: 5,
       connectionTimeoutMillis: 15000,
     });
 
     pool.on('error', (err: any) => {
       console.error('[PostgreSQL Error] Unexpected client error:', err.message);
       if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND') {
-         console.warn('[PostgreSQL] Database host is unreachable. Disabling database sync.');
+         console.warn('[PostgreSQL] Database host is unreachable. Running in local storage mode.');
          pool = null;
       }
     });
 
-    // Init table and load data
+    // Safe, non-destructive table check: CREATE TABLE IF NOT EXISTS (never DROP or TRUNCATE)
     pool.query(`
       CREATE TABLE IF NOT EXISTS app_state (
         id SERIAL PRIMARY KEY,
@@ -1917,128 +1879,19 @@ const initDb = () => {
       if (!pool) return;
       return pool.query('SELECT data FROM app_state ORDER BY id DESC LIMIT 1');
     }).then(res => {
-      if (res && res.rows.length > 0) {
+      // If local data.json was empty or absent, safely restore from remote table without overwriting
+      if (res && res.rows.length > 0 && (!rawStore.members || rawStore.members.length === 0)) {
         const state = res.rows[0].data;
         Object.assign(rawStore, state);
-
-        // Fix for missing/empty rolePermissions in older DB state
-        if (!rawStore.rolePermissions || rawStore.rolePermissions.length === 0) {
-            rawStore.rolePermissions = [
-              { role_id: 1, permission_id: 1 },
-              { role_id: 1, permission_id: 2 },
-              { role_id: 1, permission_id: 3 },
-              { role_id: 1, permission_id: 4 },
-              { role_id: 1, permission_id: 5 },
-              { role_id: 2, permission_id: 5 },
-              { role_id: 2, permission_id: 3 },
-              { role_id: 2, permission_id: 2 },
-            ];
-        }
-        if (!rawStore.permissions || rawStore.permissions.length === 0) {
-            rawStore.permissions = [
-              { id: 1, name: 'manage_users' },
-              { id: 2, name: 'manage_pods' },
-              { id: 3, name: 'manage_members' },
-              { id: 4, name: 'manage_settings' },
-              { id: 5, name: 'view_dashboard' },
-            ];
-        }
-
-        // Purge mock seed members and artifacts from PostgreSQL state
-        if (rawStore.members && rawStore.members.some(m => m.name === 'Force Save' || m.name === 'Migrate Trigger' || m.id <= 13 || m.name === 'Kidus Teshome')) {
-          rawStore.members = [];
-          rawStore.podMembers = [];
-          if (rawStore.pods) {
-            rawStore.pods.forEach(p => p.leader_id = null);
-          }
-          if (rawStore.nextIds) {
-            rawStore.nextIds.members = 1;
-          }
-          if (rawStore.prayerRequests) {
-            rawStore.prayerRequests = rawStore.prayerRequests.filter(p => p.id !== 7 && p.id !== 6);
-            rawStore.prayerRequests.forEach(p => p.member_id = null);
-          }
-          console.log('[PostgreSQL] Cleared mock seed members from DB.');
-        }
-
-        // Purge starter DNA pods and mock plans from PostgreSQL state
-        if (rawStore.pods && rawStore.pods.some(p => p.name === 'Silver Spring Young Pros' || p.name === 'Bethesda Campus Pod' || p.name === 'College Park DNA Group' || p.name === 'Rockville Discipleship Circle')) {
-          rawStore.pods = [];
-          rawStore.podMembers = [];
-          rawStore.weeklyPlans = [];
-          if (rawStore.nextIds) {
-            rawStore.nextIds.pods = 1;
-            rawStore.nextIds.weeklyPlans = 1;
-          }
-          console.log('[PostgreSQL] Cleared starter DNA pods and mock plans from DB.');
-        }
-
-        if (!rawStore.members || !rawStore.members.some(m => m.name === 'Kidus Kore')) {
-          rawStore.initOfficialDnaPods();
-          console.log('[PostgreSQL] Initialized 8 official leadership members.');
-        }
-
-        const defaultHash = bcrypt.hashSync('password123', 10);
-        
-        const keku = rawStore.users.find(u => u.email.toLowerCase() === 'keku121@gmail.com');
-        if (keku) {
-            keku.role_id = 1; // Force site admin
-            keku.full_name = 'Kidus Kore';
-        }
-
-        if (!rawStore.users.some(u => u.email.toLowerCase() === 'keku121@gmail.com')) {
-          rawStore.users.push({
-            id: rawStore.nextIds.users++,
-            email: 'keku121@gmail.com',
-            password_hash: defaultHash,
-            full_name: 'Kidus Kore',
-            role_id: 1,
-            is_active: true,
-          });
-        }
-        if (!rawStore.users.some(u => u.email.toLowerCase() === 'admin@euc.org')) {
-          rawStore.users.push({
-            id: rawStore.nextIds.users++,
-            email: 'admin@euc.org',
-            password_hash: defaultHash,
-            full_name: 'Site Administrator',
-            role_id: 1,
-            is_active: true,
-          });
-        }
-        if (!rawStore.resetTokens) {
-          rawStore.resetTokens = [];
-        }
-
-        // Ensure events and rsvps exist in DB state
-        if (!rawStore.events || rawStore.events.length === 0) {
-          rawStore.events = rawStore.getDefaultEvents();
-        }
-        if (!rawStore.eventRsvps) {
-          rawStore.eventRsvps = [];
-        }
-        if (!rawStore.nextIds.events) {
-          rawStore.nextIds.events = (rawStore.events.length || 0) + 1;
-        }
-        if (!rawStore.nextIds.eventRsvps) {
-          rawStore.nextIds.eventRsvps = 1;
-        }
-
-        console.log('[PostgreSQL] Successfully restored app state from PostgreSQL Database');
-        saveToDB();
-      } else if (res) {
-        console.log('[PostgreSQL] Database connected. Initializing first state snapshot...');
+        console.log('[PostgreSQL] Loaded backup state from database into empty store');
         saveToDB();
       }
     }).catch(err => {
-      console.error('[PostgreSQL Connection Error]:', err.message);
-      if (err.code === 'EAI_AGAIN' || err.code === 'ENOTFOUND' || err.message.includes('getaddrinfo')) {
-        console.warn('[PostgreSQL] Database host is unreachable. Disabling database sync and using in-memory store.');
-        pool = null;
-      }
+      console.error('[PostgreSQL Connection Notice]:', err.message);
+      pool = null;
     });
   } catch (err: any) {
-    console.error('[PostgreSQL URL Parse Error]:', err.message);
+    console.error('[PostgreSQL Initialization]:', err.message);
     pool = null;
   }
 };

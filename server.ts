@@ -117,7 +117,9 @@ const isPublicAuthRoute = (path: string) => {
          clean === '/api/member-form' ||
          clean === '/api/newsletter/subscribe' ||
          clean === '/api/members/subscribe' ||
-         clean === '/api/subscribe';
+         clean === '/api/subscribe' ||
+         clean.startsWith('/api/events/') && clean.endsWith('/rsvp') ||
+         clean.startsWith('/api/events/') && clean.endsWith('/cancel-rsvp');
 };
 
 const validateCSRF = (req: Request, res: Response, next: NextFunction) => {
@@ -631,6 +633,21 @@ app.get('/generosity', (req: Request, res: Response) => {
     metaDesc: 'Understanding biblical stewardship, sacrificial giving, and honoring God with our finances and resources.',
     currentPath: '/generosity'
   });
+});
+
+// Community Events & Calendar Public Page
+app.get('/events', (req: Request, res: Response) => {
+  const events = store.getEventsWithRsvps();
+  res.render('events', {
+    events,
+    metaTitle: 'Upcoming Gatherings & Community Events | EUCMD Young Adults',
+    metaDesc: 'Join EUCMD Young Adults for weekly worship, Tuesday gatherings, discipleship retreats, and fellowship across Maryland.',
+    currentPath: '/events'
+  });
+});
+
+app.get('/calendar', (req: Request, res: Response) => {
+  res.redirect('/events');
 });
 
 // ==========================================
@@ -1665,6 +1682,99 @@ app.delete('/api/resources/:id', requireAuth, (req: Request, res: Response) => {
   const id = parseInt(req.params.id, 10);
   store.deleteResource(id);
   res.json({ success: true });
+});
+
+// Community Events & RSVP API Endpoints
+app.get('/api/events', (req: Request, res: Response) => {
+  try {
+    const events = store.getEventsWithRsvps();
+    res.json(events);
+  } catch (err: any) {
+    console.error('Error in GET /api/events:', err);
+    res.status(500).json({ error: 'Failed to retrieve events' });
+  }
+});
+
+app.get('/api/events/:id', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const event = store.getEventById(id);
+  if (!event) return res.status(404).json({ error: 'Event not found' });
+  res.json(event);
+});
+
+app.post('/api/events', requireAuth, (req: Request, res: Response) => {
+  try {
+    const { title, date } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({ error: 'Event title is required.' });
+    }
+    if (!date) {
+      return res.status(400).json({ error: 'Event date is required.' });
+    }
+    const newEvent = store.addEvent(req.body);
+    res.status(201).json(newEvent);
+  } catch (err: any) {
+    console.error('Error creating event:', err);
+    res.status(500).json({ error: err.message || 'Failed to create event.' });
+  }
+});
+
+app.put('/api/events/:id', requireAuth, (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const updated = store.updateEvent(id, req.body);
+  if (!updated) return res.status(404).json({ error: 'Event not found' });
+  res.json(updated);
+});
+
+app.delete('/api/events/:id', requireAuth, (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const ok = store.deleteEvent(id);
+  if (!ok) return res.status(404).json({ error: 'Event not found' });
+  res.json({ success: true });
+});
+
+app.get('/api/events/:id/rsvps', requireAuth, (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const event = store.getEventById(id);
+  if (!event) return res.status(404).json({ error: 'Event not found' });
+  res.json(event.rsvps || []);
+});
+
+app.post('/api/events/:id/rsvp', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const { name, email, phone, guests_count, notes } = req.body;
+  if (!name || !name.trim()) return res.status(400).json({ error: 'Your full name is required.' });
+  if (!email || !email.trim()) return res.status(400).json({ error: 'A valid email address is required.' });
+
+  const result = store.addRsvp({
+    event_id: id,
+    name: name.trim(),
+    email: email.trim().toLowerCase(),
+    phone: phone ? phone.trim() : '',
+    guests_count: Number(guests_count) || 0,
+    notes: notes ? notes.trim() : ''
+  });
+
+  if (!result.success) {
+    return res.status(400).json({ error: result.error || 'Failed to RSVP.' });
+  }
+
+  const updatedEvent = store.getEventById(id);
+  res.status(200).json({ success: true, rsvp: result.rsvp, event: updatedEvent });
+});
+
+app.post('/api/events/:id/cancel-rsvp', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email is required to cancel your RSVP.' });
+
+  const ok = store.cancelRsvp(id, email.trim().toLowerCase());
+  if (!ok) {
+    return res.status(404).json({ error: 'No reservation found for this email address.' });
+  }
+
+  const updatedEvent = store.getEventById(id);
+  res.status(200).json({ success: true, event: updatedEvent });
 });
 
 // Leader Invites CRUD
